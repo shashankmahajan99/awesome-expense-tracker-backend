@@ -1,0 +1,25 @@
+version: v1
+plugins:
+  - plugin: go
+    out: ../generated
+    opt:
+      - paths=source_relative
+  - plugin: go-grpc
+    out: ../generated
+    opt:
+      - paths=source_relative
+  - plugin: grpc-gateway
+    out: ../generated
+    opt:
+      - paths=source_relative
+      - generate_unbound_methods=true
+      - allow_delete_body=true
+  - plugin: validate
+    out: ../generated
+    opt:
+      - lang=go
+      - paths=source_relative
+  - name: openapiv2
+    out: ../generated
+    opt:
+      - allow_delete_body=true

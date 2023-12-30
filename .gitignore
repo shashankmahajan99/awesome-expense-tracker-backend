@@ -1,0 +1,19 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Output files
+*.out
+
+# Go specific
+*.test
+*.prof
+
+# Generated files
+/generated/
+
+# IDE files
+.idea/
+.vscode/

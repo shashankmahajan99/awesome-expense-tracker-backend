@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package api;
+
+import "messages.proto";
+import "google/api/annotations.proto";
+
+option go_package = "./api";
+
+// User Authentication API
+service UserAuthentication {
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/login"
+      body: "*"
+    };
+  }
+  rpc Register(RegisterRequest) returns (RegisterResponse) {
+    option (google.api.http) = {
+      post: "/register"
+      body: "*"
+    };
+  }
+}
+
+// Expense Management API
+service ExpenseManagement {
+  rpc CreateExpense(CreateExpenseRequest) returns (CreateExpenseResponse) {
+    option (google.api.http) = {
+      post: "/expenses"
+      body: "*"
+    };
+  }
+  rpc UpdateExpense(UpdateExpenseRequest) returns (UpdateExpenseResponse) {
+    option (google.api.http) = {
+      put: "/expenses/{id}"
+      body: "*"
+    };
+  }
+  rpc DeleteExpense(DeleteExpenseRequest) returns (DeleteExpenseResponse) {
+    option (google.api.http) = {
+      delete: "/expenses/{id}"
+    };
+  }
+  rpc GetExpenses(GetExpensesRequest) returns (GetExpensesResponse) {
+    option (google.api.http) = {
+      get: "/expenses"
+    };
+  }
+}
+
+// Reports API
+service Reports {
+  rpc GenerateReport(GenerateReportRequest) returns (GenerateReportResponse) {
+    option (google.api.http) = {
+      post: "/reports"
+      body: "*"
+    };
+  }
+}
+
+// User Profile API
+service UserProfile {
+  rpc GetUserProfile(GetUserProfileRequest) returns (GetUserProfileResponse) {
+    option (google.api.http) = {
+      get: "/profile"
+    };
+  }
+  rpc UpdateUserProfile(UpdateUserProfileRequest)
+      returns (UpdateUserProfileResponse) {
+    option (google.api.http) = {
+      put: "/profile"
+      body: "*"
+    };
+  }
+}
+
+// Settings API
+service Settings {
+  rpc GetSettings(GetSettingsRequest) returns (GetSettingsResponse) {
+    option (google.api.http) = {
+      get: "/settings"
+    };
+  }
+  rpc UpdateSettings(UpdateSettingsRequest) returns (UpdateSettingsResponse) {
+    option (google.api.http) = {
+      put: "/settings"
+      body: "*"
+    };
+  }
+}
