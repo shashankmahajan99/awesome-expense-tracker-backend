@@ -2,11 +2,11 @@
 // source: api.proto
 
 /*
-Package api is a reverse proxy.
+Package AwesomeExpenseTrackerApi is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package api
+package AwesomeExpenseTrackerApi
 
 import (
 	"context"
@@ -494,7 +494,7 @@ func RegisterHealthCheckHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.HealthCheck/Healthy", runtime.WithHTTPPathPattern("/healthy"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.HealthCheck/Healthy", runtime.WithHTTPPathPattern("/healthy"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -526,7 +526,7 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.UserAuthentication/Login", runtime.WithHTTPPathPattern("/login"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/Login", runtime.WithHTTPPathPattern("/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -549,7 +549,7 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.UserAuthentication/Register", runtime.WithHTTPPathPattern("/register"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/Register", runtime.WithHTTPPathPattern("/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -581,7 +581,7 @@ func RegisterExpenseManagementHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ExpenseManagement/CreateExpense", runtime.WithHTTPPathPattern("/expenses"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/CreateExpense", runtime.WithHTTPPathPattern("/expenses"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -604,7 +604,7 @@ func RegisterExpenseManagementHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ExpenseManagement/UpdateExpense", runtime.WithHTTPPathPattern("/expenses/{id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/UpdateExpense", runtime.WithHTTPPathPattern("/expenses/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -627,7 +627,7 @@ func RegisterExpenseManagementHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ExpenseManagement/DeleteExpense", runtime.WithHTTPPathPattern("/expenses/{id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/DeleteExpense", runtime.WithHTTPPathPattern("/expenses/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -650,7 +650,7 @@ func RegisterExpenseManagementHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.ExpenseManagement/GetExpenses", runtime.WithHTTPPathPattern("/expenses"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/GetExpenses", runtime.WithHTTPPathPattern("/expenses"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -682,7 +682,7 @@ func RegisterReportsHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.Reports/GenerateReport", runtime.WithHTTPPathPattern("/reports"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.Reports/GenerateReport", runtime.WithHTTPPathPattern("/reports"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -714,7 +714,7 @@ func RegisterUserProfileHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.UserProfile/GetUserProfile", runtime.WithHTTPPathPattern("/profile"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/GetUserProfile", runtime.WithHTTPPathPattern("/profile"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -737,7 +737,7 @@ func RegisterUserProfileHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.UserProfile/UpdateUserProfile", runtime.WithHTTPPathPattern("/profile"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/UpdateUserProfile", runtime.WithHTTPPathPattern("/profile"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -769,7 +769,7 @@ func RegisterSettingsHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.Settings/GetSettings", runtime.WithHTTPPathPattern("/settings"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.Settings/GetSettings", runtime.WithHTTPPathPattern("/settings"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -792,7 +792,7 @@ func RegisterSettingsHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/api.Settings/UpdateSettings", runtime.WithHTTPPathPattern("/settings"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.Settings/UpdateSettings", runtime.WithHTTPPathPattern("/settings"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -854,7 +854,7 @@ func RegisterHealthCheckHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.HealthCheck/Healthy", runtime.WithHTTPPathPattern("/healthy"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.HealthCheck/Healthy", runtime.WithHTTPPathPattern("/healthy"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -923,7 +923,7 @@ func RegisterUserAuthenticationHandlerClient(ctx context.Context, mux *runtime.S
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.UserAuthentication/Login", runtime.WithHTTPPathPattern("/login"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/Login", runtime.WithHTTPPathPattern("/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -943,7 +943,7 @@ func RegisterUserAuthenticationHandlerClient(ctx context.Context, mux *runtime.S
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.UserAuthentication/Register", runtime.WithHTTPPathPattern("/register"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/Register", runtime.WithHTTPPathPattern("/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1016,7 +1016,7 @@ func RegisterExpenseManagementHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ExpenseManagement/CreateExpense", runtime.WithHTTPPathPattern("/expenses"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/CreateExpense", runtime.WithHTTPPathPattern("/expenses"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1036,7 +1036,7 @@ func RegisterExpenseManagementHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ExpenseManagement/UpdateExpense", runtime.WithHTTPPathPattern("/expenses/{id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/UpdateExpense", runtime.WithHTTPPathPattern("/expenses/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1056,7 +1056,7 @@ func RegisterExpenseManagementHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ExpenseManagement/DeleteExpense", runtime.WithHTTPPathPattern("/expenses/{id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/DeleteExpense", runtime.WithHTTPPathPattern("/expenses/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1076,7 +1076,7 @@ func RegisterExpenseManagementHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.ExpenseManagement/GetExpenses", runtime.WithHTTPPathPattern("/expenses"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/GetExpenses", runtime.WithHTTPPathPattern("/expenses"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1157,7 +1157,7 @@ func RegisterReportsHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.Reports/GenerateReport", runtime.WithHTTPPathPattern("/reports"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.Reports/GenerateReport", runtime.WithHTTPPathPattern("/reports"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1226,7 +1226,7 @@ func RegisterUserProfileHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.UserProfile/GetUserProfile", runtime.WithHTTPPathPattern("/profile"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/GetUserProfile", runtime.WithHTTPPathPattern("/profile"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1246,7 +1246,7 @@ func RegisterUserProfileHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.UserProfile/UpdateUserProfile", runtime.WithHTTPPathPattern("/profile"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/UpdateUserProfile", runtime.WithHTTPPathPattern("/profile"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1319,7 +1319,7 @@ func RegisterSettingsHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.Settings/GetSettings", runtime.WithHTTPPathPattern("/settings"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.Settings/GetSettings", runtime.WithHTTPPathPattern("/settings"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1339,7 +1339,7 @@ func RegisterSettingsHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/api.Settings/UpdateSettings", runtime.WithHTTPPathPattern("/settings"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.Settings/UpdateSettings", runtime.WithHTTPPathPattern("/settings"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

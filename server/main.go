@@ -6,12 +6,19 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 
 	pb "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
-	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg"
+	apipkg "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api/userauth"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+)
+
+const (
+	grpcPort = "8080"
+	httpPort = "8081"
 )
 
 type server struct {
@@ -20,7 +27,7 @@ type server struct {
 
 func main() {
 	// create server
-	server, err := pkg.NewServer()
+	server, err := apipkg.NewServer()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -29,7 +36,7 @@ func main() {
 	runGrpcServer(server)
 }
 
-func runGrpcGatewayServer(server *pkg.Server) {
+func runGrpcGatewayServer(server *apipkg.Server) {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -41,17 +48,28 @@ func runGrpcGatewayServer(server *pkg.Server) {
 	pb.RegisterUserAuthenticationHandlerServer(ctx, mux, server)
 
 	// http server
-	log.Fatalln(http.ListenAndServe(":8081", mux))
+	log.Printf("grpc-gateway server started on localhost:%s", httpPort)
+	err := http.ListenAndServe("localhost:"+httpPort, mux)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
 
-func runGrpcServer(server *pkg.Server) {
-	listener, err := net.Listen("tcp", ":8080")
+func runGrpcServer(server *apipkg.Server) {
+	listener, err := net.Listen("tcp", "localhost:"+grpcPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
 	s := grpc.NewServer()
 	pb.RegisterUserAuthenticationServer(s, server)
+	envType := os.Getenv("ENV_TYPE")
+
+	// Register reflection service on gRPC server.
+	if envType != "prod" {
+		reflection.Register(s)
+	}
+	log.Printf("grpc server started on localhost:%s", grpcPort)
 	err = s.Serve(listener)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)

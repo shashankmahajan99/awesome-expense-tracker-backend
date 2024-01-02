@@ -34,7 +34,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apiGetExpensesResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsGetExpensesResponse"
                                 }
                             }
                         }
@@ -72,7 +72,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apiCreateExpenseResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsCreateExpenseResponse"
                                 }
                             }
                         }
@@ -92,7 +92,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/apiCreateExpenseRequest"
+                                "$ref": "#/components/schemas/apidefinitionsCreateExpenseRequest"
                             }
                         }
                     },
@@ -112,7 +112,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apiDeleteExpenseResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsDeleteExpenseResponse"
                                 }
                             }
                         }
@@ -150,7 +150,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apiUpdateExpenseResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsUpdateExpenseResponse"
                                 }
                             }
                         }
@@ -243,7 +243,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apiLoginResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsLoginResponse"
                                 }
                             }
                         }
@@ -263,7 +263,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/apiLoginRequest"
+                                "$ref": "#/components/schemas/apidefinitionsLoginRequest"
                             }
                         }
                     },
@@ -283,7 +283,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apiGetUserProfileResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsGetUserProfileResponse"
                                 }
                             }
                         }
@@ -321,7 +321,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apiUpdateUserProfileResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsUpdateUserProfileResponse"
                                 }
                             }
                         }
@@ -341,7 +341,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/apiUpdateUserProfileRequest"
+                                "$ref": "#/components/schemas/apidefinitionsUpdateUserProfileRequest"
                             }
                         }
                     },
@@ -361,7 +361,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apiRegisterResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsRegisterResponse"
                                 }
                             }
                         }
@@ -381,7 +381,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/apiRegisterRequest"
+                                "$ref": "#/components/schemas/apidefinitionsRegisterRequest"
                             }
                         }
                     },
@@ -401,7 +401,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apiGenerateReportResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsGenerateReportResponse"
                                 }
                             }
                         }
@@ -421,7 +421,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/apiGenerateReportRequest"
+                                "$ref": "#/components/schemas/apidefinitionsGenerateReportRequest"
                             }
                         }
                     },
@@ -441,7 +441,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apiGetSettingsResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsGetSettingsResponse"
                                 }
                             }
                         }
@@ -479,7 +479,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apiUpdateSettingsResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsUpdateSettingsResponse"
                                 }
                             }
                         }
@@ -499,7 +499,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/apiUpdateSettingsRequest"
+                                "$ref": "#/components/schemas/apidefinitionsUpdateSettingsRequest"
                             }
                         }
                     },
@@ -513,7 +513,7 @@
     },
     "components": {
         "schemas": {
-            "apiCreateExpenseRequest": {
+            "apidefinitionsCreateExpenseRequest": {
                 "type": "object",
                 "properties": {
                     "description": {
@@ -528,7 +528,7 @@
                     }
                 }
             },
-            "apiCreateExpenseResponse": {
+            "apidefinitionsCreateExpenseResponse": {
                 "type": "object",
                 "properties": {
                     "message": {
@@ -536,7 +536,7 @@
                     }
                 }
             },
-            "apiDeleteExpenseResponse": {
+            "apidefinitionsDeleteExpenseResponse": {
                 "type": "object",
                 "properties": {
                     "message": {
@@ -544,7 +544,7 @@
                     }
                 }
             },
-            "apiExpense": {
+            "apidefinitionsExpense": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -562,7 +562,7 @@
                     }
                 }
             },
-            "apiGenerateReportRequest": {
+            "apidefinitionsGenerateReportRequest": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -576,7 +576,7 @@
                     }
                 }
             },
-            "apiGenerateReportResponse": {
+            "apidefinitionsGenerateReportResponse": {
                 "type": "object",
                 "properties": {
                     "reportUrl": {
@@ -584,18 +584,18 @@
                     }
                 }
             },
-            "apiGetExpensesResponse": {
+            "apidefinitionsGetExpensesResponse": {
                 "type": "object",
                 "properties": {
                     "expenses": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/apiExpense"
+                            "$ref": "#/components/schemas/apidefinitionsExpense"
                         }
                     }
                 }
             },
-            "apiGetSettingsResponse": {
+            "apidefinitionsGetSettingsResponse": {
                 "type": "object",
                 "properties": {
                     "theme": {
@@ -606,7 +606,7 @@
                     }
                 }
             },
-            "apiGetUserProfileResponse": {
+            "apidefinitionsGetUserProfileResponse": {
                 "type": "object",
                 "properties": {
                     "username": {
@@ -617,7 +617,7 @@
                     }
                 }
             },
-            "apiLoginRequest": {
+            "apidefinitionsLoginRequest": {
                 "type": "object",
                 "properties": {
                     "username": {
@@ -628,7 +628,7 @@
                     }
                 }
             },
-            "apiLoginResponse": {
+            "apidefinitionsLoginResponse": {
                 "type": "object",
                 "properties": {
                     "token": {
@@ -636,7 +636,7 @@
                     }
                 }
             },
-            "apiRegisterRequest": {
+            "apidefinitionsRegisterRequest": {
                 "type": "object",
                 "properties": {
                     "username": {
@@ -650,7 +650,7 @@
                     }
                 }
             },
-            "apiRegisterResponse": {
+            "apidefinitionsRegisterResponse": {
                 "type": "object",
                 "properties": {
                     "message": {
@@ -658,7 +658,7 @@
                     }
                 }
             },
-            "apiUpdateExpenseResponse": {
+            "apidefinitionsUpdateExpenseResponse": {
                 "type": "object",
                 "properties": {
                     "message": {
@@ -666,7 +666,7 @@
                     }
                 }
             },
-            "apiUpdateSettingsRequest": {
+            "apidefinitionsUpdateSettingsRequest": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -680,7 +680,7 @@
                     }
                 }
             },
-            "apiUpdateSettingsResponse": {
+            "apidefinitionsUpdateSettingsResponse": {
                 "type": "object",
                 "properties": {
                     "message": {
@@ -688,7 +688,7 @@
                     }
                 }
             },
-            "apiUpdateUserProfileRequest": {
+            "apidefinitionsUpdateUserProfileRequest": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -702,7 +702,7 @@
                     }
                 }
             },
-            "apiUpdateUserProfileResponse": {
+            "apidefinitionsUpdateUserProfileResponse": {
                 "type": "object",
                 "properties": {
                     "message": {

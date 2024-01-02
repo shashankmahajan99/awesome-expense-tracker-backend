@@ -1,19 +1,20 @@
 // File: server.go
-package pkg
+package apipkg
 
 import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
+	AwesomeExpenseTrackerApi "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
 )
 
 // Server is the gRPC server.
 type Server struct {
-	api.UnimplementedUserAuthenticationServer
+	AwesomeExpenseTrackerApi.UnimplementedUserAuthenticationServer
 	router *runtime.ServeMux
 }
 
 // NewServer creates a new server.
 func NewServer() (server *Server, err error) {
+	server = &Server{}
 	err = server.Setup()
 	if err != nil {
 		return nil, err

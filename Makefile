@@ -13,3 +13,6 @@ convert:
 			swagger2openapi $$file -o "generated/$${base}_v3.swagger.json"; \
 		fi \
 	done
+
+local_server:
+	go run server/main.go
