@@ -6,6 +6,9 @@
   },
   "tags": [
     {
+      "name": "HealthCheck"
+    },
+    {
       "name": "UserAuthentication"
     },
     {
@@ -163,6 +166,29 @@
         ],
         "tags": [
           "ExpenseManagement"
+        ]
+      }
+    },
+    "/healthy": {
+      "get": {
+        "operationId": "HealthCheck_Healthy",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "HealthCheck"
         ]
       }
     },
