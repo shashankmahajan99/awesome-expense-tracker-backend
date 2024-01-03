@@ -10,6 +10,7 @@ import (
 
 	pb "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
 	apipkg "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api/userauth"
+	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	grpc "google.golang.org/grpc"
@@ -26,6 +27,11 @@ type server struct {
 }
 
 func main() {
+	database, err := db.InitDB("./expenses.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer database.Close()
 	// create server
 	server, err := apipkg.NewServer()
 	if err != nil {
