@@ -1,0 +1,8 @@
+# Dockerfile
+FROM mysql:latest
+
+# Expose port 3306 for MySQL
+EXPOSE 3306
+
+# Start MySQL server
+CMD ["mysqld"]

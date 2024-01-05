@@ -1,11 +1,11 @@
-generate:   
+generate_from_protos:   
 	rm -rf generated
 	mkdir generated
 	cd api; buf generate; cd ..
 	make convert
 	cp -r generated/* api/
 
-convert:
+convert_swagger_v2_to_v3:
 	for file in generated/*swagger.json; do \
 		base=$$(basename $$file .swagger.json); \
 		if [[ $$base != *_v3 ]]; then \
@@ -14,5 +14,14 @@ convert:
 		fi \
 	done
 
-local_server:
+local-server-run:
 	go run server/main.go
+
+mysql-build:
+	podman build -t mysql -f Dockerfile.mysql .
+
+mysql-run:
+	podman run -d -p 3306:3306 --name mysql-server --rm -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=awesome_expense_tracker mysql
+
+mysql-client:
+	podman exec -it mysql-server mysql -h localhost -u root -ppassword awesome_expense_tracker

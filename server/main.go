@@ -22,16 +22,13 @@ const (
 	httpPort = "8081"
 )
 
-type server struct {
-	pb.UnimplementedUserAuthenticationServer
-}
-
 func main() {
-	database, err := db.InitDB("./expenses.db")
+	database, err := db.InitDB()
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer database.Close()
+
 	// create server
 	server, err := apipkg.NewServer()
 	if err != nil {
