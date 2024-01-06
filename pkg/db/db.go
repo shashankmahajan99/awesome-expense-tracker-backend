@@ -7,6 +7,9 @@ import (
 	"time"
 
 	"github.com/go-sql-driver/mysql"
+	migrate "github.com/golang-migrate/migrate/v4"
+	migrate_mysql "github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 // InitDB initializes the database
@@ -20,6 +23,7 @@ func InitDB(dbConfig ...*mysql.Config) (*DB, error) {
 			Addr:                 "0.0.0.0:3306",
 			DBName:               "awesome_expense_tracker",
 			AllowNativePasswords: true,
+			MultiStatements:      true,
 		})
 	}
 
@@ -30,7 +34,7 @@ func InitDB(dbConfig ...*mysql.Config) (*DB, error) {
 	}
 
 	// migrate db
-	err = migrate(db)
+	err = migrateDb(db)
 	if err != nil {
 		return nil, err
 	}
@@ -107,52 +111,32 @@ func connect(dbConfig *mysql.Config) (*DB, error) {
 }
 
 // migrate migrates the database
-func migrate(db *DB) error {
-	// create users table
-	err := createUserTable(db)
+func migrateDb(db *DB) error {
+	// Replace the path with the path to your migrations directory
+	driver, err := migrate_mysql.WithInstance(db.DB, &migrate_mysql.Config{
+		DatabaseName: "awesome_expense_tracker",
+	})
+	if err != nil {
+		return err
+	}
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://pkg/db/migration",
+		"mysql",
+		driver,
+	)
 	if err != nil {
 		return err
 	}
 
-	// create expenses table
-	err = createExpenseTable(db)
-	if err != nil {
+	err = m.Up()
+	if err != nil && err != migrate.ErrNoChange {
 		return err
 	}
 
-	log.Println("migrated db")
-
-	return nil
-}
-
-// createUserTable creates the users table
-func createUserTable(db *DB) error {
-	// create users table
-	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS users (
-		id SERIAL PRIMARY KEY,
-		name VARCHAR(255) NOT NULL,
-		email VARCHAR(255) NOT NULL UNIQUE,
-		password VARCHAR(255) NOT NULL,
-		created_at TIMESTAMP DEFAULT NOW()
-	)`)
-	if err != nil {
-		return fmt.Errorf("failed to create users table: %v", err)
-	}
-
-	return nil
-}
-
-// createExpenseTable creates the expenses table
-func createExpenseTable(db *DB) error {
-	// create expenses table
-	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS expenses (
-		id SERIAL PRIMARY KEY,
-		name VARCHAR(255) NOT NULL,
-		amount NUMERIC(10, 2) NOT NULL,
-		created_at TIMESTAMP DEFAULT NOW()
-	)`)
-	if err != nil {
-		return fmt.Errorf("failed to create expenses table: %v", err)
+	if err == migrate.ErrNoChange {
+		log.Println("no changes in the database schema")
+	} else {
+		log.Println("migrated db")
 	}
 
 	return nil

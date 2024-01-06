@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS Expenses (
     user_id INT,
     amount DECIMAL(10, 2),
     description VARCHAR(255),
+    category VARCHAR(255),
     -- Add other fields as necessary
     FOREIGN KEY (user_id) REFERENCES Users(id)
 );

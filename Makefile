@@ -22,7 +22,13 @@ local-server-run:
 mysql-build:
 	podman build -t mysql -f Dockerfile.mysql .
 
-mysql-run:
+check_mysql_server_running:
+	@if podman inspect -f '{{.State.Running}}' mysql-server >/dev/null 2>&1; then \
+		echo "Stopping existing mysql-server container..."; \
+		podman stop mysql-server; \
+	fi
+
+mysql-run: check_mysql_server_running
 	podman run -d -p 3306:3306 --name mysql-server --rm -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=awesome_expense_tracker mysql
 
 mysql-client:
@@ -46,3 +52,4 @@ sqlc-install:
 sqlc-generate:
 	podman run --rm -v $(shell pwd):/src -w /src sqlc/sqlc generate
 	
+.PHONY: check_mysql_server_running run_mysql_server mysql-client migrateup migrateup1 migratedown migratedown1 sqlc-install sqlc-generate
