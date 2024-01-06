@@ -1,3 +1,5 @@
+DB_URL=mysql://root:password@tcp(localhost:3306)/awesome_expense_tracker?multiStatements=true
+
 generate_from_protos:   
 	rm -rf generated
 	mkdir generated
@@ -25,3 +27,22 @@ mysql-run:
 
 mysql-client:
 	podman exec -it mysql-server mysql -h localhost -u root -ppassword awesome_expense_tracker
+
+migrateup:
+	migrate -path pkg/db/migration -database "$(DB_URL)" -verbose up
+
+migrateup1:
+	migrate -path pkg/db/migration -database "$(DB_URL)" -verbose up 1
+
+migratedown:
+	migrate -path pkg/db/migration -database "$(DB_URL)" -verbose down
+
+migratedown1:
+	migrate -path pkg/db/migration -database "$(DB_URL)" -verbose down 1
+
+sqlc-install:
+	podman pull sqlc/sqlc
+
+sqlc-generate:
+	podman run --rm -v $(shell pwd):/src -w /src sqlc/sqlc generate
+	

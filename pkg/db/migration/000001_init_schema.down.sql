@@ -1,0 +1,7 @@
+-- init_schema.down.sql
+
+DROP TABLE IF EXISTS Settings;
+DROP TABLE IF EXISTS Profiles;
+DROP TABLE IF EXISTS Reports;
+DROP TABLE IF EXISTS Expenses;
+DROP TABLE IF EXISTS Users;
