@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -20,11 +21,23 @@ func InitDB(dbConfig ...*mysql.Config) (*DB, error) {
 			User:                 "root",
 			Passwd:               "password",
 			Net:                  "tcp",
-			Addr:                 "0.0.0.0:3306",
+			Addr:                 "localhost:3306",
 			DBName:               "awesome_expense_tracker",
 			AllowNativePasswords: true,
 			MultiStatements:      true,
 		})
+	}
+	if dbUser := os.Getenv("MYSQLUSER"); dbUser != "" {
+		dbConfig[0].User = dbUser
+	}
+	if dbPassword := os.Getenv("MYSQLPASSWORD"); dbPassword != "" {
+		dbConfig[0].Passwd = dbPassword
+	}
+	if dbAddr := os.Getenv("MYSQLADDR"); dbAddr != "" {
+		dbConfig[0].Addr = dbAddr
+	}
+	if dbName := os.Getenv("MYSQLDBNAME"); dbName != "" {
+		dbConfig[0].DBName = dbName
 	}
 
 	// connect to db
