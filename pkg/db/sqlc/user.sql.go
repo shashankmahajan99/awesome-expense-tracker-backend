@@ -52,7 +52,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, username, password, email FROM Users
+SELECT id, username, password, email, created_at, updated_at FROM Users
 WHERE id = ?
 `
 
@@ -64,12 +64,14 @@ func (q *Queries) GetUserByID(ctx context.Context, id int32) (User, error) {
 		&i.Username,
 		&i.Password,
 		&i.Email,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, password, email FROM Users
+SELECT id, username, password, email, created_at, updated_at FROM Users
 WHERE username = ?
 `
 
@@ -81,12 +83,14 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 		&i.Username,
 		&i.Password,
 		&i.Email,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, username, password, email FROM Users
+SELECT id, username, password, email, created_at, updated_at FROM Users
 ORDER BY id
 LIMIT ?
 OFFSET ?
@@ -111,6 +115,8 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			&i.Username,
 			&i.Password,
 			&i.Email,
+			&i.CreatedAt,
+			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}

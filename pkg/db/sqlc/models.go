@@ -14,30 +14,40 @@ type Expense struct {
 	Amount      sql.NullString `json:"amount"`
 	Description sql.NullString `json:"description"`
 	Category    sql.NullString `json:"category"`
+	CreatedAt   sql.NullTime   `json:"created_at"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
 }
 
 type Profile struct {
-	ID     int32          `json:"id"`
-	UserID sql.NullInt32  `json:"user_id"`
-	Bio    sql.NullString `json:"bio"`
+	ID        int32          `json:"id"`
+	UserID    sql.NullInt32  `json:"user_id"`
+	Bio       sql.NullString `json:"bio"`
+	CreatedAt sql.NullTime   `json:"created_at"`
+	UpdatedAt sql.NullTime   `json:"updated_at"`
 }
 
 type Report struct {
-	ID     int32          `json:"id"`
-	UserID sql.NullInt32  `json:"user_id"`
-	Title  sql.NullString `json:"title"`
+	ID        int32          `json:"id"`
+	UserID    sql.NullInt32  `json:"user_id"`
+	Title     sql.NullString `json:"title"`
+	CreatedAt sql.NullTime   `json:"created_at"`
+	UpdatedAt sql.NullTime   `json:"updated_at"`
 }
 
 type Setting struct {
-	ID       int32          `json:"id"`
-	UserID   sql.NullInt32  `json:"user_id"`
-	Theme    sql.NullString `json:"theme"`
-	Currency sql.NullString `json:"currency"`
+	ID        int32          `json:"id"`
+	UserID    sql.NullInt32  `json:"user_id"`
+	Theme     sql.NullString `json:"theme"`
+	Currency  sql.NullString `json:"currency"`
+	CreatedAt sql.NullTime   `json:"created_at"`
+	UpdatedAt sql.NullTime   `json:"updated_at"`
 }
 
 type User struct {
-	ID       int32  `json:"id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
+	ID        int32        `json:"id"`
+	Username  string       `json:"username"`
+	Password  string       `json:"password"`
+	Email     string       `json:"email"`
+	CreatedAt sql.NullTime `json:"created_at"`
+	UpdatedAt sql.NullTime `json:"updated_at"`
 }

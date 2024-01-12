@@ -59,7 +59,7 @@ func (q *Queries) DeleteExpense(ctx context.Context, id int32) error {
 }
 
 const getExpense = `-- name: GetExpense :one
-SELECT id, user_id, amount, description, category FROM Expenses
+SELECT id, user_id, amount, description, category, created_at, updated_at FROM Expenses
 WHERE id = ?
 `
 
@@ -72,12 +72,14 @@ func (q *Queries) GetExpense(ctx context.Context, id int32) (Expense, error) {
 		&i.Amount,
 		&i.Description,
 		&i.Category,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
 
 const listExpenses = `-- name: ListExpenses :many
-SELECT id, user_id, amount, description, category FROM Expenses
+SELECT id, user_id, amount, description, category, created_at, updated_at FROM Expenses
 ORDER BY id
 LIMIT ?
 OFFSET ?
@@ -103,6 +105,8 @@ func (q *Queries) ListExpenses(ctx context.Context, arg ListExpensesParams) ([]E
 			&i.Amount,
 			&i.Description,
 			&i.Category,
+			&i.CreatedAt,
+			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}

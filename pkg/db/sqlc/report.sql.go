@@ -50,19 +50,25 @@ func (q *Queries) DeleteReport(ctx context.Context, id int32) error {
 }
 
 const getReport = `-- name: GetReport :one
-SELECT id, user_id, title FROM Reports
+SELECT id, user_id, title, created_at, updated_at FROM Reports
 WHERE id = ?
 `
 
 func (q *Queries) GetReport(ctx context.Context, id int32) (Report, error) {
 	row := q.db.QueryRowContext(ctx, getReport, id)
 	var i Report
-	err := row.Scan(&i.ID, &i.UserID, &i.Title)
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Title,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
 	return i, err
 }
 
 const listReports = `-- name: ListReports :many
-SELECT id, user_id, title FROM Reports
+SELECT id, user_id, title, created_at, updated_at FROM Reports
 ORDER BY id
 LIMIT ?
 OFFSET ?
@@ -82,7 +88,13 @@ func (q *Queries) ListReports(ctx context.Context, arg ListReportsParams) ([]Rep
 	items := []Report{}
 	for rows.Next() {
 		var i Report
-		if err := rows.Scan(&i.ID, &i.UserID, &i.Title); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Title,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

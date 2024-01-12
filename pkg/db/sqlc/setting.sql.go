@@ -52,7 +52,7 @@ func (q *Queries) DeleteSetting(ctx context.Context, id int32) error {
 }
 
 const getSetting = `-- name: GetSetting :one
-SELECT id, user_id, theme, currency FROM Settings
+SELECT id, user_id, theme, currency, created_at, updated_at FROM Settings
 WHERE id = ?
 `
 
@@ -64,12 +64,14 @@ func (q *Queries) GetSetting(ctx context.Context, id int32) (Setting, error) {
 		&i.UserID,
 		&i.Theme,
 		&i.Currency,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
 
 const listSettings = `-- name: ListSettings :many
-SELECT id, user_id, theme, currency FROM Settings
+SELECT id, user_id, theme, currency, created_at, updated_at FROM Settings
 ORDER BY id
 LIMIT ?
 OFFSET ?
@@ -94,6 +96,8 @@ func (q *Queries) ListSettings(ctx context.Context, arg ListSettingsParams) ([]S
 			&i.UserID,
 			&i.Theme,
 			&i.Currency,
+			&i.CreatedAt,
+			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}

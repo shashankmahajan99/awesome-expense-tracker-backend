@@ -50,19 +50,25 @@ func (q *Queries) DeleteProfile(ctx context.Context, id int32) error {
 }
 
 const getProfile = `-- name: GetProfile :one
-SELECT id, user_id, bio FROM Profiles
+SELECT id, user_id, bio, created_at, updated_at FROM Profiles
 WHERE id = ?
 `
 
 func (q *Queries) GetProfile(ctx context.Context, id int32) (Profile, error) {
 	row := q.db.QueryRowContext(ctx, getProfile, id)
 	var i Profile
-	err := row.Scan(&i.ID, &i.UserID, &i.Bio)
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Bio,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
 	return i, err
 }
 
 const listProfiles = `-- name: ListProfiles :many
-SELECT id, user_id, bio FROM Profiles
+SELECT id, user_id, bio, created_at, updated_at FROM Profiles
 ORDER BY id
 LIMIT ?
 OFFSET ?
@@ -82,7 +88,13 @@ func (q *Queries) ListProfiles(ctx context.Context, arg ListProfilesParams) ([]P
 	items := []Profile{}
 	for rows.Next() {
 		var i Profile
-		if err := rows.Scan(&i.ID, &i.UserID, &i.Bio); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Bio,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
