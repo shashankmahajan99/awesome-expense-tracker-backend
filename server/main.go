@@ -17,11 +17,6 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-const (
-	grpcPort = "8080"
-	httpPort = "8081"
-)
-
 func main() {
 	database, err := db.InitDB()
 	if err != nil {
@@ -29,17 +24,20 @@ func main() {
 	}
 	defer database.Close()
 
+	grpcPort := getEnvOrDefault("GRPC_PORT", "8080")
+	httpPort := getEnvOrDefault("HTTP_PORT", "8081")
+
 	// create server
 	server, err := apipkg.NewServer()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	go runGrpcGatewayServer(server)
-	runGrpcServer(server)
+	go runGrpcGatewayServer(server, httpPort)
+	runGrpcServer(server, grpcPort)
 }
 
-func runGrpcGatewayServer(server *apipkg.Server) {
+func runGrpcGatewayServer(server *apipkg.Server, httpPort string) {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -51,15 +49,15 @@ func runGrpcGatewayServer(server *apipkg.Server) {
 	pb.RegisterUserAuthenticationHandlerServer(ctx, mux, server)
 
 	// http server
-	log.Printf("grpc-gateway server started on localhost:%s", httpPort)
-	err := http.ListenAndServe("localhost:"+httpPort, mux)
+	log.Printf("grpc-gateway server started on %s:%s", getHost(), httpPort)
+	err := http.ListenAndServe(getHost()+":"+httpPort, mux)
 	if err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func runGrpcServer(server *apipkg.Server) {
-	listener, err := net.Listen("tcp", "localhost:"+grpcPort)
+func runGrpcServer(server *apipkg.Server, grpcPort string) {
+	listener, err := net.Listen("tcp", getHost()+":"+grpcPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -72,9 +70,25 @@ func runGrpcServer(server *apipkg.Server) {
 	if envType != "prod" {
 		reflection.Register(s)
 	}
-	log.Printf("grpc server started on localhost:%s", grpcPort)
+	log.Printf("grpc server started on %s:%s", getHost(), grpcPort)
 	err = s.Serve(listener)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+}
+
+func getHost() string {
+	host := os.Getenv("HOST")
+	if host == "" {
+		host = "localhost"
+	}
+	return host
+}
+
+func getEnvOrDefault(key, defaultValue string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return defaultValue
+	}
+	return value
 }
