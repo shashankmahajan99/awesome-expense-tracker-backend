@@ -25,7 +25,7 @@ func main() {
 	defer database.Close()
 
 	grpcPort := getEnvOrDefault("GRPC_PORT", "8080")
-	httpPort := getEnvOrDefault("HTTP_PORT", "8081")
+	httpPort := getEnvOrDefault("PORT", "8081")
 
 	// create server
 	server, err := apipkg.NewServer()
