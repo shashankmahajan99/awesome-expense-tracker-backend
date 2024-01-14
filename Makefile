@@ -19,6 +19,12 @@ convert_swagger_v2_to_v3:
 local-server-run:
 	go run server/main.go
 
+podman-server-build:
+	podman build -t awesome-expense-tracker-backend -f Dockerfile .
+
+podman-server-run:
+	podman run -d -p 8080:8080 -p 8081:8081 -e PORT=8080 -e GRPC_PORT=8081 -e MYSQLUSER=root -e MYSQLPASSWORD=password -e MYSQLADDR=0.0.0.0:3306 -e MYSQLDBNAME=awesome_expense_tracker --name awesome-expense-tracker-backend --rm awesome-expense-tracker-backend
+
 mysql-build:
 	podman build -t mysql -f Dockerfile.mysql .
 

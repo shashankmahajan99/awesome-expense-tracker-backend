@@ -49,15 +49,15 @@ func runGrpcGatewayServer(server *apipkg.Server, httpPort string) {
 	pb.RegisterUserAuthenticationHandlerServer(ctx, mux, server)
 
 	// http server
-	log.Printf("grpc-gateway server started on %s:%s", getHost(), httpPort)
-	err := http.ListenAndServe(getHost()+":"+httpPort, mux)
+	log.Printf("grpc-gateway server started on %s:%s", getEnvOrDefault("HOST", "localhost"), httpPort)
+	err := http.ListenAndServe(getEnvOrDefault("HOST", "localhost")+":"+httpPort, mux)
 	if err != nil {
 		log.Fatalln(err)
 	}
 }
 
 func runGrpcServer(server *apipkg.Server, grpcPort string) {
-	listener, err := net.Listen("tcp", getHost()+":"+grpcPort)
+	listener, err := net.Listen("tcp", getEnvOrDefault("HOST", "localhost")+":"+grpcPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -70,19 +70,11 @@ func runGrpcServer(server *apipkg.Server, grpcPort string) {
 	if envType != "prod" {
 		reflection.Register(s)
 	}
-	log.Printf("grpc server started on %s:%s", getHost(), grpcPort)
+	log.Printf("grpc server started on %s:%s", getEnvOrDefault("HOST", "localhost"), grpcPort)
 	err = s.Serve(listener)
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
-}
-
-func getHost() string {
-	host := os.Getenv("HOST")
-	if host == "" {
-		host = "localhost"
-	}
-	return host
 }
 
 func getEnvOrDefault(key, defaultValue string) string {
