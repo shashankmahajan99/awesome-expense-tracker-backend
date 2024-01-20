@@ -4,7 +4,7 @@ generate_from_protos:
 	rm -rf generated
 	mkdir generated
 	cd api; buf generate; cd ..
-	make convert
+	make convert_swagger_v2_to_v3
 	cp -r generated/* api/
 
 convert_swagger_v2_to_v3:
