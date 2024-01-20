@@ -2,12 +2,18 @@ package apipkg
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"io"
+	"net/http"
+	"time"
 	"unicode"
 
+	"github.com/golang-jwt/jwt/v5"
 	AwesomeExpenseTrackerApi "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
 	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/oauth2"
 )
 
 // UserAuthServer is the server API for UserAuthentication service.
@@ -38,9 +44,15 @@ func (s *Server) LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.Lo
 	if err != nil {
 		return nil, errors.New("password is incorrect")
 	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"username": getUserResult.Username,
+		"exp":      time.Now().Add(time.Hour).Unix(),
+	})
 
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString(s.config.JwtKey)
 	res = &AwesomeExpenseTrackerApi.LoginUserResponse{}
-	res.Token = "token"
+	res.AccessToken = tokenString
 	return res, nil
 }
 
@@ -101,6 +113,56 @@ func (s *Server) DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.D
 
 	return res, nil
 }
+
+// AuthenticateWithGoogle authenticates a user with Google.
+func (s *Server) AuthenticateWithGoogle(ctx context.Context, req *AwesomeExpenseTrackerApi.AuthenticateWithGoogleRequest) (res *AwesomeExpenseTrackerApi.AuthenticateWithGoogleResponse, err error) {
+	// Add user authentication with Google logic here
+	url := s.config.GcpOAuthConfig.AuthCodeURL("state", oauth2.AccessTypeOffline)
+	res = &AwesomeExpenseTrackerApi.AuthenticateWithGoogleResponse{}
+	res.Url = url
+	return res, nil
+}
+
+// AuthenticateWithGoogleCallback authenticates a user with Google.
+func (s *Server) AuthenticateWithGoogleCallback(ctx context.Context, req *AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackRequest) (res *AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackResponse, err error) {
+	// Add user authentication with Google callback logic here
+	token, err := s.config.GcpOAuthConfig.Exchange(ctx, req.Code)
+	if err != nil {
+		return nil, err
+	}
+
+	res = &AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackResponse{}
+	res.AccessToken = token.AccessToken
+	res.RefreshToken = token.RefreshToken
+	res.ExpiresAt = token.Expiry.String()
+	res.IdToken = token.Extra("id_token").(string)
+	res.TokenType = token.TokenType
+
+	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var data map[string]interface{}
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	res.Email = data["email"].(string)
+	res.Name = data["name"].(string)
+	res.ProfilePic = data["picture"].(string)
+
+	return res, nil
+}
+
+// Write all utility functions here
 
 func (s *Server) validateLoginRequest(req *AwesomeExpenseTrackerApi.LoginUserRequest) error {
 	if req.Username == "" || req.Password == "" {

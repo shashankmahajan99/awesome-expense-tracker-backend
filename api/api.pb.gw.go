@@ -170,6 +170,76 @@ func local_request_UserAuthentication_DeleteUser_0(ctx context.Context, marshale
 
 }
 
+func request_UserAuthentication_AuthenticateWithGoogle_0(ctx context.Context, marshaler runtime.Marshaler, client UserAuthenticationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AuthenticateWithGoogleRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.AuthenticateWithGoogle(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_UserAuthentication_AuthenticateWithGoogle_0(ctx context.Context, marshaler runtime.Marshaler, server UserAuthenticationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AuthenticateWithGoogleRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.AuthenticateWithGoogle(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+var (
+	filter_UserAuthentication_AuthenticateWithGoogleCallback_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+)
+
+func request_UserAuthentication_AuthenticateWithGoogleCallback_0(ctx context.Context, marshaler runtime.Marshaler, client UserAuthenticationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AuthenticateWithGoogleCallbackRequest
+	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_UserAuthentication_AuthenticateWithGoogleCallback_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.AuthenticateWithGoogleCallback(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_UserAuthentication_AuthenticateWithGoogleCallback_0(ctx context.Context, marshaler runtime.Marshaler, server UserAuthenticationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AuthenticateWithGoogleCallbackRequest
+	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_UserAuthentication_AuthenticateWithGoogleCallback_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.AuthenticateWithGoogleCallback(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_ExpenseManagement_CreateExpense_0(ctx context.Context, marshaler runtime.Marshaler, client ExpenseManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateExpenseRequest
 	var metadata runtime.ServerMetadata
@@ -578,7 +648,7 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/LoginUser", runtime.WithHTTPPathPattern("/login"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/LoginUser", runtime.WithHTTPPathPattern("/v1/user/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -601,7 +671,7 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/RegisterUser", runtime.WithHTTPPathPattern("/register"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/RegisterUser", runtime.WithHTTPPathPattern("/v1/user/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -624,7 +694,7 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/DeleteUser", runtime.WithHTTPPathPattern("/delete/{username}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/DeleteUser", runtime.WithHTTPPathPattern("/v1/user/delete/{username}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -638,6 +708,52 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 		}
 
 		forward_UserAuthentication_DeleteUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_UserAuthentication_AuthenticateWithGoogle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/AuthenticateWithGoogle", runtime.WithHTTPPathPattern("/auth/google"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_UserAuthentication_AuthenticateWithGoogle_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_UserAuthentication_AuthenticateWithGoogle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_UserAuthentication_AuthenticateWithGoogleCallback_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/AuthenticateWithGoogleCallback", runtime.WithHTTPPathPattern("/auth/google/callback"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_UserAuthentication_AuthenticateWithGoogleCallback_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_UserAuthentication_AuthenticateWithGoogleCallback_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -998,7 +1114,7 @@ func RegisterUserAuthenticationHandlerClient(ctx context.Context, mux *runtime.S
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/LoginUser", runtime.WithHTTPPathPattern("/login"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/LoginUser", runtime.WithHTTPPathPattern("/v1/user/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1018,7 +1134,7 @@ func RegisterUserAuthenticationHandlerClient(ctx context.Context, mux *runtime.S
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/RegisterUser", runtime.WithHTTPPathPattern("/register"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/RegisterUser", runtime.WithHTTPPathPattern("/v1/user/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1038,7 +1154,7 @@ func RegisterUserAuthenticationHandlerClient(ctx context.Context, mux *runtime.S
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/DeleteUser", runtime.WithHTTPPathPattern("/delete/{username}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/DeleteUser", runtime.WithHTTPPathPattern("/v1/user/delete/{username}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1054,15 +1170,59 @@ func RegisterUserAuthenticationHandlerClient(ctx context.Context, mux *runtime.S
 
 	})
 
+	mux.Handle("POST", pattern_UserAuthentication_AuthenticateWithGoogle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/AuthenticateWithGoogle", runtime.WithHTTPPathPattern("/auth/google"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_UserAuthentication_AuthenticateWithGoogle_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_UserAuthentication_AuthenticateWithGoogle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_UserAuthentication_AuthenticateWithGoogleCallback_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/AuthenticateWithGoogleCallback", runtime.WithHTTPPathPattern("/auth/google/callback"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_UserAuthentication_AuthenticateWithGoogleCallback_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_UserAuthentication_AuthenticateWithGoogleCallback_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
 var (
-	pattern_UserAuthentication_LoginUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"login"}, ""))
+	pattern_UserAuthentication_LoginUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "user", "login"}, ""))
 
-	pattern_UserAuthentication_RegisterUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"register"}, ""))
+	pattern_UserAuthentication_RegisterUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "user", "register"}, ""))
 
-	pattern_UserAuthentication_DeleteUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"delete", "username"}, ""))
+	pattern_UserAuthentication_DeleteUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "user", "delete", "username"}, ""))
+
+	pattern_UserAuthentication_AuthenticateWithGoogle_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"auth", "google"}, ""))
+
+	pattern_UserAuthentication_AuthenticateWithGoogleCallback_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"auth", "google", "callback"}, ""))
 )
 
 var (
@@ -1071,6 +1231,10 @@ var (
 	forward_UserAuthentication_RegisterUser_0 = runtime.ForwardResponseMessage
 
 	forward_UserAuthentication_DeleteUser_0 = runtime.ForwardResponseMessage
+
+	forward_UserAuthentication_AuthenticateWithGoogle_0 = runtime.ForwardResponseMessage
+
+	forward_UserAuthentication_AuthenticateWithGoogleCallback_0 = runtime.ForwardResponseMessage
 )
 
 // RegisterExpenseManagementHandlerFromEndpoint is same as RegisterExpenseManagementHandler but

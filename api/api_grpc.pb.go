@@ -108,6 +108,8 @@ type UserAuthenticationClient interface {
 	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error)
 	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*RegisterUserResponse, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
+	AuthenticateWithGoogle(ctx context.Context, in *AuthenticateWithGoogleRequest, opts ...grpc.CallOption) (*AuthenticateWithGoogleResponse, error)
+	AuthenticateWithGoogleCallback(ctx context.Context, in *AuthenticateWithGoogleCallbackRequest, opts ...grpc.CallOption) (*AuthenticateWithGoogleCallbackResponse, error)
 }
 
 type userAuthenticationClient struct {
@@ -145,6 +147,24 @@ func (c *userAuthenticationClient) DeleteUser(ctx context.Context, in *DeleteUse
 	return out, nil
 }
 
+func (c *userAuthenticationClient) AuthenticateWithGoogle(ctx context.Context, in *AuthenticateWithGoogleRequest, opts ...grpc.CallOption) (*AuthenticateWithGoogleResponse, error) {
+	out := new(AuthenticateWithGoogleResponse)
+	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/AuthenticateWithGoogle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userAuthenticationClient) AuthenticateWithGoogleCallback(ctx context.Context, in *AuthenticateWithGoogleCallbackRequest, opts ...grpc.CallOption) (*AuthenticateWithGoogleCallbackResponse, error) {
+	out := new(AuthenticateWithGoogleCallbackResponse)
+	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/AuthenticateWithGoogleCallback", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserAuthenticationServer is the server API for UserAuthentication service.
 // All implementations must embed UnimplementedUserAuthenticationServer
 // for forward compatibility
@@ -152,6 +172,8 @@ type UserAuthenticationServer interface {
 	LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
 	RegisterUser(context.Context, *RegisterUserRequest) (*RegisterUserResponse, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
+	AuthenticateWithGoogle(context.Context, *AuthenticateWithGoogleRequest) (*AuthenticateWithGoogleResponse, error)
+	AuthenticateWithGoogleCallback(context.Context, *AuthenticateWithGoogleCallbackRequest) (*AuthenticateWithGoogleCallbackResponse, error)
 	mustEmbedUnimplementedUserAuthenticationServer()
 }
 
@@ -167,6 +189,12 @@ func (UnimplementedUserAuthenticationServer) RegisterUser(context.Context, *Regi
 }
 func (UnimplementedUserAuthenticationServer) DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
+}
+func (UnimplementedUserAuthenticationServer) AuthenticateWithGoogle(context.Context, *AuthenticateWithGoogleRequest) (*AuthenticateWithGoogleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateWithGoogle not implemented")
+}
+func (UnimplementedUserAuthenticationServer) AuthenticateWithGoogleCallback(context.Context, *AuthenticateWithGoogleCallbackRequest) (*AuthenticateWithGoogleCallbackResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateWithGoogleCallback not implemented")
 }
 func (UnimplementedUserAuthenticationServer) mustEmbedUnimplementedUserAuthenticationServer() {}
 
@@ -235,6 +263,42 @@ func _UserAuthentication_DeleteUser_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserAuthentication_AuthenticateWithGoogle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthenticateWithGoogleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAuthenticationServer).AuthenticateWithGoogle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/apidefinitions.UserAuthentication/AuthenticateWithGoogle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAuthenticationServer).AuthenticateWithGoogle(ctx, req.(*AuthenticateWithGoogleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserAuthentication_AuthenticateWithGoogleCallback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthenticateWithGoogleCallbackRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAuthenticationServer).AuthenticateWithGoogleCallback(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/apidefinitions.UserAuthentication/AuthenticateWithGoogleCallback",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAuthenticationServer).AuthenticateWithGoogleCallback(ctx, req.(*AuthenticateWithGoogleCallbackRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserAuthentication_ServiceDesc is the grpc.ServiceDesc for UserAuthentication service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -253,6 +317,14 @@ var UserAuthentication_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteUser",
 			Handler:    _UserAuthentication_DeleteUser_Handler,
+		},
+		{
+			MethodName: "AuthenticateWithGoogle",
+			Handler:    _UserAuthentication_AuthenticateWithGoogle_Handler,
+		},
+		{
+			MethodName: "AuthenticateWithGoogleCallback",
+			Handler:    _UserAuthentication_AuthenticateWithGoogleCallback_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

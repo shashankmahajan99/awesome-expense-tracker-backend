@@ -21,19 +21,32 @@ service HealthCheck {
 service UserAuthentication {
   rpc LoginUser(LoginUserRequest) returns (LoginUserResponse) {
     option (google.api.http) = {
-      post: "/login"
+      post: "/v1/user/login"
       body: "*"
     };
   }
   rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {
     option (google.api.http) = {
-      post: "/register"
+      post: "/v1/user/register"
       body: "*"
     };
   }
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
     option (google.api.http) = {
-      delete: "/delete/{username}"
+      delete: "/v1/user/delete/{username}"
+    };
+  }
+  rpc AuthenticateWithGoogle(AuthenticateWithGoogleRequest)
+      returns (AuthenticateWithGoogleResponse) {
+    option (google.api.http) = {
+      post: "/auth/google"
+      body: "*"
+    };
+  }
+  rpc AuthenticateWithGoogleCallback(AuthenticateWithGoogleCallbackRequest)
+      returns (AuthenticateWithGoogleCallbackResponse) {
+    option (google.api.http) = {
+      get: "/auth/google/callback"
     };
   }
 }

@@ -22,6 +22,7 @@ The application uses the following environment variables:
 
 - `HOST`: The hostname where the application runs. Default is `localhost`.
 - `PORT`: The port number where the HTTP server runs. Default is `8080`.
+- `JWT_SECRET`: The secret key used for signing JSON Web Tokens (JWT) for user authentication and authorization.
 - `GRPC_PORT`: The port number where the gRPC server runs. Default is `8081`.
 - `MYSQLUSER`: The username for the MySQL database.
 - `MYSQLPASSWORD`: The password for the MySQL database.

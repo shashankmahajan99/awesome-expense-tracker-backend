@@ -31,14 +31,14 @@
     "application/json"
   ],
   "paths": {
-    "/delete/{username}": {
-      "delete": {
-        "operationId": "UserAuthentication_DeleteUser",
+    "/auth/google": {
+      "post": {
+        "operationId": "UserAuthentication_AuthenticateWithGoogle",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apidefinitionsDeleteUserResponse"
+              "$ref": "#/definitions/apidefinitionsAuthenticateWithGoogleResponse"
             }
           },
           "default": {
@@ -50,9 +50,47 @@
         },
         "parameters": [
           {
-            "name": "username",
-            "in": "path",
+            "name": "body",
+            "in": "body",
             "required": true,
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsAuthenticateWithGoogleRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserAuthentication"
+        ]
+      }
+    },
+    "/auth/google/callback": {
+      "get": {
+        "operationId": "UserAuthentication_AuthenticateWithGoogleCallback",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsAuthenticateWithGoogleCallbackResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -222,38 +260,6 @@
         ]
       }
     },
-    "/login": {
-      "post": {
-        "operationId": "UserAuthentication_LoginUser",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsLoginUserResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsLoginUserRequest"
-            }
-          }
-        ],
-        "tags": [
-          "UserAuthentication"
-        ]
-      }
-    },
     "/profile": {
       "get": {
         "operationId": "UserProfile_GetUserProfile",
@@ -311,38 +317,6 @@
         ],
         "tags": [
           "UserProfile"
-        ]
-      }
-    },
-    "/register": {
-      "post": {
-        "operationId": "UserAuthentication_RegisterUser",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsRegisterUserResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsRegisterUserRequest"
-            }
-          }
-        ],
-        "tags": [
-          "UserAuthentication"
         ]
       }
     },
@@ -437,9 +411,148 @@
           "Settings"
         ]
       }
+    },
+    "/v1/user/delete/{username}": {
+      "delete": {
+        "operationId": "UserAuthentication_DeleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsDeleteUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UserAuthentication"
+        ]
+      }
+    },
+    "/v1/user/login": {
+      "post": {
+        "operationId": "UserAuthentication_LoginUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsLoginUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsLoginUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserAuthentication"
+        ]
+      }
+    },
+    "/v1/user/register": {
+      "post": {
+        "operationId": "UserAuthentication_RegisterUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsRegisterUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsRegisterUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserAuthentication"
+        ]
+      }
     }
   },
   "definitions": {
+    "apidefinitionsAuthenticateWithGoogleCallbackResponse": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "profilePic": {
+          "type": "string"
+        },
+        "tokenType": {
+          "type": "string"
+        },
+        "idToken": {
+          "type": "string"
+        }
+      }
+    },
+    "apidefinitionsAuthenticateWithGoogleRequest": {
+      "type": "object",
+      "properties": {
+        "idToken": {
+          "type": "string"
+        }
+      }
+    },
+    "apidefinitionsAuthenticateWithGoogleResponse": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        }
+      }
+    },
     "apidefinitionsCreateExpenseRequest": {
       "type": "object",
       "properties": {
@@ -567,7 +680,19 @@
     "apidefinitionsLoginUserResponse": {
       "type": "object",
       "properties": {
-        "token": {
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
           "type": "string"
         }
       }

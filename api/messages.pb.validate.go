@@ -161,7 +161,15 @@ func (m *LoginUserResponse) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Token
+	// no validation rules for AccessToken
+
+	// no validation rules for RefreshToken
+
+	// no validation rules for ExpiresAt
+
+	// no validation rules for Username
+
+	// no validation rules for Email
 
 	if len(errors) > 0 {
 		return LoginUserResponseMultiError(errors)
@@ -2702,3 +2710,444 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = UpdateSettingsResponseValidationError{}
+
+// Validate checks the field values on AuthenticateWithGoogleRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *AuthenticateWithGoogleRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on AuthenticateWithGoogleRequest with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// AuthenticateWithGoogleRequestMultiError, or nil if none found.
+func (m *AuthenticateWithGoogleRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AuthenticateWithGoogleRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for IdToken
+
+	if len(errors) > 0 {
+		return AuthenticateWithGoogleRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// AuthenticateWithGoogleRequestMultiError is an error wrapping multiple
+// validation errors returned by AuthenticateWithGoogleRequest.ValidateAll()
+// if the designated constraints aren't met.
+type AuthenticateWithGoogleRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AuthenticateWithGoogleRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AuthenticateWithGoogleRequestMultiError) AllErrors() []error { return m }
+
+// AuthenticateWithGoogleRequestValidationError is the validation error
+// returned by AuthenticateWithGoogleRequest.Validate if the designated
+// constraints aren't met.
+type AuthenticateWithGoogleRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AuthenticateWithGoogleRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AuthenticateWithGoogleRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AuthenticateWithGoogleRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AuthenticateWithGoogleRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AuthenticateWithGoogleRequestValidationError) ErrorName() string {
+	return "AuthenticateWithGoogleRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e AuthenticateWithGoogleRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAuthenticateWithGoogleRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AuthenticateWithGoogleRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AuthenticateWithGoogleRequestValidationError{}
+
+// Validate checks the field values on AuthenticateWithGoogleResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *AuthenticateWithGoogleResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on AuthenticateWithGoogleResponse with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// AuthenticateWithGoogleResponseMultiError, or nil if none found.
+func (m *AuthenticateWithGoogleResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AuthenticateWithGoogleResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Url
+
+	if len(errors) > 0 {
+		return AuthenticateWithGoogleResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// AuthenticateWithGoogleResponseMultiError is an error wrapping multiple
+// validation errors returned by AuthenticateWithGoogleResponse.ValidateAll()
+// if the designated constraints aren't met.
+type AuthenticateWithGoogleResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AuthenticateWithGoogleResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AuthenticateWithGoogleResponseMultiError) AllErrors() []error { return m }
+
+// AuthenticateWithGoogleResponseValidationError is the validation error
+// returned by AuthenticateWithGoogleResponse.Validate if the designated
+// constraints aren't met.
+type AuthenticateWithGoogleResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AuthenticateWithGoogleResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AuthenticateWithGoogleResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AuthenticateWithGoogleResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AuthenticateWithGoogleResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AuthenticateWithGoogleResponseValidationError) ErrorName() string {
+	return "AuthenticateWithGoogleResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e AuthenticateWithGoogleResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAuthenticateWithGoogleResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AuthenticateWithGoogleResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AuthenticateWithGoogleResponseValidationError{}
+
+// Validate checks the field values on AuthenticateWithGoogleCallbackRequest
+// with the rules defined in the proto definition for this message. If any
+// rules are violated, the first error encountered is returned, or nil if
+// there are no violations.
+func (m *AuthenticateWithGoogleCallbackRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on AuthenticateWithGoogleCallbackRequest
+// with the rules defined in the proto definition for this message. If any
+// rules are violated, the result is a list of violation errors wrapped in
+// AuthenticateWithGoogleCallbackRequestMultiError, or nil if none found.
+func (m *AuthenticateWithGoogleCallbackRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AuthenticateWithGoogleCallbackRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Code
+
+	// no validation rules for State
+
+	if len(errors) > 0 {
+		return AuthenticateWithGoogleCallbackRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// AuthenticateWithGoogleCallbackRequestMultiError is an error wrapping
+// multiple validation errors returned by
+// AuthenticateWithGoogleCallbackRequest.ValidateAll() if the designated
+// constraints aren't met.
+type AuthenticateWithGoogleCallbackRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AuthenticateWithGoogleCallbackRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AuthenticateWithGoogleCallbackRequestMultiError) AllErrors() []error { return m }
+
+// AuthenticateWithGoogleCallbackRequestValidationError is the validation error
+// returned by AuthenticateWithGoogleCallbackRequest.Validate if the
+// designated constraints aren't met.
+type AuthenticateWithGoogleCallbackRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AuthenticateWithGoogleCallbackRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AuthenticateWithGoogleCallbackRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AuthenticateWithGoogleCallbackRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AuthenticateWithGoogleCallbackRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AuthenticateWithGoogleCallbackRequestValidationError) ErrorName() string {
+	return "AuthenticateWithGoogleCallbackRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e AuthenticateWithGoogleCallbackRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAuthenticateWithGoogleCallbackRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AuthenticateWithGoogleCallbackRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AuthenticateWithGoogleCallbackRequestValidationError{}
+
+// Validate checks the field values on AuthenticateWithGoogleCallbackResponse
+// with the rules defined in the proto definition for this message. If any
+// rules are violated, the first error encountered is returned, or nil if
+// there are no violations.
+func (m *AuthenticateWithGoogleCallbackResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on
+// AuthenticateWithGoogleCallbackResponse with the rules defined in the proto
+// definition for this message. If any rules are violated, the result is a
+// list of violation errors wrapped in
+// AuthenticateWithGoogleCallbackResponseMultiError, or nil if none found.
+func (m *AuthenticateWithGoogleCallbackResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AuthenticateWithGoogleCallbackResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for AccessToken
+
+	// no validation rules for RefreshToken
+
+	// no validation rules for ExpiresAt
+
+	// no validation rules for Name
+
+	// no validation rules for Email
+
+	// no validation rules for ProfilePic
+
+	// no validation rules for TokenType
+
+	// no validation rules for IdToken
+
+	if len(errors) > 0 {
+		return AuthenticateWithGoogleCallbackResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// AuthenticateWithGoogleCallbackResponseMultiError is an error wrapping
+// multiple validation errors returned by
+// AuthenticateWithGoogleCallbackResponse.ValidateAll() if the designated
+// constraints aren't met.
+type AuthenticateWithGoogleCallbackResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AuthenticateWithGoogleCallbackResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AuthenticateWithGoogleCallbackResponseMultiError) AllErrors() []error { return m }
+
+// AuthenticateWithGoogleCallbackResponseValidationError is the validation
+// error returned by AuthenticateWithGoogleCallbackResponse.Validate if the
+// designated constraints aren't met.
+type AuthenticateWithGoogleCallbackResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AuthenticateWithGoogleCallbackResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AuthenticateWithGoogleCallbackResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AuthenticateWithGoogleCallbackResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AuthenticateWithGoogleCallbackResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AuthenticateWithGoogleCallbackResponseValidationError) ErrorName() string {
+	return "AuthenticateWithGoogleCallbackResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e AuthenticateWithGoogleCallbackResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAuthenticateWithGoogleCallbackResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AuthenticateWithGoogleCallbackResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AuthenticateWithGoogleCallbackResponseValidationError{}
