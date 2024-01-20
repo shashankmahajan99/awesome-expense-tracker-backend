@@ -17,7 +17,7 @@ convert_swagger_v2_to_v3:
 	done
 
 local-server-run:
-	go run server/main.go
+	nodemon --exec go run server/main.go
 
 podman-server-build:
 	podman build -t awesome-expense-tracker-backend -f Dockerfile .
