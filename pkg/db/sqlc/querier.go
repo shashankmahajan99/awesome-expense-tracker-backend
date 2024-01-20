@@ -24,7 +24,7 @@ type Querier interface {
 	DeleteProfile(ctx context.Context, id int32) error
 	DeleteReport(ctx context.Context, id int32) error
 	DeleteSetting(ctx context.Context, id int32) error
-	DeleteUser(ctx context.Context, id int32) error
+	DeleteUser(ctx context.Context, username string) error
 	GetExpense(ctx context.Context, id int32) (Expense, error)
 	GetProfile(ctx context.Context, id int32) (Profile, error)
 	GetReport(ctx context.Context, id int32) (Report, error)

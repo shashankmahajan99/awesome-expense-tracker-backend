@@ -31,6 +31,36 @@
     "application/json"
   ],
   "paths": {
+    "/delete/{username}": {
+      "delete": {
+        "operationId": "UserAuthentication_DeleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsDeleteUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UserAuthentication"
+        ]
+      }
+    },
     "/expenses": {
       "get": {
         "operationId": "ExpenseManagement_GetExpenses",
@@ -194,12 +224,12 @@
     },
     "/login": {
       "post": {
-        "operationId": "UserAuthentication_Login",
+        "operationId": "UserAuthentication_LoginUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apidefinitionsLoginResponse"
+              "$ref": "#/definitions/apidefinitionsLoginUserResponse"
             }
           },
           "default": {
@@ -215,7 +245,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/apidefinitionsLoginRequest"
+              "$ref": "#/definitions/apidefinitionsLoginUserRequest"
             }
           }
         ],
@@ -286,12 +316,12 @@
     },
     "/register": {
       "post": {
-        "operationId": "UserAuthentication_Register",
+        "operationId": "UserAuthentication_RegisterUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apidefinitionsRegisterResponse"
+              "$ref": "#/definitions/apidefinitionsRegisterUserResponse"
             }
           },
           "default": {
@@ -307,7 +337,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/apidefinitionsRegisterRequest"
+              "$ref": "#/definitions/apidefinitionsRegisterUserRequest"
             }
           }
         ],
@@ -441,6 +471,14 @@
         }
       }
     },
+    "apidefinitionsDeleteUserResponse": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        }
+      }
+    },
     "apidefinitionsExpense": {
       "type": "object",
       "properties": {
@@ -515,7 +553,7 @@
         }
       }
     },
-    "apidefinitionsLoginRequest": {
+    "apidefinitionsLoginUserRequest": {
       "type": "object",
       "properties": {
         "username": {
@@ -526,7 +564,7 @@
         }
       }
     },
-    "apidefinitionsLoginResponse": {
+    "apidefinitionsLoginUserResponse": {
       "type": "object",
       "properties": {
         "token": {
@@ -534,7 +572,7 @@
         }
       }
     },
-    "apidefinitionsRegisterRequest": {
+    "apidefinitionsRegisterUserRequest": {
       "type": "object",
       "properties": {
         "username": {
@@ -551,10 +589,13 @@
         }
       }
     },
-    "apidefinitionsRegisterResponse": {
+    "apidefinitionsRegisterUserResponse": {
       "type": "object",
       "properties": {
-        "message": {
+        "email": {
+          "type": "string"
+        },
+        "username": {
           "type": "string"
         }
       }

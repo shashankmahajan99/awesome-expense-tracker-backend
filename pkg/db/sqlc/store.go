@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
@@ -13,8 +14,21 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
+type Store interface {
+	Querier
+	RegisterUser(ctx context.Context, arg CreateUserParams) (RegisterUserResult, error)
+	DeleteUser(ctx context.Context, username string) error
+	ListUserByUsername(ctx context.Context, username string) (User, error)
+}
+
+// MySQLStore is a wrapper around sql.MySQLStore
+type MySQLStore struct {
+	*sql.DB
+	*Queries
+}
+
 // InitDB initializes the database
-func InitDB(dbConfig ...*mysql.Config) (*DB, error) {
+func InitDB(dbConfig ...*mysql.Config) (Store, error) {
 	// dbConfig is optional
 	if len(dbConfig) == 0 {
 		dbConfig = append(dbConfig, &mysql.Config{
@@ -25,6 +39,7 @@ func InitDB(dbConfig ...*mysql.Config) (*DB, error) {
 			DBName:               "awesome_expense_tracker",
 			AllowNativePasswords: true,
 			MultiStatements:      true,
+			ParseTime:            true,
 		})
 	}
 	if dbUser := os.Getenv("MYSQLUSER"); dbUser != "" {
@@ -56,7 +71,7 @@ func InitDB(dbConfig ...*mysql.Config) (*DB, error) {
 }
 
 // NewDB creates a new database
-func NewDB(driverName, dataSourceName string) (*DB, error) {
+func NewDB(driverName, dataSourceName string) (*MySQLStore, error) {
 	// connect to db
 	db, err := Open(
 		driverName,
@@ -69,13 +84,8 @@ func NewDB(driverName, dataSourceName string) (*DB, error) {
 	return db, nil
 }
 
-// DB is a wrapper around sql.DB
-type DB struct {
-	*sql.DB
-}
-
 // Open opens a new database connection
-func Open(driverName, dataSourceName string) (*DB, error) {
+func Open(driverName, dataSourceName string) (*MySQLStore, error) {
 
 	// open db
 	db, err := sql.Open(driverName, dataSourceName)
@@ -84,23 +94,18 @@ func Open(driverName, dataSourceName string) (*DB, error) {
 	}
 
 	// wrap db
-	wrappedDB := &DB{db}
+	wrappedDB := &MySQLStore{DB: db, Queries: New(db)}
 
 	return wrappedDB, nil
 }
 
 // Ping pings the database
-func (db *DB) Ping() error {
+func (db *MySQLStore) Ping() error {
 	return db.DB.Ping()
 }
 
-// Close closes the database
-func (db *DB) Close() error {
-	return db.DB.Close()
-}
-
 // connect connects to the database
-func connect(dbConfig *mysql.Config) (*DB, error) {
+func connect(dbConfig *mysql.Config) (*MySQLStore, error) {
 	// connect to db
 	db, err := NewDB(
 		"mysql",
@@ -124,7 +129,7 @@ func connect(dbConfig *mysql.Config) (*DB, error) {
 }
 
 // migrate migrates the database
-func migrateDb(db *DB) error {
+func migrateDb(db *MySQLStore) error {
 	// Replace the path with the path to your migrations directory
 	driver, err := migrate_mysql.WithInstance(db.DB, &migrate_mysql.Config{
 		DatabaseName: "awesome_expense_tracker",
@@ -153,4 +158,23 @@ func migrateDb(db *DB) error {
 	}
 
 	return nil
+}
+
+// ExecTx executes a function within a database transaction
+func (store *MySQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
+	tx, err := store.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+
+	q := New(tx)
+	err = fn(q)
+	if err != nil {
+		if rbErr := tx.Rollback(); rbErr != nil {
+			return fmt.Errorf("tx err: %v, rb err: %v", err, rbErr)
+		}
+		return err
+	}
+
+	return tx.Commit()
 }

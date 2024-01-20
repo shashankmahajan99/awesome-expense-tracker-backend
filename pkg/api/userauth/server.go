@@ -4,17 +4,19 @@ package apipkg
 import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	AwesomeExpenseTrackerApi "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
+	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
 )
 
 // Server is the gRPC server.
 type Server struct {
 	AwesomeExpenseTrackerApi.UnimplementedUserAuthenticationServer
 	router *runtime.ServeMux
+	store  db.Store
 }
 
 // NewServer creates a new server.
-func NewServer() (server *Server, err error) {
-	server = &Server{}
+func NewServer(store db.Store) (server *Server, err error) {
+	server = &Server{store: store}
 	err = server.Setup()
 	if err != nil {
 		return nil, err

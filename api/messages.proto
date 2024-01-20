@@ -4,24 +4,37 @@ package apidefinitions;
 
 option go_package = "./api;AwesomeExpenseTrackerApi";
 
-message LoginRequest {
+message LoginUserRequest {
   string username = 1;
   string password = 2;
 }
 
-message LoginResponse {
-  string token = 1;
+message LoginUserResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  string expires_at = 3;
+  string username = 4;
+  string email = 5;
 }
 
-message RegisterRequest {
+message RegisterUserRequest {
   string username = 1;
   string password = 2;
   string confirm_password = 3;
   string email = 4;
 }
 
-message RegisterResponse {
-  string message = 1;
+message RegisterUserResponse {
+  string email = 1;
+  string username = 2;
+}
+
+message DeleteUserRequest {
+  string username = 1;
+}
+
+message DeleteUserResponse {
+  string username = 1;
 }
 
 message CreateExpenseRequest {

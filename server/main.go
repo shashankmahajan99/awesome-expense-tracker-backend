@@ -10,25 +10,26 @@ import (
 
 	pb "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
 	apipkg "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api/userauth"
-	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db"
+	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	grpc "google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
 )
 
 func main() {
-	database, err := db.InitDB()
+	dbStore, err := db.InitDB()
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer database.Close()
 
 	grpcPort := getEnvOrDefault("GRPC_PORT", "8080")
 	httpPort := getEnvOrDefault("PORT", "8081")
 
 	// create server
-	server, err := apipkg.NewServer()
+	server, err := apipkg.NewServer(dbStore)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -43,7 +44,15 @@ func runGrpcGatewayServer(server *apipkg.Server, httpPort string) {
 	defer cancel()
 
 	// mux
-	mux := runtime.NewServeMux()
+	mux := runtime.NewServeMux(
+		runtime.WithErrorHandler(func(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, r *http.Request, err error) {
+			if customErr, ok := status.FromError(err); ok {
+				http.Error(w, customErr.Message(), runtime.HTTPStatusFromCode(customErr.Code()))
+				return
+			}
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}),
+	)
 
 	// register
 	pb.RegisterUserAuthenticationHandlerServer(ctx, mux, server)
@@ -59,24 +68,30 @@ func runGrpcGatewayServer(server *apipkg.Server, httpPort string) {
 func runGrpcServer(server *apipkg.Server, grpcPort string) {
 	listener, err := net.Listen("tcp", getEnvOrDefault("HOST", "localhost")+":"+grpcPort)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatalln(err)
 	}
 
-	s := grpc.NewServer()
-	pb.RegisterUserAuthenticationServer(s, server)
-	envType := os.Getenv("ENV_TYPE")
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+			resp, err := handler(ctx, req)
+			if err != nil {
+				if customErr, ok := status.FromError(err); ok {
+					return nil, customErr.Err()
+				}
+				return nil, status.Error(codes.Internal, err.Error())
+			}
+			return resp, nil
+		}),
+	)
 
-	// Register reflection service on gRPC server.
-	if envType != "prod" {
-		reflection.Register(s)
-	}
+	pb.RegisterUserAuthenticationServer(grpcServer, server)
+	reflection.Register(grpcServer)
+
 	log.Printf("grpc server started on %s:%s", getEnvOrDefault("HOST", "localhost"), grpcPort)
-	err = s.Serve(listener)
-	if err != nil {
-		log.Fatalf("failed to serve: %v", err)
+	if err := grpcServer.Serve(listener); err != nil {
+		log.Fatalln(err)
 	}
 }
-
 func getEnvOrDefault(key, defaultValue string) string {
 	value := os.Getenv(key)
 	if value == "" {

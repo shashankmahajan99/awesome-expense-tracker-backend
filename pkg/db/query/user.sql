@@ -25,7 +25,7 @@ WHERE id = ?;
 
 -- name: DeleteUser :exec
 DELETE FROM Users
-WHERE id = ?;
+WHERE username = ?;
 
 -- name: ListUsers :many
 SELECT * FROM Users

@@ -6,6 +6,7 @@ package db
 
 import (
 	"database/sql"
+	"time"
 )
 
 type Expense struct {
@@ -15,7 +16,7 @@ type Expense struct {
 	Description sql.NullString `json:"description"`
 	Category    sql.NullString `json:"category"`
 	CreatedAt   sql.NullTime   `json:"created_at"`
-	UpdatedAt   sql.NullTime   `json:"updated_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
 }
 
 type Profile struct {
@@ -23,7 +24,7 @@ type Profile struct {
 	UserID    sql.NullInt32  `json:"user_id"`
 	Bio       sql.NullString `json:"bio"`
 	CreatedAt sql.NullTime   `json:"created_at"`
-	UpdatedAt sql.NullTime   `json:"updated_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }
 
 type Report struct {
@@ -31,7 +32,7 @@ type Report struct {
 	UserID    sql.NullInt32  `json:"user_id"`
 	Title     sql.NullString `json:"title"`
 	CreatedAt sql.NullTime   `json:"created_at"`
-	UpdatedAt sql.NullTime   `json:"updated_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }
 
 type Setting struct {
@@ -40,14 +41,14 @@ type Setting struct {
 	Theme     sql.NullString `json:"theme"`
 	Currency  sql.NullString `json:"currency"`
 	CreatedAt sql.NullTime   `json:"created_at"`
-	UpdatedAt sql.NullTime   `json:"updated_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }
 
 type User struct {
-	ID        int32        `json:"id"`
-	Username  string       `json:"username"`
-	Password  string       `json:"password"`
-	Email     string       `json:"email"`
-	CreatedAt sql.NullTime `json:"created_at"`
-	UpdatedAt sql.NullTime `json:"updated_at"`
+	ID        int32     `json:"id"`
+	Username  string    `json:"username"`
+	Password  string    `json:"password"`
+	Email     string    `json:"email"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

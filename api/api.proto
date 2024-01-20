@@ -19,16 +19,21 @@ service HealthCheck {
 
 // User Authentication API
 service UserAuthentication {
-  rpc Login(LoginRequest) returns (LoginResponse) {
+  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse) {
     option (google.api.http) = {
       post: "/login"
       body: "*"
     };
   }
-  rpc Register(RegisterRequest) returns (RegisterResponse) {
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {
     option (google.api.http) = {
       post: "/register"
       body: "*"
+    };
+  }
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+    option (google.api.http) = {
+      delete: "/delete/{username}"
     };
   }
 }
