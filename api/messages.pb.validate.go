@@ -266,6 +266,8 @@ func (m *RegisterRequest) validate(all bool) error {
 
 	// no validation rules for Password
 
+	// no validation rules for ConfirmPassword
+
 	// no validation rules for Email
 
 	if len(errors) > 0 {

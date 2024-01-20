@@ -645,6 +645,9 @@
                     "password": {
                         "type": "string"
                     },
+                    "confirmPassword": {
+                        "type": "string"
+                    },
                     "email": {
                         "type": "string"
                     }
