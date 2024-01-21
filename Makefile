@@ -32,10 +32,11 @@ check_mysql_server_running:
 	@if podman inspect -f '{{.State.Running}}' mysql-server >/dev/null 2>&1; then \
 		echo "Stopping existing mysql-server container..."; \
 		podman stop mysql-server; \
+		sleep 1; \
 	fi
 
 mysql-run: check_mysql_server_running
-	podman run -d -p 3306:3306 --name mysql-server --rm -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=awesome_expense_tracker mysql
+	podman run -d -p 3306:3306 --name mysql-server -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=awesome_expense_tracker --rm mysql
 
 mysql-client:
 	podman exec -it mysql-server mysql -h localhost -u root -ppassword awesome_expense_tracker

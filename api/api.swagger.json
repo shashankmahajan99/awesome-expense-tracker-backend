@@ -70,7 +70,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apidefinitionsAuthenticateWithGoogleCallbackResponse"
+              "$ref": "#/definitions/apidefinitionsOAuth2Token"
             }
           },
           "default": {
@@ -449,7 +449,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apidefinitionsLoginUserResponse"
+              "$ref": "#/definitions/apidefinitionsOAuth2Token"
             }
           },
           "default": {
@@ -481,7 +481,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/apidefinitionsRegisterUserResponse"
+              "$ref": "#/definitions/apidefinitionsOAuth2Token"
             }
           },
           "default": {
@@ -508,42 +508,8 @@
     }
   },
   "definitions": {
-    "apidefinitionsAuthenticateWithGoogleCallbackResponse": {
-      "type": "object",
-      "properties": {
-        "accessToken": {
-          "type": "string"
-        },
-        "refreshToken": {
-          "type": "string"
-        },
-        "expiresAt": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "profilePic": {
-          "type": "string"
-        },
-        "tokenType": {
-          "type": "string"
-        },
-        "idToken": {
-          "type": "string"
-        }
-      }
-    },
     "apidefinitionsAuthenticateWithGoogleRequest": {
-      "type": "object",
-      "properties": {
-        "idToken": {
-          "type": "string"
-        }
-      }
+      "type": "object"
     },
     "apidefinitionsAuthenticateWithGoogleResponse": {
       "type": "object",
@@ -677,7 +643,7 @@
         }
       }
     },
-    "apidefinitionsLoginUserResponse": {
+    "apidefinitionsOAuth2Token": {
       "type": "object",
       "properties": {
         "accessToken": {
@@ -689,10 +655,22 @@
         "expiresAt": {
           "type": "string"
         },
-        "username": {
+        "name": {
           "type": "string"
         },
         "email": {
+          "type": "string"
+        },
+        "profilePic": {
+          "type": "string"
+        },
+        "tokenType": {
+          "type": "string"
+        },
+        "idToken": {
+          "type": "string"
+        },
+        "authProvider": {
           "type": "string"
         }
       }
@@ -711,16 +689,14 @@
         },
         "email": {
           "type": "string"
-        }
-      }
-    },
-    "apidefinitionsRegisterUserResponse": {
-      "type": "object",
-      "properties": {
-        "email": {
+        },
+        "name": {
           "type": "string"
         },
-        "username": {
+        "profilePic": {
+          "type": "string"
+        },
+        "authProvider": {
           "type": "string"
         }
       }

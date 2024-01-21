@@ -19,13 +19,13 @@ service HealthCheck {
 
 // User Authentication API
 service UserAuthentication {
-  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse) {
+  rpc LoginUser(LoginUserRequest) returns (OAuth2Token) {
     option (google.api.http) = {
       post: "/v1/user/login"
       body: "*"
     };
   }
-  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {
+  rpc RegisterUser(RegisterUserRequest) returns (OAuth2Token) {
     option (google.api.http) = {
       post: "/v1/user/register"
       body: "*"
@@ -44,7 +44,7 @@ service UserAuthentication {
     };
   }
   rpc AuthenticateWithGoogleCallback(AuthenticateWithGoogleCallbackRequest)
-      returns (AuthenticateWithGoogleCallbackResponse) {
+      returns (OAuth2Token) {
     option (google.api.http) = {
       get: "/auth/google/callback"
     };

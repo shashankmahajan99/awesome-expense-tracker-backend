@@ -105,11 +105,11 @@ var HealthCheck_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserAuthenticationClient interface {
-	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error)
-	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*RegisterUserResponse, error)
+	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*OAuth2Token, error)
+	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*OAuth2Token, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	AuthenticateWithGoogle(ctx context.Context, in *AuthenticateWithGoogleRequest, opts ...grpc.CallOption) (*AuthenticateWithGoogleResponse, error)
-	AuthenticateWithGoogleCallback(ctx context.Context, in *AuthenticateWithGoogleCallbackRequest, opts ...grpc.CallOption) (*AuthenticateWithGoogleCallbackResponse, error)
+	AuthenticateWithGoogleCallback(ctx context.Context, in *AuthenticateWithGoogleCallbackRequest, opts ...grpc.CallOption) (*OAuth2Token, error)
 }
 
 type userAuthenticationClient struct {
@@ -120,8 +120,8 @@ func NewUserAuthenticationClient(cc grpc.ClientConnInterface) UserAuthentication
 	return &userAuthenticationClient{cc}
 }
 
-func (c *userAuthenticationClient) LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error) {
-	out := new(LoginUserResponse)
+func (c *userAuthenticationClient) LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*OAuth2Token, error) {
+	out := new(OAuth2Token)
 	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/LoginUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -129,8 +129,8 @@ func (c *userAuthenticationClient) LoginUser(ctx context.Context, in *LoginUserR
 	return out, nil
 }
 
-func (c *userAuthenticationClient) RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*RegisterUserResponse, error) {
-	out := new(RegisterUserResponse)
+func (c *userAuthenticationClient) RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*OAuth2Token, error) {
+	out := new(OAuth2Token)
 	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/RegisterUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -156,8 +156,8 @@ func (c *userAuthenticationClient) AuthenticateWithGoogle(ctx context.Context, i
 	return out, nil
 }
 
-func (c *userAuthenticationClient) AuthenticateWithGoogleCallback(ctx context.Context, in *AuthenticateWithGoogleCallbackRequest, opts ...grpc.CallOption) (*AuthenticateWithGoogleCallbackResponse, error) {
-	out := new(AuthenticateWithGoogleCallbackResponse)
+func (c *userAuthenticationClient) AuthenticateWithGoogleCallback(ctx context.Context, in *AuthenticateWithGoogleCallbackRequest, opts ...grpc.CallOption) (*OAuth2Token, error) {
+	out := new(OAuth2Token)
 	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/AuthenticateWithGoogleCallback", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -169,11 +169,11 @@ func (c *userAuthenticationClient) AuthenticateWithGoogleCallback(ctx context.Co
 // All implementations must embed UnimplementedUserAuthenticationServer
 // for forward compatibility
 type UserAuthenticationServer interface {
-	LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
-	RegisterUser(context.Context, *RegisterUserRequest) (*RegisterUserResponse, error)
+	LoginUser(context.Context, *LoginUserRequest) (*OAuth2Token, error)
+	RegisterUser(context.Context, *RegisterUserRequest) (*OAuth2Token, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	AuthenticateWithGoogle(context.Context, *AuthenticateWithGoogleRequest) (*AuthenticateWithGoogleResponse, error)
-	AuthenticateWithGoogleCallback(context.Context, *AuthenticateWithGoogleCallbackRequest) (*AuthenticateWithGoogleCallbackResponse, error)
+	AuthenticateWithGoogleCallback(context.Context, *AuthenticateWithGoogleCallbackRequest) (*OAuth2Token, error)
 	mustEmbedUnimplementedUserAuthenticationServer()
 }
 
@@ -181,10 +181,10 @@ type UserAuthenticationServer interface {
 type UnimplementedUserAuthenticationServer struct {
 }
 
-func (UnimplementedUserAuthenticationServer) LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error) {
+func (UnimplementedUserAuthenticationServer) LoginUser(context.Context, *LoginUserRequest) (*OAuth2Token, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginUser not implemented")
 }
-func (UnimplementedUserAuthenticationServer) RegisterUser(context.Context, *RegisterUserRequest) (*RegisterUserResponse, error) {
+func (UnimplementedUserAuthenticationServer) RegisterUser(context.Context, *RegisterUserRequest) (*OAuth2Token, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterUser not implemented")
 }
 func (UnimplementedUserAuthenticationServer) DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error) {
@@ -193,7 +193,7 @@ func (UnimplementedUserAuthenticationServer) DeleteUser(context.Context, *Delete
 func (UnimplementedUserAuthenticationServer) AuthenticateWithGoogle(context.Context, *AuthenticateWithGoogleRequest) (*AuthenticateWithGoogleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateWithGoogle not implemented")
 }
-func (UnimplementedUserAuthenticationServer) AuthenticateWithGoogleCallback(context.Context, *AuthenticateWithGoogleCallbackRequest) (*AuthenticateWithGoogleCallbackResponse, error) {
+func (UnimplementedUserAuthenticationServer) AuthenticateWithGoogleCallback(context.Context, *AuthenticateWithGoogleCallbackRequest) (*OAuth2Token, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateWithGoogleCallback not implemented")
 }
 func (UnimplementedUserAuthenticationServer) mustEmbedUnimplementedUserAuthenticationServer() {}

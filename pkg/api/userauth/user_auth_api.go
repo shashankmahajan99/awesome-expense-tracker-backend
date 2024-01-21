@@ -9,29 +9,48 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/bufbuild/protovalidate-go"
 	"github.com/golang-jwt/jwt/v5"
 	AwesomeExpenseTrackerApi "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
 	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
+	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/utils"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/oauth2"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // UserAuthServer is the server API for UserAuthentication service.
 type UserAuthServer interface {
 	// Login logs in a user.
-	Login(context.Context, *AwesomeExpenseTrackerApi.LoginUserRequest) (*AwesomeExpenseTrackerApi.LoginUserResponse, error)
+	Login(context.Context, *AwesomeExpenseTrackerApi.LoginUserRequest) (*AwesomeExpenseTrackerApi.OAuth2Token, error)
+
 	// Register registers a user.
-	Register(context.Context, *AwesomeExpenseTrackerApi.RegisterUserRequest) (*AwesomeExpenseTrackerApi.RegisterUserResponse, error)
+	Register(context.Context, *AwesomeExpenseTrackerApi.RegisterUserRequest) (*AwesomeExpenseTrackerApi.OAuth2Token, error)
+
+	// Delete deletes a user.
+	DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteUserRequest) (res *AwesomeExpenseTrackerApi.DeleteUserResponse, err error)
+
+	// AuthenticateWithGoogle authenticates a user with Google.
+	AuthenticateWithGoogle(_ context.Context, _ *AwesomeExpenseTrackerApi.AuthenticateWithGoogleRequest) (res *AwesomeExpenseTrackerApi.AuthenticateWithGoogleResponse, err error)
+
+	// AuthenticateWithGoogleCallback authenticates a user with Google.
+	AuthenticateWithGoogleCallback(ctx context.Context, req *AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error)
 }
 
 // LoginUser logs in a user.
-func (s *Server) LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.LoginUserRequest) (res *AwesomeExpenseTrackerApi.LoginUserResponse, err error) {
-	// Add user login logic here
-	err = s.validateLoginRequest(req)
+func (s *Server) LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.LoginUserRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
+	// validate login details
+	v, err := protovalidate.New()
 	if err != nil {
-		return nil, err
+		return nil, errors.New("failed to initialize validator: " + err.Error())
 	}
 
+	if err = v.Validate(req); err != nil {
+		return nil, errors.New("failed to validate request: " + err.Error())
+	}
+
+	// Check if the username already exists in the database
 	getUserResult, err := s.store.ListUserByUsername(ctx, req.Username)
 	if err != nil {
 		return nil, err
@@ -40,31 +59,46 @@ func (s *Server) LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.Lo
 		return nil, errors.New("username doesn't exist")
 	}
 
+	// Check if the password is correct
 	err = bcrypt.CompareHashAndPassword([]byte(getUserResult.Password), []byte(req.Password))
 	if err != nil {
 		return nil, errors.New("password is incorrect")
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": getUserResult.Username,
-		"exp":      time.Now().Add(time.Hour).Unix(),
-	})
 
-	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := token.SignedString(s.config.JwtKey)
-	res = &AwesomeExpenseTrackerApi.LoginUserResponse{}
-	res.AccessToken = tokenString
+	// Generate JWT token
+	token, err := s.generateJWTToken(req.Username)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "cannot generate access token: %v", err)
+	}
+
+	// Parse the token and return the response
+	res = &AwesomeExpenseTrackerApi.OAuth2Token{}
+	res, err = s.oauthTokenParser(res, token)
+	if err != nil {
+		return nil, err
+	}
+
 	return res, nil
 }
 
 // RegisterUser registers a user.
-func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi.RegisterUserRequest) (res *AwesomeExpenseTrackerApi.RegisterUserResponse, err error) {
-	// Add user registration logic here
+func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi.RegisterUserRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
+	v, err := protovalidate.New()
+	if err != nil {
+		return nil, errors.New("failed to initialize validator: " + err.Error())
+	}
+
+	if err = v.Validate(req); err != nil {
+		return nil, errors.New("failed to validate request: " + err.Error())
+	}
+
 	// validate registration details
 	err = s.validateRegisterRequest(req)
 	if err != nil {
 		return nil, err
 	}
 
+	// Check if the username already exists in the database
 	getUserResult, err := s.store.ListUserByUsername(ctx, req.Username)
 	if err != nil {
 		return nil, err
@@ -73,19 +107,32 @@ func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi
 		return nil, errors.New("username already exists")
 	}
 
-	// Check if the username already exists in the database
 	createUserParams := db.CreateUserParams{}
 	createUserParams.Username = req.Username
 	createUserParams.Email = req.Email
-	createUserParams.Password = req.Password
 
-	result, err := s.store.RegisterUser(ctx, createUserParams)
+	// Hash the password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
 	}
-	res = &AwesomeExpenseTrackerApi.RegisterUserResponse{}
-	res.Username = result.Username
-	res.Email = result.Email
+	createUserParams.Password = string(hashedPassword)
+
+	_, err = s.store.RegisterUser(ctx, createUserParams)
+	if err != nil {
+		return nil, err
+	}
+	token, err := s.generateJWTToken(req.Username)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "cannot generate access token: %v", err)
+	}
+
+	// Parse the token and return the response
+	res = &AwesomeExpenseTrackerApi.OAuth2Token{}
+	res, err = s.oauthTokenParser(res, token)
+	if err != nil {
+		return nil, err
+	}
 
 	return res, nil
 }
@@ -115,7 +162,7 @@ func (s *Server) DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.D
 }
 
 // AuthenticateWithGoogle authenticates a user with Google.
-func (s *Server) AuthenticateWithGoogle(ctx context.Context, req *AwesomeExpenseTrackerApi.AuthenticateWithGoogleRequest) (res *AwesomeExpenseTrackerApi.AuthenticateWithGoogleResponse, err error) {
+func (s *Server) AuthenticateWithGoogle(_ context.Context, _ *AwesomeExpenseTrackerApi.AuthenticateWithGoogleRequest) (res *AwesomeExpenseTrackerApi.AuthenticateWithGoogleResponse, err error) {
 	// Add user authentication with Google logic here
 	url := s.config.GcpOAuthConfig.AuthCodeURL("state", oauth2.AccessTypeOffline)
 	res = &AwesomeExpenseTrackerApi.AuthenticateWithGoogleResponse{}
@@ -124,64 +171,35 @@ func (s *Server) AuthenticateWithGoogle(ctx context.Context, req *AwesomeExpense
 }
 
 // AuthenticateWithGoogleCallback authenticates a user with Google.
-func (s *Server) AuthenticateWithGoogleCallback(ctx context.Context, req *AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackRequest) (res *AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackResponse, err error) {
+func (s *Server) AuthenticateWithGoogleCallback(ctx context.Context, req *AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
+	v, err := protovalidate.New()
+	if err != nil {
+		return nil, errors.New("failed to initialize validator: " + err.Error())
+	}
+
+	if err = v.Validate(req); err != nil {
+		return nil, errors.New("failed to validate request: " + err.Error())
+	}
+
 	// Add user authentication with Google callback logic here
 	token, err := s.config.GcpOAuthConfig.Exchange(ctx, req.Code)
 	if err != nil {
 		return nil, err
 	}
 
-	res = &AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackResponse{}
-	res.AccessToken = token.AccessToken
-	res.RefreshToken = token.RefreshToken
-	res.ExpiresAt = token.Expiry.String()
-	res.IdToken = token.Extra("id_token").(string)
-	res.TokenType = token.TokenType
-
-	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	// Parse the token and return the response
+	res = &AwesomeExpenseTrackerApi.OAuth2Token{}
+	res, err = s.oauthTokenParser(res, token)
 	if err != nil {
 		return nil, err
 	}
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	var data map[string]interface{}
-	err = json.Unmarshal(body, &data)
-	if err != nil {
-		return nil, err
-	}
-
-	res.Email = data["email"].(string)
-	res.Name = data["name"].(string)
-	res.ProfilePic = data["picture"].(string)
-
 	return res, nil
 }
 
 // Write all utility functions here
 
-func (s *Server) validateLoginRequest(req *AwesomeExpenseTrackerApi.LoginUserRequest) error {
-	if req.Username == "" || req.Password == "" {
-		return errors.New("username or password cannot be empty")
-	}
-
-	return nil
-}
-
 func (s *Server) validateRegisterRequest(req *AwesomeExpenseTrackerApi.RegisterUserRequest) error {
-	if req.Username == "" || req.Password == "" {
-		return errors.New("username or password cannot be empty")
-	}
-
-	if req.Email == "" {
-		return errors.New("email cannot be empty")
-	}
-
-	if req.ConfirmPassword == "" || req.Password != req.ConfirmPassword {
+	if req.Password != req.ConfirmPassword {
 		return errors.New("passwords do not match")
 	}
 
@@ -216,4 +234,100 @@ func isStrongPassword(password string) bool {
 	}
 
 	return hasUppercase && hasLowercase && hasNumber && hasSpecialChar
+}
+
+func (s *Server) generateJWTToken(username string) (*oauth2.Token, error) {
+	// Create a new token object for the ID token
+	idToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"username": username,
+		"exp":      time.Now().Add(time.Hour * 24).Unix(), // ID token expires after 24 hours
+	})
+
+	// Sign and get the complete encoded token as a string using the secret
+	idTokenString, err := idToken.SignedString(s.config.JwtKey)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create a new token object for the access token
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"username": username,
+		"exp":      time.Now().Add(time.Hour * 1).Unix(), // Access token expires after 1 hour
+	})
+
+	// Sign and get the complete encoded token as a string using the secret
+	accessTokenString, err := accessToken.SignedString(s.config.JwtKey)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create a new token object for the refresh token
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"username": username,
+		"exp":      time.Now().Add(time.Hour * 72).Unix(), // Refresh token expires after 72 hours
+	})
+
+	// Sign and get the complete encoded token as a string using the secret
+	refreshTokenString, err := refreshToken.SignedString(s.config.JwtKey)
+	if err != nil {
+		return nil, err
+	}
+
+	token := &oauth2.Token{
+		AccessToken:  accessTokenString,
+		RefreshToken: refreshTokenString,
+		Expiry:       time.Now().Add(time.Hour * 1),
+		TokenType:    "Bearer",
+	}
+
+	token.WithExtra(map[string]interface{}{
+		"id_token": idTokenString,
+	})
+	return token, nil
+}
+
+// oauthTokenParser parses the oauth2.Token (t) and returns the AwesomeExpenseTrackerApi.OAuth2Token (v)
+func (s *Server) oauthTokenParser(v *AwesomeExpenseTrackerApi.OAuth2Token, t *oauth2.Token) (*AwesomeExpenseTrackerApi.OAuth2Token, error) {
+	v.AccessToken = t.AccessToken
+	v.RefreshToken = t.RefreshToken
+	v.ExpiresAt = t.Expiry.String()
+	v.IdToken = t.Extra("id_token").(string)
+	v.TokenType = t.TokenType
+
+	httpResponse, err := http.Get(utils.GoogleUserInfoURL + t.AccessToken)
+	if err != nil {
+		return nil, err
+	}
+	defer httpResponse.Body.Close()
+
+	body, err := io.ReadAll(httpResponse.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var data map[string]interface{}
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return nil, err
+	}
+
+	email, ok := data["email"].(string)
+	if !ok {
+		return nil, errors.New("email not found or not a string")
+	}
+	v.Email = email
+
+	name, ok := data["name"].(string)
+	if !ok {
+		return nil, errors.New("name not found or not a string")
+	}
+	v.Name = name
+
+	picture, ok := data["picture"].(string)
+	if !ok {
+		return nil, errors.New("profile picture not found or not a string")
+	}
+	v.ProfilePic = picture
+
+	return v, nil
 }

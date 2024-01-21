@@ -2,35 +2,41 @@ syntax = "proto3";
 
 package apidefinitions;
 
+import "buf/validate/validate.proto";
+
 option go_package = "./api;AwesomeExpenseTrackerApi";
 
 message LoginUserRequest {
-  string username = 1;
-  string password = 2;
-}
-
-message LoginUserResponse {
-  string access_token = 1;
-  string refresh_token = 2;
-  string expires_at = 3;
-  string username = 4;
-  string email = 5;
+  string username = 1 [(buf.validate.field).required = true];
+  string password = 2 [(buf.validate.field).required = true];
 }
 
 message RegisterUserRequest {
-  string username = 1;
-  string password = 2;
-  string confirm_password = 3;
-  string email = 4;
-}
-
-message RegisterUserResponse {
-  string email = 1;
-  string username = 2;
+  string username = 1 [(buf.validate.field).required = true];
+  string password = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 8,
+    (buf.validate.field).string.max_len = 20
+  ];
+  string confirm_password = 3 [(buf.validate.field).required = true];
+  string email = 4 [(buf.validate.field).string.email = true];
+  string name = 5 [
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 100
+  ];
+  string profile_pic = 6;
+  string auth_provider = 7 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "auth_provider",
+      message: "auth_provider must be either 'google' or 'custom'",
+      expression: "this == 'google' || this == 'custom'",
+    }
+  ];
 }
 
 message DeleteUserRequest {
-  string username = 1;
+  string username = 1 [(buf.validate.field).required = true];
 }
 
 message DeleteUserResponse {
@@ -128,20 +134,18 @@ message UpdateSettingsRequest {
 message UpdateSettingsResponse {
   string message = 1;
 }
-message AuthenticateWithGoogleRequest {
-  string id_token = 1;
-}
+message AuthenticateWithGoogleRequest {}
 
 message AuthenticateWithGoogleResponse {
   string url = 1;
 }
 
 message AuthenticateWithGoogleCallbackRequest {
-  string code = 1;
-  string state = 2;
+  string code = 1 [(buf.validate.field).required = true];
+  string state = 2 [(buf.validate.field).required = true];
 }
 
-message AuthenticateWithGoogleCallbackResponse {
+message OAuth2Token {
   string access_token = 1;
   string refresh_token = 2;
   string expires_at = 3;
@@ -150,4 +154,5 @@ message AuthenticateWithGoogleCallbackResponse {
   string profile_pic = 6;
   string token_type = 7;
   string id_token = 8;
+  string auth_provider = 9;
 }

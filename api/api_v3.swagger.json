@@ -74,7 +74,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apidefinitionsAuthenticateWithGoogleCallbackResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsOAuth2Token"
                                 }
                             }
                         }
@@ -567,7 +567,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apidefinitionsLoginUserResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsOAuth2Token"
                                 }
                             }
                         }
@@ -607,7 +607,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/apidefinitionsRegisterUserResponse"
+                                    "$ref": "#/components/schemas/apidefinitionsOAuth2Token"
                                 }
                             }
                         }
@@ -641,42 +641,8 @@
     },
     "components": {
         "schemas": {
-            "apidefinitionsAuthenticateWithGoogleCallbackResponse": {
-                "type": "object",
-                "properties": {
-                    "accessToken": {
-                        "type": "string"
-                    },
-                    "refreshToken": {
-                        "type": "string"
-                    },
-                    "expiresAt": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "profilePic": {
-                        "type": "string"
-                    },
-                    "tokenType": {
-                        "type": "string"
-                    },
-                    "idToken": {
-                        "type": "string"
-                    }
-                }
-            },
             "apidefinitionsAuthenticateWithGoogleRequest": {
-                "type": "object",
-                "properties": {
-                    "idToken": {
-                        "type": "string"
-                    }
-                }
+                "type": "object"
             },
             "apidefinitionsAuthenticateWithGoogleResponse": {
                 "type": "object",
@@ -809,7 +775,7 @@
                     }
                 }
             },
-            "apidefinitionsLoginUserResponse": {
+            "apidefinitionsOAuth2Token": {
                 "type": "object",
                 "properties": {
                     "accessToken": {
@@ -821,10 +787,22 @@
                     "expiresAt": {
                         "type": "string"
                     },
-                    "username": {
+                    "name": {
                         "type": "string"
                     },
                     "email": {
+                        "type": "string"
+                    },
+                    "profilePic": {
+                        "type": "string"
+                    },
+                    "tokenType": {
+                        "type": "string"
+                    },
+                    "idToken": {
+                        "type": "string"
+                    },
+                    "authProvider": {
                         "type": "string"
                     }
                 }
@@ -843,16 +821,14 @@
                     },
                     "email": {
                         "type": "string"
-                    }
-                }
-            },
-            "apidefinitionsRegisterUserResponse": {
-                "type": "object",
-                "properties": {
-                    "email": {
+                    },
+                    "name": {
                         "type": "string"
                     },
-                    "username": {
+                    "profilePic": {
+                        "type": "string"
+                    },
+                    "authProvider": {
                         "type": "string"
                     }
                 }

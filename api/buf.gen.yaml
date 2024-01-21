@@ -1,4 +1,7 @@
 version: v1
+managed:
+  enabled: true
+
 plugins:
   - plugin: go
     out: ../generated
@@ -14,11 +17,6 @@ plugins:
       - paths=source_relative
       - generate_unbound_methods=true
       - allow_delete_body=true
-  - plugin: validate
-    out: ../generated
-    opt:
-      - lang=go
-      - paths=source_relative
   - name: openapiv2
     out: ../generated
     opt:
