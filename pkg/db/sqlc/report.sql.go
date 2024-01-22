@@ -31,8 +31,8 @@ INSERT INTO Reports (
 `
 
 type CreateReportParams struct {
-	UserID sql.NullInt32  `json:"user_id"`
-	Title  sql.NullString `json:"title"`
+	UserID sql.NullInt32 `json:"user_id"`
+	Title  string        `json:"title"`
 }
 
 func (q *Queries) CreateReport(ctx context.Context, arg CreateReportParams) (sql.Result, error) {
@@ -117,9 +117,9 @@ WHERE id = ?
 `
 
 type UpdateReportParams struct {
-	UserID sql.NullInt32  `json:"user_id"`
-	Title  sql.NullString `json:"title"`
-	ID     int32          `json:"id"`
+	UserID sql.NullInt32 `json:"user_id"`
+	Title  string        `json:"title"`
+	ID     int32         `json:"id"`
 }
 
 func (q *Queries) UpdateReport(ctx context.Context, arg UpdateReportParams) error {

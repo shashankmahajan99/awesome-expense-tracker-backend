@@ -25,46 +25,6 @@
         }
     ],
     "paths": {
-        "/auth/google": {
-            "post": {
-                "operationId": "UserAuthentication_AuthenticateWithGoogle",
-                "responses": {
-                    "200": {
-                        "description": "A successful response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/apidefinitionsAuthenticateWithGoogleResponse"
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/rpcStatus"
-                                }
-                            }
-                        }
-                    }
-                },
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/apidefinitionsAuthenticateWithGoogleRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "tags": [
-                    "UserAuthentication"
-                ]
-            }
-        },
         "/auth/google/callback": {
             "get": {
                 "operationId": "UserAuthentication_AuthenticateWithGoogleCallback",
@@ -349,7 +309,7 @@
                 },
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "email",
                         "in": "query",
                         "required": false,
                         "schema": {
@@ -637,21 +597,50 @@
                     "UserAuthentication"
                 ]
             }
+        },
+        "/v1/user/update": {
+            "put": {
+                "operationId": "UserAuthentication_UpdateUser",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/apidefinitionsUpdateUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/rpcStatus"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/apidefinitionsUpdateUserRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "UserAuthentication"
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
-            "apidefinitionsAuthenticateWithGoogleRequest": {
-                "type": "object"
-            },
-            "apidefinitionsAuthenticateWithGoogleResponse": {
-                "type": "object",
-                "properties": {
-                    "url": {
-                        "type": "string"
-                    }
-                }
-            },
             "apidefinitionsCreateExpenseRequest": {
                 "type": "object",
                 "properties": {
@@ -759,7 +748,13 @@
                     "username": {
                         "type": "string"
                     },
-                    "email": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "profilePicture": {
+                        "type": "string"
+                    },
+                    "bio": {
                         "type": "string"
                     }
                 }
@@ -771,6 +766,9 @@
                         "type": "string"
                     },
                     "password": {
+                        "type": "string"
+                    },
+                    "authProvider": {
                         "type": "string"
                     }
                 }
@@ -799,10 +797,10 @@
                     "tokenType": {
                         "type": "string"
                     },
-                    "idToken": {
+                    "authProvider": {
                         "type": "string"
                     },
-                    "authProvider": {
+                    "authUrl": {
                         "type": "string"
                     }
                 }
@@ -866,13 +864,25 @@
             "apidefinitionsUpdateUserProfileRequest": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
                     "email": {
+                        "type": "string"
+                    },
+                    "newName": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "newBio": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "newProfilePicture": {
+                        "type": "string"
+                    },
+                    "profilePicture": {
                         "type": "string"
                     }
                 }
@@ -880,7 +890,47 @@
             "apidefinitionsUpdateUserProfileResponse": {
                 "type": "object",
                 "properties": {
-                    "message": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "profilePicture": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    }
+                }
+            },
+            "apidefinitionsUpdateUserRequest": {
+                "type": "object",
+                "properties": {
+                    "newUsername": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "newPassword": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                }
+            },
+            "apidefinitionsUpdateUserResponse": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "email": {
                         "type": "string"
                     }
                 }

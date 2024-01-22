@@ -51,6 +51,25 @@ func (q *Queries) DeleteUser(ctx context.Context, username string) error {
 	return err
 }
 
+const getUserByEmail = `-- name: GetUserByEmail :one
+SELECT id, username, password, email, created_at, updated_at FROM Users
+WHERE email = ?
+`
+
+func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Password,
+		&i.Email,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getUserByID = `-- name: GetUserByID :one
 SELECT id, username, password, email, created_at, updated_at FROM Users
 WHERE id = ?
@@ -131,28 +150,36 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 	return items, nil
 }
 
-const updateUser = `-- name: UpdateUser :exec
+const updateUserPassword = `-- name: UpdateUserPassword :exec
 UPDATE Users
 SET
-  username = ?,
-  password = ?,
-  email = ?
-WHERE id = ?
+  password = ?
+WHERE email = ?
 `
 
-type UpdateUserParams struct {
-	Username string `json:"username"`
+type UpdateUserPasswordParams struct {
 	Password string `json:"password"`
 	Email    string `json:"email"`
-	ID       int32  `json:"id"`
 }
 
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
-	_, err := q.db.ExecContext(ctx, updateUser,
-		arg.Username,
-		arg.Password,
-		arg.Email,
-		arg.ID,
-	)
+func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserPassword, arg.Password, arg.Email)
+	return err
+}
+
+const updateUserUsername = `-- name: UpdateUserUsername :exec
+UPDATE Users
+SET
+  username = ?
+WHERE email = ?
+`
+
+type UpdateUserUsernameParams struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+}
+
+func (q *Queries) UpdateUserUsername(ctx context.Context, arg UpdateUserUsernameParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserUsername, arg.Username, arg.Email)
 	return err
 }

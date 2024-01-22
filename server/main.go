@@ -9,7 +9,7 @@ import (
 	"os"
 
 	pb "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
-	apipkg "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api/userauth"
+	apipkg "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api"
 	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -53,11 +53,16 @@ func main() {
 		log.Fatal("GCP_OAUTH_SECRET is not set")
 	}
 
+	redirectURLHost := os.Getenv("GCP_REDIRECT_URL_HOST")
+	if len(redirectURLHost) == 0 {
+		log.Fatal("REDIRECT_URL_HOST is not set")
+	}
+
 	// Set up the oauth config
 	oauthConfig := &oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
-		RedirectURL:  "http://localhost:8081/auth/google/callback",
+		RedirectURL:  redirectURLHost + "/auth/google/callback",
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
 		Endpoint:     google.Endpoint,
 	}

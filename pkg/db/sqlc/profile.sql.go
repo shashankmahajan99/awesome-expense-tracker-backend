@@ -8,10 +8,12 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const countProfiles = `-- name: CountProfiles :one
-SELECT count(*) FROM Profiles
+SELECT count(*) 
+FROM Profiles
 `
 
 func (q *Queries) CountProfiles(ctx context.Context) (int64, error) {
@@ -24,43 +26,99 @@ func (q *Queries) CountProfiles(ctx context.Context) (int64, error) {
 const createProfile = `-- name: CreateProfile :execresult
 INSERT INTO Profiles (
   user_id,
-  bio
+  bio,
+  name,
+  profile_picture
 ) VALUES (
-  ?, ?
+  (SELECT id FROM Users WHERE email = ?), ?, ?, ?
 )
 `
 
 type CreateProfileParams struct {
-	UserID sql.NullInt32  `json:"user_id"`
-	Bio    sql.NullString `json:"bio"`
+	Email          string `json:"email"`
+	Bio            string `json:"bio"`
+	Name           string `json:"name"`
+	ProfilePicture string `json:"profile_picture"`
 }
 
 func (q *Queries) CreateProfile(ctx context.Context, arg CreateProfileParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createProfile, arg.UserID, arg.Bio)
+	return q.db.ExecContext(ctx, createProfile,
+		arg.Email,
+		arg.Bio,
+		arg.Name,
+		arg.ProfilePicture,
+	)
 }
 
 const deleteProfile = `-- name: DeleteProfile :exec
 DELETE FROM Profiles
-WHERE id = ?
+WHERE user_id = (SELECT id FROM Users WHERE email = ?)
 `
 
-func (q *Queries) DeleteProfile(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteProfile, id)
+func (q *Queries) DeleteProfile(ctx context.Context, email string) error {
+	_, err := q.db.ExecContext(ctx, deleteProfile, email)
 	return err
 }
 
-const getProfile = `-- name: GetProfile :one
-SELECT id, user_id, bio, created_at, updated_at FROM Profiles
+const getProfileByEmail = `-- name: GetProfileByEmail :one
+SELECT profiles.id, user_id, bio, name, profile_picture, profiles.created_at, profiles.updated_at, users.id, username, password, email, users.created_at, users.updated_at
+FROM Profiles
+JOIN Users ON Profiles.user_id = Users.id
+WHERE Users.email = ?
+`
+
+type GetProfileByEmailRow struct {
+	ID             int32         `json:"id"`
+	UserID         sql.NullInt32 `json:"user_id"`
+	Bio            string        `json:"bio"`
+	Name           string        `json:"name"`
+	ProfilePicture string        `json:"profile_picture"`
+	CreatedAt      sql.NullTime  `json:"created_at"`
+	UpdatedAt      time.Time     `json:"updated_at"`
+	ID_2           int32         `json:"id_2"`
+	Username       string        `json:"username"`
+	Password       string        `json:"password"`
+	Email          string        `json:"email"`
+	CreatedAt_2    time.Time     `json:"created_at_2"`
+	UpdatedAt_2    time.Time     `json:"updated_at_2"`
+}
+
+func (q *Queries) GetProfileByEmail(ctx context.Context, email string) (GetProfileByEmailRow, error) {
+	row := q.db.QueryRowContext(ctx, getProfileByEmail, email)
+	var i GetProfileByEmailRow
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Bio,
+		&i.Name,
+		&i.ProfilePicture,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.ID_2,
+		&i.Username,
+		&i.Password,
+		&i.Email,
+		&i.CreatedAt_2,
+		&i.UpdatedAt_2,
+	)
+	return i, err
+}
+
+const getProfileByID = `-- name: GetProfileByID :one
+SELECT id, user_id, bio, name, profile_picture, created_at, updated_at
+FROM Profiles
 WHERE id = ?
 `
 
-func (q *Queries) GetProfile(ctx context.Context, id int32) (Profile, error) {
-	row := q.db.QueryRowContext(ctx, getProfile, id)
+func (q *Queries) GetProfileByID(ctx context.Context, id int32) (Profile, error) {
+	row := q.db.QueryRowContext(ctx, getProfileByID, id)
 	var i Profile
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
 		&i.Bio,
+		&i.Name,
+		&i.ProfilePicture,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -68,7 +126,8 @@ func (q *Queries) GetProfile(ctx context.Context, id int32) (Profile, error) {
 }
 
 const listProfiles = `-- name: ListProfiles :many
-SELECT id, user_id, bio, created_at, updated_at FROM Profiles
+SELECT id, user_id, bio, name, profile_picture, created_at, updated_at 
+FROM Profiles
 ORDER BY id
 LIMIT ?
 OFFSET ?
@@ -92,6 +151,8 @@ func (q *Queries) ListProfiles(ctx context.Context, arg ListProfilesParams) ([]P
 			&i.ID,
 			&i.UserID,
 			&i.Bio,
+			&i.Name,
+			&i.ProfilePicture,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -108,21 +169,50 @@ func (q *Queries) ListProfiles(ctx context.Context, arg ListProfilesParams) ([]P
 	return items, nil
 }
 
-const updateProfile = `-- name: UpdateProfile :exec
+const updateProfileBio = `-- name: UpdateProfileBio :execresult
 UPDATE Profiles
-SET
-  user_id = ?,
-  bio = ?
-WHERE id = ?
+JOIN Users ON Profiles.user_id = Users.id
+SET Profiles.bio = ?
+WHERE Users.email = ?
 `
 
-type UpdateProfileParams struct {
-	UserID sql.NullInt32  `json:"user_id"`
-	Bio    sql.NullString `json:"bio"`
-	ID     int32          `json:"id"`
+type UpdateProfileBioParams struct {
+	Bio   string `json:"bio"`
+	Email string `json:"email"`
 }
 
-func (q *Queries) UpdateProfile(ctx context.Context, arg UpdateProfileParams) error {
-	_, err := q.db.ExecContext(ctx, updateProfile, arg.UserID, arg.Bio, arg.ID)
-	return err
+func (q *Queries) UpdateProfileBio(ctx context.Context, arg UpdateProfileBioParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, updateProfileBio, arg.Bio, arg.Email)
+}
+
+const updateProfileName = `-- name: UpdateProfileName :execresult
+UPDATE Profiles
+JOIN Users ON Profiles.user_id = Users.id
+SET Profiles.name = ?
+WHERE Users.email = ?
+`
+
+type UpdateProfileNameParams struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+func (q *Queries) UpdateProfileName(ctx context.Context, arg UpdateProfileNameParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, updateProfileName, arg.Name, arg.Email)
+}
+
+const updateProfileProfilePicture = `-- name: UpdateProfileProfilePicture :execresult
+UPDATE Profiles
+JOIN Users ON Profiles.user_id = Users.id
+SET Profiles.profile_picture = ?
+WHERE Users.email = ?
+`
+
+type UpdateProfileProfilePictureParams struct {
+	ProfilePicture string `json:"profile_picture"`
+	Email          string `json:"email"`
+}
+
+func (q *Queries) UpdateProfileProfilePicture(ctx context.Context, arg UpdateProfileProfilePictureParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, updateProfileProfilePicture, arg.ProfilePicture, arg.Email)
 }

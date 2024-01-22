@@ -2,31 +2,53 @@
 -- name: CreateProfile :execresult
 INSERT INTO Profiles (
   user_id,
-  bio
+  bio,
+  name,
+  profile_picture
 ) VALUES (
-  ?, ?
+  (SELECT id FROM Users WHERE email = ?), ?, ?, ?
 );
 
--- name: GetProfile :one
-SELECT * FROM Profiles
+-- name: GetProfileByEmail :one
+SELECT *
+FROM Profiles
+JOIN Users ON Profiles.user_id = Users.id
+WHERE Users.email = ?;
+
+-- name: GetProfileByID :one
+SELECT *
+FROM Profiles
 WHERE id = ?;
 
--- name: UpdateProfile :exec
+-- name: UpdateProfileBio :execresult
 UPDATE Profiles
-SET
-  user_id = ?,
-  bio = ?
-WHERE id = ?;
+JOIN Users ON Profiles.user_id = Users.id
+SET Profiles.bio = ?
+WHERE Users.email = ?;
+
+-- name: UpdateProfileProfilePicture :execresult
+UPDATE Profiles
+JOIN Users ON Profiles.user_id = Users.id
+SET Profiles.profile_picture = ?
+WHERE Users.email = ?;
+
+-- name: UpdateProfileName :execresult
+UPDATE Profiles
+JOIN Users ON Profiles.user_id = Users.id
+SET Profiles.name = ?
+WHERE Users.email = ?;
 
 -- name: DeleteProfile :exec
 DELETE FROM Profiles
-WHERE id = ?;
+WHERE user_id = (SELECT id FROM Users WHERE email = ?);
 
 -- name: ListProfiles :many
-SELECT * FROM Profiles
+SELECT * 
+FROM Profiles
 ORDER BY id
 LIMIT ?
 OFFSET ?;
 
 -- name: CountProfiles :one
-SELECT count(*) FROM Profiles;
+SELECT count(*) 
+FROM Profiles;

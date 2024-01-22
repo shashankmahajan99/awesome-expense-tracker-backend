@@ -36,10 +36,9 @@ service UserAuthentication {
       delete: "/v1/user/delete/{username}"
     };
   }
-  rpc AuthenticateWithGoogle(AuthenticateWithGoogleRequest)
-      returns (AuthenticateWithGoogleResponse) {
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
     option (google.api.http) = {
-      post: "/auth/google"
+      put: "/v1/user/update"
       body: "*"
     };
   }

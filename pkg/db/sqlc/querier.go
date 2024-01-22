@@ -21,14 +21,16 @@ type Querier interface {
 	CreateSetting(ctx context.Context, arg CreateSettingParams) (sql.Result, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (sql.Result, error)
 	DeleteExpense(ctx context.Context, id int32) error
-	DeleteProfile(ctx context.Context, id int32) error
+	DeleteProfile(ctx context.Context, email string) error
 	DeleteReport(ctx context.Context, id int32) error
 	DeleteSetting(ctx context.Context, id int32) error
 	DeleteUser(ctx context.Context, username string) error
 	GetExpense(ctx context.Context, id int32) (Expense, error)
-	GetProfile(ctx context.Context, id int32) (Profile, error)
+	GetProfileByEmail(ctx context.Context, email string) (GetProfileByEmailRow, error)
+	GetProfileByID(ctx context.Context, id int32) (Profile, error)
 	GetReport(ctx context.Context, id int32) (Report, error)
 	GetSetting(ctx context.Context, id int32) (Setting, error)
+	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserByID(ctx context.Context, id int32) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
 	ListExpenses(ctx context.Context, arg ListExpensesParams) ([]Expense, error)
@@ -37,10 +39,13 @@ type Querier interface {
 	ListSettings(ctx context.Context, arg ListSettingsParams) ([]Setting, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
 	UpdateExpense(ctx context.Context, arg UpdateExpenseParams) error
-	UpdateProfile(ctx context.Context, arg UpdateProfileParams) error
+	UpdateProfileBio(ctx context.Context, arg UpdateProfileBioParams) (sql.Result, error)
+	UpdateProfileName(ctx context.Context, arg UpdateProfileNameParams) (sql.Result, error)
+	UpdateProfileProfilePicture(ctx context.Context, arg UpdateProfileProfilePictureParams) (sql.Result, error)
 	UpdateReport(ctx context.Context, arg UpdateReportParams) error
 	UpdateSetting(ctx context.Context, arg UpdateSettingParams) error
-	UpdateUser(ctx context.Context, arg UpdateUserParams) error
+	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
+	UpdateUserUsername(ctx context.Context, arg UpdateUserUsernameParams) error
 }
 
 var _ Querier = (*Queries)(nil)

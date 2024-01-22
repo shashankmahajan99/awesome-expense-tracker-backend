@@ -7,23 +7,24 @@ import "buf/validate/validate.proto";
 option go_package = "./api;AwesomeExpenseTrackerApi";
 
 message LoginUserRequest {
-  string username = 1 [(buf.validate.field).required = true];
-  string password = 2 [(buf.validate.field).required = true];
+  string username = 1;
+  string password = 2;
+  string auth_provider = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "auth_provider",
+      message: "auth_provider must be either 'google' or 'custom'",
+      expression: "this == 'google' || this == 'custom'",
+    }
+  ];
 }
 
 message RegisterUserRequest {
-  string username = 1 [(buf.validate.field).required = true];
-  string password = 2 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string.min_len = 8,
-    (buf.validate.field).string.max_len = 20
-  ];
-  string confirm_password = 3 [(buf.validate.field).required = true];
-  string email = 4 [(buf.validate.field).string.email = true];
-  string name = 5 [
-    (buf.validate.field).string.min_len = 1,
-    (buf.validate.field).string.max_len = 100
-  ];
+  string username = 1;
+  string password = 2;
+  string confirm_password = 3;
+  string email = 4;
+  string name = 5;
   string profile_pic = 6;
   string auth_provider = 7 [
     (buf.validate.field).required = true,
@@ -41,6 +42,22 @@ message DeleteUserRequest {
 
 message DeleteUserResponse {
   string username = 1;
+}
+
+message UpdateUserRequest {
+  string new_username = 1;
+  string username = 2;
+  string new_password = 3;
+  string password = 4;
+  string email = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true
+  ];
+}
+
+message UpdateUserResponse {
+  string username = 1;
+  string email = 2;
 }
 
 message CreateExpenseRequest {
@@ -98,22 +115,37 @@ message GenerateReportResponse {
 }
 
 message GetUserProfileRequest {
-  string id = 1;
+  string email = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true
+  ];
 }
 
 message GetUserProfileResponse {
   string username = 1;
-  string email = 2;
+  string name = 2;
+  string profile_picture = 3;
+  string bio = 4;
 }
 
 message UpdateUserProfileRequest {
-  string id = 1;
-  string username = 2;
-  string email = 3;
+  string email = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true
+  ];
+  string new_name = 2;
+  string name = 3;
+  string new_bio = 4;
+  string bio = 5;
+  string new_profile_picture = 6;
+  string profile_picture = 7;
 }
 
 message UpdateUserProfileResponse {
-  string message = 1;
+  string username = 1;
+  string name = 2;
+  string profile_picture = 3;
+  string bio = 4;
 }
 
 message GetSettingsRequest {
@@ -134,11 +166,6 @@ message UpdateSettingsRequest {
 message UpdateSettingsResponse {
   string message = 1;
 }
-message AuthenticateWithGoogleRequest {}
-
-message AuthenticateWithGoogleResponse {
-  string url = 1;
-}
 
 message AuthenticateWithGoogleCallbackRequest {
   string code = 1 [(buf.validate.field).required = true];
@@ -153,6 +180,6 @@ message OAuth2Token {
   string email = 5;
   string profile_pic = 6;
   string token_type = 7;
-  string id_token = 8;
-  string auth_provider = 9;
+  string auth_provider = 8;
+  string auth_url = 9;
 }

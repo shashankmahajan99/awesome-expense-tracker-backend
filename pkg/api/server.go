@@ -6,6 +6,7 @@ import (
 	AwesomeExpenseTrackerApi "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
 	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
 	"golang.org/x/oauth2"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 // Server is the gRPC server.
@@ -36,7 +37,9 @@ func NewServer(store db.Store, config *Config) (server *Server, err error) {
 
 // Setup routes.
 func (s *Server) Setup() error {
-	router := runtime.NewServeMux()
+	router := runtime.NewServeMux(
+		runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{MarshalOptions: protojson.MarshalOptions{EmitUnpopulated: true}, UnmarshalOptions: protojson.UnmarshalOptions{DiscardUnknown: true}}),
+	)
 	s.router = router
 	return nil
 }
