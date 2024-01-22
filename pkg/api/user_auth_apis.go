@@ -3,7 +3,6 @@ package apipkg
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -294,12 +293,12 @@ func (s *Server) AuthenticateWithGoogleCallback(ctx context.Context, req *Awesom
 	res = &AwesomeExpenseTrackerApi.OAuth2Token{
 		AuthProvider: utils.GoogleAuthProvider,
 	}
-	fmt.Println(token)
+
 	res, err = s.oauthTokenParser(ctx, res, token)
 	if err != nil {
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "cannot parse token: "+err.Error(), http.StatusInternalServerError)
 	}
-	fmt.Println(res)
+
 	// Check if the email already exists in the database
 	getUserResult, err := s.store.ListUserByEmail(ctx, res.Email)
 	if err != nil {
