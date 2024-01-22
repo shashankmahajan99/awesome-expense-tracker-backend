@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"time"
-	"unicode"
 
 	"github.com/bufbuild/protovalidate-go"
 	"github.com/golang-jwt/jwt/v5"
@@ -21,7 +20,7 @@ import (
 )
 
 type authenticateWithGoogleResponse struct {
-	Url string `json:"url"`
+	URL string `json:"url"`
 }
 
 // UserAuthServer is the server API for UserAuthentication service.
@@ -60,7 +59,7 @@ func (s *Server) LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.Lo
 	if req.AuthProvider == utils.GoogleAuthProvider {
 		gcpOauthRes, _ := s.authenticateWithGoogle(ctx)
 		res = &AwesomeExpenseTrackerApi.OAuth2Token{}
-		res.AuthUrl = gcpOauthRes.Url
+		res.AuthUrl = gcpOauthRes.URL
 
 		return res, nil
 	}
@@ -140,7 +139,7 @@ func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi
 	if req.AuthProvider == utils.GoogleAuthProvider {
 		gcpOauthRes, _ := s.authenticateWithGoogle(ctx)
 
-		res.AuthUrl = gcpOauthRes.Url
+		res.AuthUrl = gcpOauthRes.URL
 		return res, nil
 	}
 	createUserParams := db.CreateUserParams{}
@@ -242,10 +241,11 @@ func (s *Server) UpdateUser(ctx context.Context, req *AwesomeExpenseTrackerApi.U
 		if err == nil {
 			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "new password cannot be same as old password", http.StatusBadRequest)
 		}
-		// Check if the password is strong enough
-		if !isStrongPassword(req.NewPassword) {
-			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "password is not strong enough", http.StatusBadRequest)
+
+		if len(req.NewPassword) < 8 {
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "password should be atleast 8 characters long", http.StatusBadRequest)
 		}
+
 		// Hash the password
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
 		if err != nil {
@@ -269,7 +269,7 @@ func (s *Server) authenticateWithGoogle(_ context.Context) (res *authenticateWit
 	// Add user authentication with Google logic here
 	url := s.config.GcpOAuthConfig.AuthCodeURL("state", oauth2.AccessTypeOffline)
 	res = &authenticateWithGoogleResponse{}
-	res.Url = url
+	res.URL = url
 	return res, nil
 }
 
@@ -343,37 +343,11 @@ func (s *Server) validateRegisterRequest(req *AwesomeExpenseTrackerApi.RegisterU
 		return failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "name should be between 8 and 20 characters", http.StatusBadRequest)
 	}
 
-	// Check if the password is strong enough
-	if !isStrongPassword(req.Password) {
-		return failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "password is not strong enough", http.StatusBadRequest)
+	if len(req.Password) < 8 {
+		return failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "password should be atleast 8 characters long", http.StatusBadRequest)
 	}
 
 	return nil
-}
-
-func isStrongPassword(password string) bool {
-	if len(password) < 8 {
-		return false
-	}
-
-	hasUppercase := false
-	hasLowercase := false
-	hasNumber := false
-	hasSpecialChar := false
-
-	for _, char := range password {
-		if unicode.IsUpper(char) {
-			hasUppercase = true
-		} else if unicode.IsLower(char) {
-			hasLowercase = true
-		} else if unicode.IsNumber(char) {
-			hasNumber = true
-		} else if unicode.IsPunct(char) || unicode.IsSymbol(char) {
-			hasSpecialChar = true
-		}
-	}
-
-	return hasUppercase && hasLowercase && hasNumber && hasSpecialChar
 }
 
 func (s *Server) generateJWTToken(username string) (*oauth2.Token, error) {
