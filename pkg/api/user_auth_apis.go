@@ -175,6 +175,15 @@ func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi
 
 // DeleteUser deletes a user.
 func (s *Server) DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteUserRequest) (res *AwesomeExpenseTrackerApi.DeleteUserResponse, err error) {
+	// validate delete details
+	v, err := protovalidate.New()
+	if err != nil {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
+	}
+
+	if err = v.Validate(req); err != nil {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
+	}
 	// Add user deletion logic here
 	user, err := s.store.ListUserByUsername(ctx, req.Username)
 	if err != nil {

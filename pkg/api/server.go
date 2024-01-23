@@ -1,4 +1,4 @@
-// File: server.go
+// Package apipkg is a package that contains the server and client code for the API.
 package apipkg
 
 import (
