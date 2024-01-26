@@ -163,8 +163,6 @@ func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "cannot parse token: "+err.Error(), http.StatusInternalServerError)
 	}
 	res.Email = req.Email
-	res.Name = req.Name
-	res.ProfilePic = req.ProfilePic
 	res.AuthProvider = req.AuthProvider
 	return res, nil
 }
@@ -341,14 +339,6 @@ func (s *Server) validateRegisterRequest(req *AwesomeExpenseTrackerApi.RegisterU
 		return failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "passwords do not match", http.StatusBadRequest)
 	}
 
-	if req.Name == "" {
-		return failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "name cannot be empty", http.StatusBadRequest)
-	}
-
-	if !(len(req.Name) < 8 || len(req.Name) > 20) {
-		return failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "name should be between 8 and 20 characters", http.StatusBadRequest)
-	}
-
 	if len(req.Password) < 8 {
 		return failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "password should be atleast 8 characters long", http.StatusBadRequest)
 	}
@@ -401,18 +391,6 @@ func (s *Server) oauthTokenParser(_ context.Context, v *AwesomeExpenseTrackerApi
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to parse email", http.StatusInternalServerError)
 	}
 	v.Email = email
-
-	name, ok := userClaims.Claims.(jwt.MapClaims)["name"].(string)
-	if !ok {
-		v.Name = ""
-	}
-	v.Name = name
-
-	profilePic, ok := userClaims.Claims.(jwt.MapClaims)["picture"].(string)
-	if !ok {
-		v.ProfilePic = ""
-	}
-	v.ProfilePic = profilePic
 
 	return v, nil
 }
