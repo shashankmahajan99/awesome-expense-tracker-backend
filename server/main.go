@@ -80,11 +80,11 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	go runGrpcGatewayServer(config, httpPort)
+	go runGrpcGatewayServer(httpPort)
 	runGrpcServer(server, grpcPort)
 }
 
-func runGrpcGatewayServer(config *apipkg.Config, httpPort string) {
+func runGrpcGatewayServer(httpPort string) {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
