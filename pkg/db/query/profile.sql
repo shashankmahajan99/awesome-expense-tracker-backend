@@ -3,14 +3,14 @@
 INSERT INTO Profiles (
   user_id,
   bio,
-  name,
+  profile_name,
   profile_picture
 ) VALUES (
   (SELECT id FROM Users WHERE email = ?), ?, ?, ?
 );
 
 -- name: GetProfileByEmail :one
-SELECT *
+SELECT user_id, bio, profile_name, profile_picture, Profiles.created_at, Profiles.updated_at
 FROM Profiles
 JOIN Users ON Profiles.user_id = Users.id
 WHERE Users.email = ?;
@@ -35,7 +35,7 @@ WHERE Users.email = ?;
 -- name: UpdateProfileName :execresult
 UPDATE Profiles
 JOIN Users ON Profiles.user_id = Users.id
-SET Profiles.name = ?
+SET Profiles.profile_name = ?
 WHERE Users.email = ?;
 
 -- name: DeleteProfile :exec

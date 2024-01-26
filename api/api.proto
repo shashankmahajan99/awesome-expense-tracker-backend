@@ -21,13 +21,13 @@ service HealthCheck {
 service UserAuthentication {
   rpc LoginUser(LoginUserRequest) returns (OAuth2Token) {
     option (google.api.http) = {
-      post: "/v1/user/login"
+      post: "/user/login"
       body: "*"
     };
   }
   rpc RegisterUser(RegisterUserRequest) returns (OAuth2Token) {
     option (google.api.http) = {
-      post: "/v1/user/register"
+      post: "/user/register"
       body: "*"
     };
   }
@@ -90,13 +90,21 @@ service Reports {
 service UserProfile {
   rpc GetUserProfile(GetUserProfileRequest) returns (GetUserProfileResponse) {
     option (google.api.http) = {
-      get: "/profile"
+      post: "/v1/profile/get"
+      body: "*"
     };
   }
   rpc UpdateUserProfile(UpdateUserProfileRequest)
       returns (UpdateUserProfileResponse) {
     option (google.api.http) = {
-      put: "/profile"
+      put: "/v1/profile/update"
+      body: "*"
+    };
+  }
+  rpc CreateUserProfile(CreateUserProfileRequest)
+      returns (CreateUserProfileResponse) {
+    option (google.api.http) = {
+      post: "/v1/profile/create"
       body: "*"
     };
   }

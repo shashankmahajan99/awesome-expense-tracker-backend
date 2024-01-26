@@ -2,8 +2,6 @@ package apipkg
 
 import (
 	"context"
-	"encoding/json"
-	"io"
 	"log"
 	"net/http"
 	"time"
@@ -37,22 +35,16 @@ type UserAuthServer interface {
 	AuthenticateWithGoogleCallback(ctx context.Context, req *AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error)
 }
 
-type userInfo struct {
-	Email   string `json:"email"`
-	Name    string `json:"name"`
-	Picture string `json:"picture"`
-}
-
 // LoginUser logs in a user.
 func (s *Server) LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.LoginUserRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
 	// validate login details
 	v, err := protovalidate.New()
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	if err = v.Validate(req); err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
 	}
 
 	if req.AuthProvider == utils.GoogleAuthProvider {
@@ -64,37 +56,39 @@ func (s *Server) LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.Lo
 	}
 
 	if req.Username == "" || req.Password == "" {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "invalid username or password", http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "invalid username or password", http.StatusBadRequest)
 	}
 
 	// Check if the username doesn't exists in the database
 	getUserResult, err := s.store.ListUserByUsername(ctx, req.Username)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
 	}
 	if getUserResult.Username == "" {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "user doesn't exist", http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "user doesn't exist", http.StatusBadRequest)
 	}
 
 	// Check if the password is correct
 	err = bcrypt.CompareHashAndPassword([]byte(getUserResult.Password), []byte(req.Password))
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "incorrect password", http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "incorrect password", http.StatusBadRequest)
 	}
 
 	// Generate JWT token
-	token, err := s.generateJWTToken(req.Username)
+	token, err := s.generateJWTToken(getUserResult.Email)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "cannot generate access token: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "cannot generate access token: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	// Parse the token and return the response
 	res = &AwesomeExpenseTrackerApi.OAuth2Token{}
 	res, err = s.oauthTokenParser(ctx, res, token)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "cannot parse token: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "cannot parse token: "+err.Error(), http.StatusInternalServerError)
 	}
 	res.Email = getUserResult.Email
+	res.AuthProvider = req.AuthProvider
+
 	return res, nil
 }
 
@@ -104,35 +98,37 @@ func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi
 	// validate register details
 	v, err := protovalidate.New()
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	if err = v.Validate(req); err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
 	}
 
 	// validate custom registration details
-	err = s.validateRegisterRequest(req)
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "invalid registration details: "+err.Error(), http.StatusBadRequest)
+	if req.AuthProvider != utils.GoogleAuthProvider {
+		err = s.validateRegisterRequest(req)
+		if err != nil {
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "invalid registration details: "+err.Error(), http.StatusBadRequest)
+		}
 	}
 
 	// Check if the email already exists in the database
 	getUserResult, err := s.store.ListUserByEmail(ctx, req.Email)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "Unknown error: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "Unknown error: "+err.Error(), http.StatusInternalServerError)
 	}
 	if getUserResult.Email != "" {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "email already exists", http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "email already exists", http.StatusBadRequest)
 	}
 
 	// Check if the username already exists in the database
 	getUserResult, err = s.store.ListUserByUsername(ctx, req.Username)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "Unknown error: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "Unknown error: "+err.Error(), http.StatusInternalServerError)
 	}
 	if getUserResult.Username != "" {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "username already exists", http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "username already exists", http.StatusBadRequest)
 	}
 
 	if req.AuthProvider == utils.GoogleAuthProvider {
@@ -148,23 +144,23 @@ func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi
 	// Hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "incorrect password", http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "incorrect password", http.StatusBadRequest)
 	}
 	createUserParams.Password = string(hashedPassword)
 
 	_, err = s.store.RegisterUser(ctx, createUserParams)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "Unknown error: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "Unknown error: "+err.Error(), http.StatusInternalServerError)
 	}
-	token, err := s.generateJWTToken(req.Username)
+	token, err := s.generateJWTToken(req.Email)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "cannot generate access token: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "cannot generate access token: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	// Parse the token and return the response
 	res, err = s.oauthTokenParser(ctx, res, token)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "cannot parse token: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "cannot parse token: "+err.Error(), http.StatusInternalServerError)
 	}
 	res.Email = req.Email
 	res.Name = req.Name
@@ -178,25 +174,25 @@ func (s *Server) DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.D
 	// validate delete details
 	v, err := protovalidate.New()
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	if err = v.Validate(req); err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
 	}
 	// Add user deletion logic here
 	user, err := s.store.ListUserByUsername(ctx, req.Username)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to list user: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to list user: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	if user.Username == "" {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "username doesn't exist", http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "username doesn't exist", http.StatusBadRequest)
 	}
 
 	err = s.store.DeleteUser(ctx, req.Username)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	res = &AwesomeExpenseTrackerApi.DeleteUserResponse{}
@@ -207,31 +203,33 @@ func (s *Server) DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.D
 
 // UpdateUser updates a user.
 func (s *Server) UpdateUser(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserRequest) (res *AwesomeExpenseTrackerApi.UpdateUserResponse, err error) {
-	res = &AwesomeExpenseTrackerApi.UpdateUserResponse{
-		Username: req.Username,
-	}
+	res = &AwesomeExpenseTrackerApi.UpdateUserResponse{}
 
 	v, err := protovalidate.New()
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	if err = v.Validate(req); err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
 	}
 
 	if req.NewPassword == "" && req.NewUsername == "" {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "no user was updated", http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "no user was updated", http.StatusBadRequest)
 	}
 
 	getUserResult, err := s.store.ListUserByEmail(ctx, req.Email)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	if getUserResult.Email == "" {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "email doesn't exist", http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "email doesn't exist", http.StatusBadRequest)
 	}
+
+	// Populate current values
+	res.Username = getUserResult.Username
+	res.Email = getUserResult.Email
 
 	if req.NewUsername != "" {
 		updateUserParams := db.UpdateUserUsernameParams{}
@@ -239,7 +237,7 @@ func (s *Server) UpdateUser(ctx context.Context, req *AwesomeExpenseTrackerApi.U
 		updateUserParams.Username = req.NewUsername
 		err = s.store.ModifyUserUsername(ctx, updateUserParams)
 		if err != nil {
-			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
 		}
 		res.Username = req.NewUsername
 	}
@@ -247,24 +245,24 @@ func (s *Server) UpdateUser(ctx context.Context, req *AwesomeExpenseTrackerApi.U
 	if req.NewPassword != "" {
 		err := bcrypt.CompareHashAndPassword([]byte(getUserResult.Password), []byte(req.NewPassword))
 		if err == nil {
-			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "new password cannot be same as old password", http.StatusBadRequest)
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "new password cannot be same as old password", http.StatusBadRequest)
 		}
 
 		if len(req.NewPassword) < 8 {
-			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "password should be atleast 8 characters long", http.StatusBadRequest)
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "password should be atleast 8 characters long", http.StatusBadRequest)
 		}
 
 		// Hash the password
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
 		if err != nil {
-			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "incorrect password", http.StatusBadRequest)
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "incorrect password", http.StatusBadRequest)
 		}
 		updateUserParams := db.UpdateUserPasswordParams{}
 		updateUserParams.Email = req.Email
 		updateUserParams.Password = string(hashedPassword)
 		err = s.store.ModifyUserPassword(ctx, updateUserParams)
 		if err != nil {
-			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
 		}
 	}
 
@@ -285,17 +283,17 @@ func (s *Server) authenticateWithGoogle(_ context.Context) (res *authenticateWit
 func (s *Server) AuthenticateWithGoogleCallback(ctx context.Context, req *AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
 	v, err := protovalidate.New()
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	if err = v.Validate(req); err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
 	}
 
 	// Add user authentication with Google callback logic here
 	token, err := s.config.GcpOAuthConfig.Exchange(ctx, req.Code)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to exchange token: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to exchange token: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	// Parse the token and return the response
@@ -305,13 +303,13 @@ func (s *Server) AuthenticateWithGoogleCallback(ctx context.Context, req *Awesom
 
 	res, err = s.oauthTokenParser(ctx, res, token)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "cannot parse token: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "cannot parse token: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	// Check if the email already exists in the database
 	getUserResult, err := s.store.ListUserByEmail(ctx, res.Email)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	// If the user doesn't exist, create a new user
@@ -321,7 +319,7 @@ func (s *Server) AuthenticateWithGoogleCallback(ctx context.Context, req *Awesom
 		createUserParams.Username = res.Email
 		_, err = s.store.RegisterUser(ctx, createUserParams)
 		if err != nil {
-			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
 		}
 		log.Default().Println("User: " + res.Email + " created successfully")
 	}
@@ -332,98 +330,89 @@ func (s *Server) AuthenticateWithGoogleCallback(ctx context.Context, req *Awesom
 
 func (s *Server) validateRegisterRequest(req *AwesomeExpenseTrackerApi.RegisterUserRequest) error {
 	if req.Username == "" || req.Password == "" {
-		return failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "username or password cannot be empty", http.StatusBadRequest)
+		return failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "username or password cannot be empty", http.StatusBadRequest)
 	}
 
 	if req.Email == "" {
-		return failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "email cannot be empty", http.StatusBadRequest)
+		return failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "email cannot be empty", http.StatusBadRequest)
 	}
 
 	if req.ConfirmPassword == "" || req.Password != req.ConfirmPassword {
-		return failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "passwords do not match", http.StatusBadRequest)
+		return failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "passwords do not match", http.StatusBadRequest)
 	}
 
 	if req.Name == "" {
-		return failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "name cannot be empty", http.StatusBadRequest)
+		return failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "name cannot be empty", http.StatusBadRequest)
 	}
 
 	if !(len(req.Name) < 8 || len(req.Name) > 20) {
-		return failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "name should be between 8 and 20 characters", http.StatusBadRequest)
+		return failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "name should be between 8 and 20 characters", http.StatusBadRequest)
 	}
 
 	if len(req.Password) < 8 {
-		return failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "password should be atleast 8 characters long", http.StatusBadRequest)
+		return failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "password should be atleast 8 characters long", http.StatusBadRequest)
 	}
 
 	return nil
 }
 
-func (s *Server) generateJWTToken(username string) (*oauth2.Token, error) {
+func (s *Server) generateJWTToken(email string) (*oauth2.Token, error) {
 	// Create a new token object for the access token
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": username,
-		"exp":      time.Now().Add(time.Hour * 1).Unix(), // Access token expires after 1 hour
+	idToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"email": email,
+		"iss":   "awesome-expense-tracker",
+		"exp":   time.Now().Add(time.Hour * 1).Unix(), // Access token expires after 1 hour
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
-	accessTokenString, err := accessToken.SignedString(s.config.JwtKey)
+	idTokenString, err := idToken.SignedString(s.config.JwtKey)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to sign access token: "+err.Error(), http.StatusInternalServerError)
-	}
-
-	// Create a new token object for the refresh token
-	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": username,
-		"exp":      time.Now().Add(time.Hour * 72).Unix(), // Refresh token expires after 72 hours
-	})
-
-	// Sign and get the complete encoded token as a string using the secret
-	refreshTokenString, err := refreshToken.SignedString(s.config.JwtKey)
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to sign refresh token: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to sign access token: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	token := &oauth2.Token{
-		AccessToken:  accessTokenString,
-		RefreshToken: refreshTokenString,
+		AccessToken:  "",
+		RefreshToken: "",
 		Expiry:       time.Now().Add(time.Hour * 1),
 		TokenType:    "Bearer",
 	}
+	extra := make(map[string]interface{})
+	extra["id_token"] = idTokenString
+	token = token.WithExtra(extra)
 
 	return token, nil
 }
 
 // oauthTokenParser parses the oauth2.Token (t) and returns the AwesomeExpenseTrackerApi.OAuth2Token (v)
 func (s *Server) oauthTokenParser(_ context.Context, v *AwesomeExpenseTrackerApi.OAuth2Token, t *oauth2.Token) (*AwesomeExpenseTrackerApi.OAuth2Token, error) {
-	v.AccessToken = t.AccessToken
-	v.RefreshToken = t.RefreshToken
 	v.ExpiresAt = t.Expiry.String()
 	v.TokenType = t.TokenType
 
-	if v.AuthProvider == utils.GoogleAuthProvider {
-		httpResponse, err := http.Get(utils.GoogleUserInfoURL + t.AccessToken)
-		if err != nil {
-			return nil, err
-		}
-		defer httpResponse.Body.Close()
-
-		body, err := io.ReadAll(httpResponse.Body)
-		if err != nil {
-			return nil, err
-		}
-
-		data := &userInfo{}
-		err = json.Unmarshal(body, &data)
-		if err != nil {
-			return nil, err
-		}
-
-		v.Email = data.Email
-		v.Name = data.Name
-		v.ProfilePic = data.Picture
-		v.AuthProvider = utils.GoogleAuthProvider
-		return v, nil
+	idToken, ok := t.Extra("id_token").(string)
+	if !ok {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to parse id_token", http.StatusInternalServerError)
 	}
+	v.IdToken = idToken
+
+	userClaims, _ := jwt.Parse(idToken, nil)
+
+	email, ok := userClaims.Claims.(jwt.MapClaims)["email"].(string)
+	if !ok {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to parse email", http.StatusInternalServerError)
+	}
+	v.Email = email
+
+	name, ok := userClaims.Claims.(jwt.MapClaims)["name"].(string)
+	if !ok {
+		v.Name = ""
+	}
+	v.Name = name
+
+	profilePic, ok := userClaims.Claims.(jwt.MapClaims)["picture"].(string)
+	if !ok {
+		v.ProfilePic = ""
+	}
+	v.ProfilePic = profilePic
 
 	return v, nil
 }

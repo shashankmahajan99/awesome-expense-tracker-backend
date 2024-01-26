@@ -12,8 +12,66 @@ import (
 )
 
 // GetUserProfile gets a user profile.
-func (s *Server) GetUserProfile(_ context.Context, _ *AwesomeExpenseTrackerApi.GetUserProfileRequest) (*AwesomeExpenseTrackerApi.GetUserProfileResponse, error) {
-	return nil, nil
+func (s *Server) GetUserProfile(ctx context.Context, req *AwesomeExpenseTrackerApi.GetUserProfileRequest) (res *AwesomeExpenseTrackerApi.GetUserProfileResponse, err error) {
+	res = &AwesomeExpenseTrackerApi.GetUserProfileResponse{}
+	v, err := protovalidate.New()
+	if err != nil {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
+	}
+
+	err = v.Validate(req)
+	if err != nil {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
+	}
+
+	userProfileResult, err := s.store.ListProfileByEmail(ctx, req.Email)
+	if err != nil {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to get user profile: "+err.Error(), http.StatusInternalServerError)
+	}
+	res.Bio = userProfileResult.Bio
+	res.ProfileName = userProfileResult.ProfileName
+	res.ProfilePicture = userProfileResult.ProfilePicture
+
+	return res, nil
+}
+
+// CreateUserProfile creates a new user profile.
+func (s *Server) CreateUserProfile(ctx context.Context, req *AwesomeExpenseTrackerApi.CreateUserProfileRequest) (res *AwesomeExpenseTrackerApi.CreateUserProfileResponse, err error) {
+	res = &AwesomeExpenseTrackerApi.CreateUserProfileResponse{}
+	v, err := protovalidate.New()
+	if err != nil {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
+	}
+
+	err = v.Validate(req)
+	if err != nil {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
+	}
+
+	// Check if user profile already exists
+	listUserProfileResult, err := s.store.ListProfileByEmail(ctx, req.Email)
+	if err != nil {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to get user profile: "+err.Error(), http.StatusInternalServerError)
+	}
+	if listUserProfileResult.UserID != 0 {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "user profile already exists", http.StatusBadRequest)
+	}
+
+	createProfileParams := db.CreateProfileParams{
+		Email:          req.Email,
+		ProfileName:    req.ProfileName,
+		ProfilePicture: req.ProfilePicture,
+		Bio:            req.Bio,
+	}
+	userProfileResult, err := s.store.AddProfile(ctx, createProfileParams)
+	if err != nil {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to create user profile: "+err.Error(), http.StatusInternalServerError)
+	}
+	res.Bio = userProfileResult.Bio
+	res.ProfileName = userProfileResult.ProfileName
+	res.ProfilePicture = userProfileResult.ProfilePicture
+
+	return res, nil
 }
 
 // UpdateUserProfile updates a user profile.
@@ -21,45 +79,62 @@ func (s *Server) UpdateUserProfile(ctx context.Context, req *AwesomeExpenseTrack
 	res = &AwesomeExpenseTrackerApi.UpdateUserProfileResponse{}
 	v, err := protovalidate.New()
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	err = v.Validate(req)
 	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALID_REQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
 	}
+
+	// Check if user profile doesn't exists
+	listUserProfileResult, err := s.store.ListProfileByEmail(ctx, req.Email)
+	if err != nil {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to get user profile: "+err.Error(), http.StatusInternalServerError)
+	}
+	if listUserProfileResult.UserID == 0 {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "user profile doesn't exists", http.StatusBadRequest)
+	}
+
+	// Populate current values
+	res.Bio = listUserProfileResult.Bio
+	res.ProfileName = listUserProfileResult.ProfileName
+	res.ProfilePicture = listUserProfileResult.ProfilePicture
 
 	if req.NewBio != "" {
 		updateProfileParams := db.UpdateProfileBioParams{
-			Bio: req.NewBio,
+			Bio:   req.NewBio,
+			Email: req.Email,
 		}
 		userProfileResult, err := s.store.ModifyProfileBio(ctx, updateProfileParams)
 		if err != nil {
-			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to update user profile: "+err.Error(), http.StatusInternalServerError)
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to update user profile: "+err.Error(), http.StatusInternalServerError)
 		}
 		res.Bio = userProfileResult.Bio
 	}
 
-	if req.NewName != "" {
+	if req.NewProfileName != "" {
 		updateProfileParams := db.UpdateProfileNameParams{
-			Name: req.NewName,
+			ProfileName: req.NewProfileName,
+			Email:       req.Email,
 		}
 		userProfileResult, err := s.store.ModifyProfileName(ctx, updateProfileParams)
 		if err != nil {
-			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to update user profile: "+err.Error(), http.StatusInternalServerError)
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to update user profile: "+err.Error(), http.StatusInternalServerError)
 		}
-		res.Name = userProfileResult.Name
+		res.ProfileName = userProfileResult.ProfileName
 	}
 
 	if req.NewProfilePicture != "" {
 		updateProfileParams := db.UpdateProfileProfilePictureParams{
 			ProfilePicture: req.NewProfilePicture,
+			Email:          req.Email,
 		}
 		userProfileResult, err := s.store.ModifyProfilePicture(ctx, updateProfileParams)
 		if err != nil {
-			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNAL_ERROR, "failed to update user profile: "+err.Error(), http.StatusInternalServerError)
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to update user profile: "+err.Error(), http.StatusInternalServerError)
 		}
-		res.Bio = userProfileResult.Bio
+		res.ProfilePicture = userProfileResult.ProfilePicture
 	}
-	return nil, nil
+	return res, nil
 }

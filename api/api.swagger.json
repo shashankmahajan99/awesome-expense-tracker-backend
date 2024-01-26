@@ -228,66 +228,6 @@
         ]
       }
     },
-    "/profile": {
-      "get": {
-        "operationId": "UserProfile_GetUserProfile",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsGetUserProfileResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "email",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "UserProfile"
-        ]
-      },
-      "put": {
-        "operationId": "UserProfile_UpdateUserProfile",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsUpdateUserProfileResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsUpdateUserProfileRequest"
-            }
-          }
-        ],
-        "tags": [
-          "UserProfile"
-        ]
-      }
-    },
     "/reports": {
       "post": {
         "operationId": "Reports_GenerateReport",
@@ -380,37 +320,7 @@
         ]
       }
     },
-    "/v1/user/delete/{username}": {
-      "delete": {
-        "operationId": "UserAuthentication_DeleteUser",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsDeleteUserResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "UserAuthentication"
-        ]
-      }
-    },
-    "/v1/user/login": {
+    "/user/login": {
       "post": {
         "operationId": "UserAuthentication_LoginUser",
         "responses": {
@@ -442,7 +352,7 @@
         ]
       }
     },
-    "/v1/user/register": {
+    "/user/register": {
       "post": {
         "operationId": "UserAuthentication_RegisterUser",
         "responses": {
@@ -467,6 +377,132 @@
             "schema": {
               "$ref": "#/definitions/apidefinitionsRegisterUserRequest"
             }
+          }
+        ],
+        "tags": [
+          "UserAuthentication"
+        ]
+      }
+    },
+    "/v1/profile/create": {
+      "post": {
+        "operationId": "UserProfile_CreateUserProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsCreateUserProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsCreateUserProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserProfile"
+        ]
+      }
+    },
+    "/v1/profile/get": {
+      "post": {
+        "operationId": "UserProfile_GetUserProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsGetUserProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsGetUserProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserProfile"
+        ]
+      }
+    },
+    "/v1/profile/update": {
+      "put": {
+        "operationId": "UserProfile_UpdateUserProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsUpdateUserProfileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsUpdateUserProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserProfile"
+        ]
+      }
+    },
+    "/v1/user/delete/{username}": {
+      "delete": {
+        "operationId": "UserAuthentication_DeleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsDeleteUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "tags": [
@@ -527,6 +563,37 @@
       "type": "object",
       "properties": {
         "message": {
+          "type": "string"
+        }
+      }
+    },
+    "apidefinitionsCreateUserProfileRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "profileName": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "profilePicture": {
+          "type": "string"
+        }
+      }
+    },
+    "apidefinitionsCreateUserProfileResponse": {
+      "type": "object",
+      "properties": {
+        "profileName": {
+          "type": "string"
+        },
+        "profilePicture": {
+          "type": "string"
+        },
+        "bio": {
           "type": "string"
         }
       }
@@ -610,13 +677,18 @@
         }
       }
     },
+    "apidefinitionsGetUserProfileRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      }
+    },
     "apidefinitionsGetUserProfileResponse": {
       "type": "object",
       "properties": {
-        "username": {
-          "type": "string"
-        },
-        "name": {
+        "profileName": {
           "type": "string"
         },
         "profilePicture": {
@@ -644,22 +716,10 @@
     "apidefinitionsOAuth2Token": {
       "type": "object",
       "properties": {
-        "accessToken": {
-          "type": "string"
-        },
-        "refreshToken": {
-          "type": "string"
-        },
         "expiresAt": {
           "type": "string"
         },
-        "name": {
-          "type": "string"
-        },
         "email": {
-          "type": "string"
-        },
-        "profilePic": {
           "type": "string"
         },
         "tokenType": {
@@ -669,6 +729,9 @@
           "type": "string"
         },
         "authUrl": {
+          "type": "string"
+        },
+        "idToken": {
           "type": "string"
         }
       }
@@ -686,12 +749,6 @@
           "type": "string"
         },
         "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "profilePic": {
           "type": "string"
         },
         "authProvider": {
@@ -735,22 +792,13 @@
         "email": {
           "type": "string"
         },
-        "newName": {
-          "type": "string"
-        },
-        "name": {
+        "newProfileName": {
           "type": "string"
         },
         "newBio": {
           "type": "string"
         },
-        "bio": {
-          "type": "string"
-        },
         "newProfilePicture": {
-          "type": "string"
-        },
-        "profilePicture": {
           "type": "string"
         }
       }
@@ -758,10 +806,7 @@
     "apidefinitionsUpdateUserProfileResponse": {
       "type": "object",
       "properties": {
-        "username": {
-          "type": "string"
-        },
-        "name": {
+        "profileName": {
           "type": "string"
         },
         "profilePicture": {
@@ -778,13 +823,7 @@
         "newUsername": {
           "type": "string"
         },
-        "username": {
-          "type": "string"
-        },
         "newPassword": {
-          "type": "string"
-        },
-        "password": {
           "type": "string"
         },
         "email": {

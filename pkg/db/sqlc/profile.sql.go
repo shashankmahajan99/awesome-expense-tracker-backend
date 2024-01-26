@@ -27,7 +27,7 @@ const createProfile = `-- name: CreateProfile :execresult
 INSERT INTO Profiles (
   user_id,
   bio,
-  name,
+  profile_name,
   profile_picture
 ) VALUES (
   (SELECT id FROM Users WHERE email = ?), ?, ?, ?
@@ -37,7 +37,7 @@ INSERT INTO Profiles (
 type CreateProfileParams struct {
 	Email          string `json:"email"`
 	Bio            string `json:"bio"`
-	Name           string `json:"name"`
+	ProfileName    string `json:"profile_name"`
 	ProfilePicture string `json:"profile_picture"`
 }
 
@@ -45,7 +45,7 @@ func (q *Queries) CreateProfile(ctx context.Context, arg CreateProfileParams) (s
 	return q.db.ExecContext(ctx, createProfile,
 		arg.Email,
 		arg.Bio,
-		arg.Name,
+		arg.ProfileName,
 		arg.ProfilePicture,
 	)
 }
@@ -61,51 +61,37 @@ func (q *Queries) DeleteProfile(ctx context.Context, email string) error {
 }
 
 const getProfileByEmail = `-- name: GetProfileByEmail :one
-SELECT profiles.id, user_id, bio, name, profile_picture, profiles.created_at, profiles.updated_at, users.id, username, password, email, users.created_at, users.updated_at
+SELECT user_id, bio, profile_name, profile_picture, Profiles.created_at, Profiles.updated_at
 FROM Profiles
 JOIN Users ON Profiles.user_id = Users.id
 WHERE Users.email = ?
 `
 
 type GetProfileByEmailRow struct {
-	ID             int32         `json:"id"`
-	UserID         sql.NullInt32 `json:"user_id"`
-	Bio            string        `json:"bio"`
-	Name           string        `json:"name"`
-	ProfilePicture string        `json:"profile_picture"`
-	CreatedAt      sql.NullTime  `json:"created_at"`
-	UpdatedAt      time.Time     `json:"updated_at"`
-	ID_2           int32         `json:"id_2"`
-	Username       string        `json:"username"`
-	Password       string        `json:"password"`
-	Email          string        `json:"email"`
-	CreatedAt_2    time.Time     `json:"created_at_2"`
-	UpdatedAt_2    time.Time     `json:"updated_at_2"`
+	UserID         int32     `json:"user_id"`
+	Bio            string    `json:"bio"`
+	ProfileName    string    `json:"profile_name"`
+	ProfilePicture string    `json:"profile_picture"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 }
 
 func (q *Queries) GetProfileByEmail(ctx context.Context, email string) (GetProfileByEmailRow, error) {
 	row := q.db.QueryRowContext(ctx, getProfileByEmail, email)
 	var i GetProfileByEmailRow
 	err := row.Scan(
-		&i.ID,
 		&i.UserID,
 		&i.Bio,
-		&i.Name,
+		&i.ProfileName,
 		&i.ProfilePicture,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.ID_2,
-		&i.Username,
-		&i.Password,
-		&i.Email,
-		&i.CreatedAt_2,
-		&i.UpdatedAt_2,
 	)
 	return i, err
 }
 
 const getProfileByID = `-- name: GetProfileByID :one
-SELECT id, user_id, bio, name, profile_picture, created_at, updated_at
+SELECT id, user_id, bio, profile_name, profile_picture, created_at, updated_at
 FROM Profiles
 WHERE id = ?
 `
@@ -117,7 +103,7 @@ func (q *Queries) GetProfileByID(ctx context.Context, id int32) (Profile, error)
 		&i.ID,
 		&i.UserID,
 		&i.Bio,
-		&i.Name,
+		&i.ProfileName,
 		&i.ProfilePicture,
 		&i.CreatedAt,
 		&i.UpdatedAt,
@@ -126,7 +112,7 @@ func (q *Queries) GetProfileByID(ctx context.Context, id int32) (Profile, error)
 }
 
 const listProfiles = `-- name: ListProfiles :many
-SELECT id, user_id, bio, name, profile_picture, created_at, updated_at 
+SELECT id, user_id, bio, profile_name, profile_picture, created_at, updated_at 
 FROM Profiles
 ORDER BY id
 LIMIT ?
@@ -151,7 +137,7 @@ func (q *Queries) ListProfiles(ctx context.Context, arg ListProfilesParams) ([]P
 			&i.ID,
 			&i.UserID,
 			&i.Bio,
-			&i.Name,
+			&i.ProfileName,
 			&i.ProfilePicture,
 			&i.CreatedAt,
 			&i.UpdatedAt,
@@ -188,17 +174,17 @@ func (q *Queries) UpdateProfileBio(ctx context.Context, arg UpdateProfileBioPara
 const updateProfileName = `-- name: UpdateProfileName :execresult
 UPDATE Profiles
 JOIN Users ON Profiles.user_id = Users.id
-SET Profiles.name = ?
+SET Profiles.profile_name = ?
 WHERE Users.email = ?
 `
 
 type UpdateProfileNameParams struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	ProfileName string `json:"profile_name"`
+	Email       string `json:"email"`
 }
 
 func (q *Queries) UpdateProfileName(ctx context.Context, arg UpdateProfileNameParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, updateProfileName, arg.Name, arg.Email)
+	return q.db.ExecContext(ctx, updateProfileName, arg.ProfileName, arg.Email)
 }
 
 const updateProfileProfilePicture = `-- name: UpdateProfileProfilePicture :execresult

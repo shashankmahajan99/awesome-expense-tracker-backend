@@ -58,29 +58,23 @@ func (store *MySQLStore) DeleteUser(ctx context.Context, username string) error 
 // ListUserByUsername gets a user from the database by username.
 func (store *MySQLStore) ListUserByUsername(ctx context.Context, username string) (User, error) {
 	user, err := store.GetUserByUsername(ctx, username)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			// No rows found, return empty User and no error
-			return user, nil
-		}
-		// Some other error occurred
-		return user, err
+	if err == sql.ErrNoRows {
+		// No rows found, return empty User and no error
+		return user, nil
 	}
-	return user, nil
+
+	return user, err
 }
 
 // ListUserByEmail gets a user from the database by email.
 func (store *MySQLStore) ListUserByEmail(ctx context.Context, email string) (User, error) {
 	user, err := store.GetUserByEmail(ctx, email)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			// No rows found, return empty User and no error
-			return user, nil
-		}
-		// Some other error occurred
-		return user, err
+	if err == sql.ErrNoRows {
+		// No rows found, return empty User and no error
+		return user, nil
 	}
-	return user, nil
+
+	return user, err
 }
 
 // ModifyUserUsername updates a user's username in the database.

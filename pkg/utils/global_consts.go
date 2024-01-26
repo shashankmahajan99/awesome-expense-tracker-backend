@@ -6,8 +6,11 @@ const (
 
 	// Auth_providers
 	GoogleAuthProvider = "google"
+	CustomAuthProvider = "custom"
 
 	// Error messages
-	INVALID_REQUEST = "invalid_request"
-	INTERNAL_ERROR  = "internal_error"
+
+	INVALIDREQUEST      = "invalid_request"
+	INTERNALERROR       = "internal_error"
+	UNAUTHORIZEDREQUEST = "unauthorized_request"
 )

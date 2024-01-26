@@ -10,6 +10,7 @@ import (
 
 	pb "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
 	apipkg "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api"
+	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api/middlewares"
 	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -18,6 +19,7 @@ import (
 	"github.com/joho/godotenv"
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 )
@@ -78,17 +80,17 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	go runGrpcGatewayServer(server, httpPort)
+	go runGrpcGatewayServer(httpPort)
 	runGrpcServer(server, grpcPort)
 }
 
-func runGrpcGatewayServer(server *apipkg.Server, httpPort string) {
+func runGrpcGatewayServer(httpPort string) {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	// mux
-	mux := runtime.NewServeMux(
+	// runtimeMux
+	runtimeMux := runtime.NewServeMux(
 		runtime.WithErrorHandler(func(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, r *http.Request, err error) {
 			if customErr, ok := status.FromError(err); ok {
 				http.Error(w, customErr.Message(), runtime.HTTPStatusFromCode(customErr.Code()))
@@ -98,12 +100,32 @@ func runGrpcGatewayServer(server *apipkg.Server, httpPort string) {
 		}),
 	)
 
+	grpcOpts := []grpc.DialOption{
+		grpc.WithBlock(),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	}
+
+	endpoint := getEnvOrDefault("HOST", "localhost") + ":" + getEnvOrDefault("GRPC_PORT", "8080")
+
 	// register
-	pb.RegisterUserAuthenticationHandlerServer(ctx, mux, server)
+	pb.RegisterUserAuthenticationHandlerFromEndpoint(ctx, runtimeMux, endpoint, grpcOpts)
+	pb.RegisterUserProfileHandlerFromEndpoint(ctx, runtimeMux, endpoint, grpcOpts)
+
+	// routes
+	httpMux := http.NewServeMux()
+
+	httpMux.HandleFunc("/healthy", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
+	httpMux.Handle("/user/login", runtimeMux)
+	httpMux.Handle("/user/register", runtimeMux)
+	httpMux.Handle("/auth/google/callback", runtimeMux)
+	httpMux.Handle("/v1/", middlewares.AuthMiddleware(runtimeMux))
 
 	// http server
 	log.Printf("grpc-gateway server started on %s:%s", getEnvOrDefault("HOST", "localhost"), httpPort)
-	err := http.ListenAndServe(getEnvOrDefault("HOST", "localhost")+":"+httpPort, mux)
+	err := http.ListenAndServe(getEnvOrDefault("HOST", "localhost")+":"+httpPort, httpMux)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -129,6 +151,7 @@ func runGrpcServer(server *apipkg.Server, grpcPort string) {
 	)
 
 	pb.RegisterUserAuthenticationServer(grpcServer, server)
+	pb.RegisterUserProfileServer(grpcServer, server)
 	reflection.Register(grpcServer)
 
 	log.Printf("grpc server started on %s:%s", getEnvOrDefault("HOST", "localhost"), grpcPort)

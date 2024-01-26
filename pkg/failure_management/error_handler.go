@@ -2,6 +2,7 @@ package failuremanagement
 
 import (
 	"encoding/json"
+	"net/http"
 )
 
 // CustomErrorResponse is a custom error response.
@@ -26,4 +27,9 @@ func (e *CustomErrorResponse) Error() string {
 		return "{'error':'SOMETHING TERRIBLE WAS SENT TO THE CLIENT'}"
 	}
 	return string(errBytes)
+}
+
+func NewHTTPCustomErrorResponse(w http.ResponseWriter, customError *CustomErrorResponse) {
+	w.WriteHeader(customError.Code)
+	w.Write([]byte(customError.Error()))
 }

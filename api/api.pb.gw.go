@@ -464,18 +464,15 @@ func local_request_Reports_GenerateReport_0(ctx context.Context, marshaler runti
 
 }
 
-var (
-	filter_UserProfile_GetUserProfile_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
-
 func request_UserProfile_GetUserProfile_0(ctx context.Context, marshaler runtime.Marshaler, client UserProfileClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetUserProfileRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_UserProfile_GetUserProfile_0); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -488,10 +485,11 @@ func local_request_UserProfile_GetUserProfile_0(ctx context.Context, marshaler r
 	var protoReq GetUserProfileRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_UserProfile_GetUserProfile_0); err != nil {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -530,6 +528,40 @@ func local_request_UserProfile_UpdateUserProfile_0(ctx context.Context, marshale
 	}
 
 	msg, err := server.UpdateUserProfile(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_UserProfile_CreateUserProfile_0(ctx context.Context, marshaler runtime.Marshaler, client UserProfileClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CreateUserProfileRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.CreateUserProfile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_UserProfile_CreateUserProfile_0(ctx context.Context, marshaler runtime.Marshaler, server UserProfileServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CreateUserProfileRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.CreateUserProfile(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -648,7 +680,7 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/LoginUser", runtime.WithHTTPPathPattern("/v1/user/login"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/LoginUser", runtime.WithHTTPPathPattern("/user/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -671,7 +703,7 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/RegisterUser", runtime.WithHTTPPathPattern("/v1/user/register"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/RegisterUser", runtime.WithHTTPPathPattern("/user/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -899,13 +931,13 @@ func RegisterReportsHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterUserProfileHandlerFromEndpoint instead.
 func RegisterUserProfileHandlerServer(ctx context.Context, mux *runtime.ServeMux, server UserProfileServer) error {
 
-	mux.Handle("GET", pattern_UserProfile_GetUserProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UserProfile_GetUserProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/GetUserProfile", runtime.WithHTTPPathPattern("/profile"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/GetUserProfile", runtime.WithHTTPPathPattern("/v1/profile/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -928,7 +960,7 @@ func RegisterUserProfileHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/UpdateUserProfile", runtime.WithHTTPPathPattern("/profile"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/UpdateUserProfile", runtime.WithHTTPPathPattern("/v1/profile/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -942,6 +974,29 @@ func RegisterUserProfileHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		}
 
 		forward_UserProfile_UpdateUserProfile_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_UserProfile_CreateUserProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/CreateUserProfile", runtime.WithHTTPPathPattern("/v1/profile/create"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_UserProfile_CreateUserProfile_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_UserProfile_CreateUserProfile_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1114,7 +1169,7 @@ func RegisterUserAuthenticationHandlerClient(ctx context.Context, mux *runtime.S
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/LoginUser", runtime.WithHTTPPathPattern("/v1/user/login"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/LoginUser", runtime.WithHTTPPathPattern("/user/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1134,7 +1189,7 @@ func RegisterUserAuthenticationHandlerClient(ctx context.Context, mux *runtime.S
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/RegisterUser", runtime.WithHTTPPathPattern("/v1/user/register"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/RegisterUser", runtime.WithHTTPPathPattern("/user/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1214,9 +1269,9 @@ func RegisterUserAuthenticationHandlerClient(ctx context.Context, mux *runtime.S
 }
 
 var (
-	pattern_UserAuthentication_LoginUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "user", "login"}, ""))
+	pattern_UserAuthentication_LoginUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"user", "login"}, ""))
 
-	pattern_UserAuthentication_RegisterUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "user", "register"}, ""))
+	pattern_UserAuthentication_RegisterUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"user", "register"}, ""))
 
 	pattern_UserAuthentication_DeleteUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "user", "delete", "username"}, ""))
 
@@ -1485,11 +1540,11 @@ func RegisterUserProfileHandler(ctx context.Context, mux *runtime.ServeMux, conn
 // "UserProfileClient" to call the correct interceptors.
 func RegisterUserProfileHandlerClient(ctx context.Context, mux *runtime.ServeMux, client UserProfileClient) error {
 
-	mux.Handle("GET", pattern_UserProfile_GetUserProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UserProfile_GetUserProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/GetUserProfile", runtime.WithHTTPPathPattern("/profile"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/GetUserProfile", runtime.WithHTTPPathPattern("/v1/profile/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1509,7 +1564,7 @@ func RegisterUserProfileHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/UpdateUserProfile", runtime.WithHTTPPathPattern("/profile"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/UpdateUserProfile", runtime.WithHTTPPathPattern("/v1/profile/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1525,19 +1580,43 @@ func RegisterUserProfileHandlerClient(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
+	mux.Handle("POST", pattern_UserProfile_CreateUserProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/CreateUserProfile", runtime.WithHTTPPathPattern("/v1/profile/create"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_UserProfile_CreateUserProfile_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_UserProfile_CreateUserProfile_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
 var (
-	pattern_UserProfile_GetUserProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"profile"}, ""))
+	pattern_UserProfile_GetUserProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "profile", "get"}, ""))
 
-	pattern_UserProfile_UpdateUserProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"profile"}, ""))
+	pattern_UserProfile_UpdateUserProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "profile", "update"}, ""))
+
+	pattern_UserProfile_CreateUserProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "profile", "create"}, ""))
 )
 
 var (
 	forward_UserProfile_GetUserProfile_0 = runtime.ForwardResponseMessage
 
 	forward_UserProfile_UpdateUserProfile_0 = runtime.ForwardResponseMessage
+
+	forward_UserProfile_CreateUserProfile_0 = runtime.ForwardResponseMessage
 )
 
 // RegisterSettingsHandlerFromEndpoint is same as RegisterSettingsHandler but

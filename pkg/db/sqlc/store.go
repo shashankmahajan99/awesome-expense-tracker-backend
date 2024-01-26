@@ -17,12 +17,16 @@ import (
 // Store provides all functions to execute db queries and transactions
 type Store interface {
 	Querier
+	// User methods
 	RegisterUser(ctx context.Context, arg CreateUserParams) (RegisterUserResult, error)
 	DeleteUser(ctx context.Context, username string) error
 	ListUserByUsername(ctx context.Context, username string) (User, error)
 	ListUserByEmail(ctx context.Context, email string) (User, error)
 	ModifyUserUsername(ctx context.Context, arg UpdateUserUsernameParams) error
 	ModifyUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
+
+	// Profile methods
+	ListProfileByEmail(ctx context.Context, email string) (Profile, error)
 	AddProfile(ctx context.Context, arg CreateProfileParams) (Profile, error)
 	ModifyProfileBio(ctx context.Context, arg UpdateProfileBioParams) (Profile, error)
 	ModifyProfileName(ctx context.Context, arg UpdateProfileNameParams) (Profile, error)

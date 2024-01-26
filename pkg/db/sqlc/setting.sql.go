@@ -32,7 +32,7 @@ INSERT INTO Settings (
 `
 
 type CreateSettingParams struct {
-	UserID   sql.NullInt32  `json:"user_id"`
+	UserID   int32          `json:"user_id"`
 	Theme    sql.NullString `json:"theme"`
 	Currency sql.NullString `json:"currency"`
 }
@@ -122,7 +122,7 @@ WHERE id = ?
 `
 
 type UpdateSettingParams struct {
-	UserID   sql.NullInt32  `json:"user_id"`
+	UserID   int32          `json:"user_id"`
 	Theme    sql.NullString `json:"theme"`
 	Currency sql.NullString `json:"currency"`
 	ID       int32          `json:"id"`

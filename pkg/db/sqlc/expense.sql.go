@@ -33,10 +33,10 @@ INSERT INTO Expenses (
 `
 
 type CreateExpenseParams struct {
-	UserID      sql.NullInt32 `json:"user_id"`
-	Amount      string        `json:"amount"`
-	Description string        `json:"description"`
-	Category    string        `json:"category"`
+	UserID      int32  `json:"user_id"`
+	Amount      string `json:"amount"`
+	Description string `json:"description"`
+	Category    string `json:"category"`
 }
 
 func (q *Queries) CreateExpense(ctx context.Context, arg CreateExpenseParams) (sql.Result, error) {
@@ -132,11 +132,11 @@ WHERE id = ?
 `
 
 type UpdateExpenseParams struct {
-	UserID      sql.NullInt32 `json:"user_id"`
-	Amount      string        `json:"amount"`
-	Description string        `json:"description"`
-	Category    string        `json:"category"`
-	ID          int32         `json:"id"`
+	UserID      int32  `json:"user_id"`
+	Amount      string `json:"amount"`
+	Description string `json:"description"`
+	Category    string `json:"category"`
+	ID          int32  `json:"id"`
 }
 
 func (q *Queries) UpdateExpense(ctx context.Context, arg UpdateExpenseParams) error {

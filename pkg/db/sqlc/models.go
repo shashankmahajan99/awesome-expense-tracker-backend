@@ -10,39 +10,39 @@ import (
 )
 
 type Expense struct {
-	ID          int32         `json:"id"`
-	UserID      sql.NullInt32 `json:"user_id"`
-	Amount      string        `json:"amount"`
-	Description string        `json:"description"`
-	Category    string        `json:"category"`
-	CreatedAt   sql.NullTime  `json:"created_at"`
-	UpdatedAt   time.Time     `json:"updated_at"`
+	ID          int32     `json:"id"`
+	UserID      int32     `json:"user_id"`
+	Amount      string    `json:"amount"`
+	Description string    `json:"description"`
+	Category    string    `json:"category"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
 
 type Profile struct {
-	ID             int32         `json:"id"`
-	UserID         sql.NullInt32 `json:"user_id"`
-	Bio            string        `json:"bio"`
-	Name           string        `json:"name"`
-	ProfilePicture string        `json:"profile_picture"`
-	CreatedAt      sql.NullTime  `json:"created_at"`
-	UpdatedAt      time.Time     `json:"updated_at"`
+	ID             int32     `json:"id"`
+	UserID         int32     `json:"user_id"`
+	Bio            string    `json:"bio"`
+	ProfileName    string    `json:"profile_name"`
+	ProfilePicture string    `json:"profile_picture"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 }
 
 type Report struct {
-	ID        int32         `json:"id"`
-	UserID    sql.NullInt32 `json:"user_id"`
-	Title     string        `json:"title"`
-	CreatedAt sql.NullTime  `json:"created_at"`
-	UpdatedAt time.Time     `json:"updated_at"`
+	ID        int32     `json:"id"`
+	UserID    int32     `json:"user_id"`
+	Title     string    `json:"title"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type Setting struct {
 	ID        int32          `json:"id"`
-	UserID    sql.NullInt32  `json:"user_id"`
+	UserID    int32          `json:"user_id"`
 	Theme     sql.NullString `json:"theme"`
 	Currency  sql.NullString `json:"currency"`
-	CreatedAt sql.NullTime   `json:"created_at"`
+	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 }
 
