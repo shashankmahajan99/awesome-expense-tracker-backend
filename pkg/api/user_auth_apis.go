@@ -14,6 +14,8 @@ import (
 	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/utils"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/oauth2"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 type authenticateWithGoogleResponse struct {
@@ -82,13 +84,13 @@ func (s *Server) LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.Lo
 
 	// Parse the token and return the response
 	res = &AwesomeExpenseTrackerApi.OAuth2Token{}
-	res, err = s.oauthTokenParser(ctx, res, token)
+	res, idToken, err := s.oauthTokenParser(ctx, res, token)
 	if err != nil {
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "cannot parse token: "+err.Error(), http.StatusInternalServerError)
 	}
 	res.Email = getUserResult.Email
 	res.AuthProvider = req.AuthProvider
-
+	s.SetTokenCookie(ctx, idToken)
 	return res, nil
 }
 
@@ -158,12 +160,13 @@ func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi
 	}
 
 	// Parse the token and return the response
-	res, err = s.oauthTokenParser(ctx, res, token)
+	res, idToken, err := s.oauthTokenParser(ctx, res, token)
 	if err != nil {
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "cannot parse token: "+err.Error(), http.StatusInternalServerError)
 	}
 	res.Email = req.Email
 	res.AuthProvider = req.AuthProvider
+	s.SetTokenCookie(ctx, idToken)
 	return res, nil
 }
 
@@ -299,7 +302,7 @@ func (s *Server) AuthenticateWithGoogleCallback(ctx context.Context, req *Awesom
 		AuthProvider: utils.GoogleAuthProvider,
 	}
 
-	res, err = s.oauthTokenParser(ctx, res, token)
+	res, idToken, err := s.oauthTokenParser(ctx, res, token)
 	if err != nil {
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "cannot parse token: "+err.Error(), http.StatusInternalServerError)
 	}
@@ -321,6 +324,7 @@ func (s *Server) AuthenticateWithGoogleCallback(ctx context.Context, req *Awesom
 		}
 		log.Default().Println("User: " + res.Email + " created successfully")
 	}
+	s.SetTokenCookie(ctx, idToken)
 	return res, nil
 }
 
@@ -374,23 +378,40 @@ func (s *Server) generateJWTToken(email string) (*oauth2.Token, error) {
 }
 
 // oauthTokenParser parses the oauth2.Token (t) and returns the AwesomeExpenseTrackerApi.OAuth2Token (v)
-func (s *Server) oauthTokenParser(_ context.Context, v *AwesomeExpenseTrackerApi.OAuth2Token, t *oauth2.Token) (*AwesomeExpenseTrackerApi.OAuth2Token, error) {
+func (s *Server) oauthTokenParser(_ context.Context, v *AwesomeExpenseTrackerApi.OAuth2Token, t *oauth2.Token) (*AwesomeExpenseTrackerApi.OAuth2Token, string, error) {
 	v.ExpiresAt = t.Expiry.String()
 	v.TokenType = t.TokenType
 
 	idToken, ok := t.Extra("id_token").(string)
 	if !ok {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to parse id_token", http.StatusInternalServerError)
+		return nil, "", failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to parse id_token", http.StatusInternalServerError)
 	}
-	v.IdToken = idToken
 
 	userClaims, _ := jwt.Parse(idToken, nil)
 
 	email, ok := userClaims.Claims.(jwt.MapClaims)["email"].(string)
 	if !ok {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to parse email", http.StatusInternalServerError)
+		return nil, "", failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to parse email", http.StatusInternalServerError)
 	}
 	v.Email = email
 
-	return v, nil
+	return v, idToken, nil
+}
+
+// SetTokenCookie sets the token as a cookie.
+func (s *Server) SetTokenCookie(ctx context.Context, idToken string) error {
+
+	metadata.Pairs("id_token", idToken)
+	cookie := http.Cookie{
+		Name:     "id_token",
+		Value:    idToken,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
+		MaxAge:   3600, // 1 hour
+	}
+
+	grpc.SendHeader(ctx, metadata.Pairs("Set-Cookie", cookie.String()))
+	return nil
 }

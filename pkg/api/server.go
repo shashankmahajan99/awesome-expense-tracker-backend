@@ -21,6 +21,7 @@ type Server struct {
 type Config struct {
 	JwtKey         []byte
 	GcpOAuthConfig *oauth2.Config
+	Token          string
 }
 
 // NewServer creates a new server.

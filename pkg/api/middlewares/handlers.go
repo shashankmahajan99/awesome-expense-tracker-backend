@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"log"
 	"mime"
 	"net/http"
@@ -65,13 +64,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		tokenHandler := auth.NewTokenHandler()
 		tokenClaims, err := tokenHandler.ValidateToken(ctx, nil, encodedToken)
 		if err != nil {
-			log.Default().Println(err)
 			customError = failuremanagement.NewCustomErrorResponse(utils.UNAUTHORIZEDREQUEST, "Invalid token", http.StatusUnauthorized)
 			failuremanagement.NewHTTPCustomErrorResponse(w, customError)
 			return
 		}
 
-		fmt.Println(tokenClaims)
+		log.Default().Println("User Authorized access: " + tokenClaims.Email)
 		next.ServeHTTP(w, r)
 	})
 }

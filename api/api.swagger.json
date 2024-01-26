@@ -730,9 +730,6 @@
         },
         "authUrl": {
           "type": "string"
-        },
-        "idToken": {
-          "type": "string"
         }
       }
     },

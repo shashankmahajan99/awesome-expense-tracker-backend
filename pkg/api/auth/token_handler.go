@@ -3,7 +3,6 @@ package auth
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 
@@ -28,7 +27,6 @@ type TokenClaims struct {
 // ValidateToken validates a token.
 func (h *TokenHandler) ValidateToken(ctx context.Context, config *apipkg.Config, encodedToken string) (verifiedClaims *TokenClaims, err error) {
 	verifiedClaims = &TokenClaims{}
-	fmt.Println("Encoded Token:", encodedToken)
 	unverifiedClaims, err := jwt.Parse(encodedToken, nil)
 	// ignore if token signature is invalid or token is unverifiable
 	if err != nil && !(strings.Contains(err.Error(), jwt.ErrSignatureInvalid.Error()) || strings.Contains(err.Error(), jwt.ErrTokenUnverifiable.Error())) {
@@ -60,7 +58,7 @@ func (h *TokenHandler) ValidateToken(ctx context.Context, config *apipkg.Config,
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println(audience)
+
 		validPaylod, err := idtoken.Validate(ctx, encodedToken, audience[0])
 		if err != nil {
 			return nil, err
