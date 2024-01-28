@@ -2,6 +2,8 @@
 
 This is the backend service for the Awesome Expense Tracker application. It's written in Go and uses gRPC for communication.
 
+---
+
 ## Directory Structure
 
 - `api`: Contains the protobuf definitions and the generated Go code for the gRPC services.
@@ -9,7 +11,9 @@ This is the backend service for the Awesome Expense Tracker application. It's wr
   - `api`: Contains the implementation of the gRPC services.
   - `db`: Contains the database related code.
 
-# Learning Stepping Stones
+---
+
+# What I learnt from this project?
 
 ## How to generate code from proto?
 
@@ -59,17 +63,23 @@ Having started my knowledge journey with MERN stack I was familiar with middlewa
 
 Above mentioned approach of auth interceptors at the GRPC Gateway level was understandable in that environment as GRPC Ports are never utilized by the end customer, however with this project I wanted to support both RESTFul and GRPC calls both with GRPC Gateway and GRPC. However I recently revisited the actual GRPC Gateway github page: [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway) and upon closer inspection I was able to deduce that this approach had a very big loophole for auth or any interceptors where the requests coming from the GRPC Gateway to my Server are only intercepted and processed whereas any request coming from GRPC directly will bypass any and all interceptors. This was really a big eye opener and I immediately moved all my interceptors to the GRPC level from GRPC Gateway. Now both the requests (RESTFul and GRPC) will have to pass through all the intended interceptors.
 
+---
+
 ## Services
 
 The backend provides the following gRPC services:
 
-- `ExpenseManagement`: Provides methods for managing expenses.
+- `ExpenseManagement`: Provides methods for managing expenses. Implemented in [`expense_mgmt_api.go`](..\awesome-expense-tracker-backend\pkg\api\expense_mgmt_api.go)
 - `UserAuth`: Provides methods for user authentication. Implemented in [`user_auth_api.go`](..\awesome-expense-tracker-backend\pkg\api\user_auth_api.go).
+- `UserProfile`: Provides methods for managing user profiles. Implemented in [`user_profile_api.go`](..\awesome-expense-tracker-backend\pkg\api\user_profile_api.go).
+
+---
 
 ## Environment Variables
 
 The application uses the following environment variables:
 
+- `APP_ENV`: The environment in which the application runs. Possible values are `local`, `dev`, `staging`, and `prod`. Default is `local`.
 - `HOST`: The hostname where the application runs. Default is `localhost`.
 - `PORT`: The port number where the HTTP server runs. Default is `8080`.
 - `JWT_SECRET`: The secret key used for signing JSON Web Tokens (JWT) for user authentication and authorization.
@@ -84,6 +94,8 @@ The application uses the following environment variables:
 
 You can set these environment variables in your shell, or you can use a `.env` file. If you're using a `.env` file, make sure to add it to your `.gitignore` file to prevent it from being committed to your repository.
 
+---
+
 ## How to Run Locally
 
 To run the backend service locally, you need to have Go installed. Then, you can run the following command:
@@ -91,6 +103,8 @@ To run the backend service locally, you need to have Go installed. Then, you can
 ```sh
 go run server/main.go
 ```
+
+---
 
 ## How to Deploy to the Cloud
 
