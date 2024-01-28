@@ -4,9 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"time"
 
-	"github.com/bufbuild/protovalidate-go"
 	"github.com/golang-jwt/jwt/v5"
 	AwesomeExpenseTrackerApi "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
 	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
@@ -24,30 +22,15 @@ type authenticateWithGoogleResponse struct {
 
 // UserAuthServer is the server API for UserAuthentication service.
 type UserAuthServer interface {
-	// Login logs in a user.
-	Login(context.Context, *AwesomeExpenseTrackerApi.LoginUserRequest) (*AwesomeExpenseTrackerApi.OAuth2Token, error)
-
-	// Register registers a user.
-	Register(context.Context, *AwesomeExpenseTrackerApi.RegisterUserRequest) (*AwesomeExpenseTrackerApi.OAuth2Token, error)
-
-	// Delete deletes a user.
-	DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteUserRequest) (res *AwesomeExpenseTrackerApi.DeleteUserResponse, err error)
-
-	// AuthenticateWithGoogleCallback authenticates a user with Google.
-	AuthenticateWithGoogleCallback(ctx context.Context, req *AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error)
+	LoginUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.LoginUserRequest) (*AwesomeExpenseTrackerApi.OAuth2Token, error)
+	RegisterUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.RegisterUserRequest) (*AwesomeExpenseTrackerApi.OAuth2Token, error)
+	DeleteUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteUserRequest) (*AwesomeExpenseTrackerApi.DeleteUserResponse, error)
+	UpdateUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserRequest) (*AwesomeExpenseTrackerApi.UpdateUserResponse, error)
+	AuthenticateWithGoogleCallback(ctx context.Context, req *AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackRequest) (*AwesomeExpenseTrackerApi.OAuth2Token, error)
 }
 
-// LoginUser logs in a user.
-func (s *Server) LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.LoginUserRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
-	// validate login details
-	v, err := protovalidate.New()
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
-	}
-
-	if err = v.Validate(req); err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
-	}
+// LoginUserAPI logs in a user.
+func (s *Server) LoginUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.LoginUserRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
 
 	if req.AuthProvider == utils.GoogleAuthProvider {
 		gcpOauthRes, _ := s.authenticateWithGoogle(ctx)
@@ -77,7 +60,7 @@ func (s *Server) LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.Lo
 	}
 
 	// Generate JWT token
-	token, err := s.generateJWTToken(getUserResult.Email)
+	token, err := s.authenticationManager.GenerateJWTToken(getUserResult.Email, "admin")
 	if err != nil {
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "cannot generate access token: "+err.Error(), http.StatusInternalServerError)
 	}
@@ -94,18 +77,9 @@ func (s *Server) LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.Lo
 	return res, nil
 }
 
-// RegisterUser registers a user.
-func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi.RegisterUserRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
+// RegisterUserAPI registers a user.
+func (s *Server) RegisterUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.RegisterUserRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
 	res = &AwesomeExpenseTrackerApi.OAuth2Token{}
-	// validate register details
-	v, err := protovalidate.New()
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
-	}
-
-	if err = v.Validate(req); err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
-	}
 
 	// validate custom registration details
 	if req.AuthProvider != utils.GoogleAuthProvider {
@@ -154,7 +128,7 @@ func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi
 	if err != nil {
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "Unknown error: "+err.Error(), http.StatusInternalServerError)
 	}
-	token, err := s.generateJWTToken(req.Email)
+	token, err := s.authenticationManager.GenerateJWTToken(req.Email, "admin")
 	if err != nil {
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "cannot generate access token: "+err.Error(), http.StatusInternalServerError)
 	}
@@ -170,17 +144,8 @@ func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi
 	return res, nil
 }
 
-// DeleteUser deletes a user.
-func (s *Server) DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteUserRequest) (res *AwesomeExpenseTrackerApi.DeleteUserResponse, err error) {
-	// validate delete details
-	v, err := protovalidate.New()
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
-	}
-
-	if err = v.Validate(req); err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
-	}
+// DeleteUserAPI deletes a user.
+func (s *Server) DeleteUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteUserRequest) (res *AwesomeExpenseTrackerApi.DeleteUserResponse, err error) {
 	// Add user deletion logic here
 	user, err := s.store.ListUserByUsername(ctx, req.Username)
 	if err != nil {
@@ -202,18 +167,9 @@ func (s *Server) DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.D
 	return res, nil
 }
 
-// UpdateUser updates a user.
-func (s *Server) UpdateUser(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserRequest) (res *AwesomeExpenseTrackerApi.UpdateUserResponse, err error) {
+// UpdateUserAPI updates a user.
+func (s *Server) UpdateUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserRequest) (res *AwesomeExpenseTrackerApi.UpdateUserResponse, err error) {
 	res = &AwesomeExpenseTrackerApi.UpdateUserResponse{}
-
-	v, err := protovalidate.New()
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
-	}
-
-	if err = v.Validate(req); err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
-	}
 
 	if req.NewPassword == "" && req.NewUsername == "" {
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "no user was updated", http.StatusBadRequest)
@@ -274,7 +230,7 @@ func (s *Server) UpdateUser(ctx context.Context, req *AwesomeExpenseTrackerApi.U
 // AuthenticateWithGoogle authenticates a user with Google.
 func (s *Server) authenticateWithGoogle(_ context.Context) (res *authenticateWithGoogleResponse, err error) {
 	// Add user authentication with Google logic here
-	url := s.config.GcpOAuthConfig.AuthCodeURL("state", oauth2.AccessTypeOffline)
+	url := s.authenticationManager.GcpOAuthConfig.AuthCodeURL("state", oauth2.AccessTypeOffline)
 	res = &authenticateWithGoogleResponse{}
 	res.URL = url
 	return res, nil
@@ -282,17 +238,9 @@ func (s *Server) authenticateWithGoogle(_ context.Context) (res *authenticateWit
 
 // AuthenticateWithGoogleCallback authenticates a user with Google.
 func (s *Server) AuthenticateWithGoogleCallback(ctx context.Context, req *AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
-	v, err := protovalidate.New()
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
-	}
-
-	if err = v.Validate(req); err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
-	}
 
 	// Add user authentication with Google callback logic here
-	token, err := s.config.GcpOAuthConfig.Exchange(ctx, req.Code)
+	token, err := s.authenticationManager.GcpOAuthConfig.Exchange(ctx, req.Code)
 	if err != nil {
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to exchange token: "+err.Error(), http.StatusInternalServerError)
 	}
@@ -348,33 +296,6 @@ func (s *Server) validateRegisterRequest(req *AwesomeExpenseTrackerApi.RegisterU
 	}
 
 	return nil
-}
-
-func (s *Server) generateJWTToken(email string) (*oauth2.Token, error) {
-	// Create a new token object for the access token
-	idToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"email": email,
-		"iss":   "awesome-expense-tracker",
-		"exp":   time.Now().Add(time.Hour * 1).Unix(), // Access token expires after 1 hour
-	})
-
-	// Sign and get the complete encoded token as a string using the secret
-	idTokenString, err := idToken.SignedString(s.config.JwtKey)
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to sign access token: "+err.Error(), http.StatusInternalServerError)
-	}
-
-	token := &oauth2.Token{
-		AccessToken:  "",
-		RefreshToken: "",
-		Expiry:       time.Now().Add(time.Hour * 1),
-		TokenType:    "Bearer",
-	}
-	extra := make(map[string]interface{})
-	extra["id_token"] = idTokenString
-	token = token.WithExtra(extra)
-
-	return token, nil
 }
 
 // oauthTokenParser parses the oauth2.Token (t) and returns the AwesomeExpenseTrackerApi.OAuth2Token (v)

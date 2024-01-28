@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"database/sql"
-	"fmt"
 )
 
 // ListProfileByEmail gets a user profile by given email.
@@ -77,7 +76,6 @@ func (store *MySQLStore) ModifyProfileBio(ctx context.Context, arg UpdateProfile
 	}
 	res, err := store.GetProfileByEmail(ctx, arg.Email)
 	if err != nil {
-		fmt.Println(err)
 		return result, err
 	}
 	result.Bio = res.Bio

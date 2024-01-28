@@ -4,25 +4,22 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/bufbuild/protovalidate-go"
 	AwesomeExpenseTrackerApi "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
 	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
 	failuremanagement "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/failure_management"
 	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/utils"
 )
 
-// GetUserProfile gets a user profile.
-func (s *Server) GetUserProfile(ctx context.Context, req *AwesomeExpenseTrackerApi.GetUserProfileRequest) (res *AwesomeExpenseTrackerApi.GetUserProfileResponse, err error) {
-	res = &AwesomeExpenseTrackerApi.GetUserProfileResponse{}
-	v, err := protovalidate.New()
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
-	}
+// UserProfileServer is the interface that provides user profile methods.
+type UserProfileServer interface {
+	GetUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.GetUserProfileRequest) (*AwesomeExpenseTrackerApi.GetUserProfileResponse, error)
+	CreateUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.CreateUserProfileRequest) (*AwesomeExpenseTrackerApi.CreateUserProfileResponse, error)
+	UpdateUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserProfileRequest) (*AwesomeExpenseTrackerApi.UpdateUserProfileResponse, error)
+}
 
-	err = v.Validate(req)
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
-	}
+// GetUserProfileAPI gets a user profile.
+func (s *Server) GetUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.GetUserProfileRequest) (res *AwesomeExpenseTrackerApi.GetUserProfileResponse, err error) {
+	res = &AwesomeExpenseTrackerApi.GetUserProfileResponse{}
 
 	userProfileResult, err := s.store.ListProfileByEmail(ctx, req.Email)
 	if err != nil {
@@ -35,18 +32,9 @@ func (s *Server) GetUserProfile(ctx context.Context, req *AwesomeExpenseTrackerA
 	return res, nil
 }
 
-// CreateUserProfile creates a new user profile.
-func (s *Server) CreateUserProfile(ctx context.Context, req *AwesomeExpenseTrackerApi.CreateUserProfileRequest) (res *AwesomeExpenseTrackerApi.CreateUserProfileResponse, err error) {
+// CreateUserProfileAPI creates a new user profile.
+func (s *Server) CreateUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.CreateUserProfileRequest) (res *AwesomeExpenseTrackerApi.CreateUserProfileResponse, err error) {
 	res = &AwesomeExpenseTrackerApi.CreateUserProfileResponse{}
-	v, err := protovalidate.New()
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
-	}
-
-	err = v.Validate(req)
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
-	}
 
 	// Check if user profile already exists
 	listUserProfileResult, err := s.store.ListProfileByEmail(ctx, req.Email)
@@ -74,18 +62,9 @@ func (s *Server) CreateUserProfile(ctx context.Context, req *AwesomeExpenseTrack
 	return res, nil
 }
 
-// UpdateUserProfile updates a user profile.
-func (s *Server) UpdateUserProfile(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserProfileRequest) (res *AwesomeExpenseTrackerApi.UpdateUserProfileResponse, err error) {
+// UpdateUserProfileAPI updates a user profile.
+func (s *Server) UpdateUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserProfileRequest) (res *AwesomeExpenseTrackerApi.UpdateUserProfileResponse, err error) {
 	res = &AwesomeExpenseTrackerApi.UpdateUserProfileResponse{}
-	v, err := protovalidate.New()
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to initialize validator: "+err.Error(), http.StatusInternalServerError)
-	}
-
-	err = v.Validate(req)
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "failed to validate request: "+err.Error(), http.StatusBadRequest)
-	}
 
 	// Check if user profile doesn't exists
 	listUserProfileResult, err := s.store.ListProfileByEmail(ctx, req.Email)

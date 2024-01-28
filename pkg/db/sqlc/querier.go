@@ -25,7 +25,8 @@ type Querier interface {
 	DeleteReport(ctx context.Context, id int32) error
 	DeleteSetting(ctx context.Context, id int32) error
 	DeleteUser(ctx context.Context, username string) error
-	GetExpense(ctx context.Context, id int32) (Expense, error)
+	GetExpenseById(ctx context.Context, id int32) (Expense, error)
+	GetExpensesByUserId(ctx context.Context, email string) ([]interface{}, error)
 	GetProfileByEmail(ctx context.Context, email string) (GetProfileByEmailRow, error)
 	GetProfileByID(ctx context.Context, id int32) (Profile, error)
 	GetReport(ctx context.Context, id int32) (Report, error)

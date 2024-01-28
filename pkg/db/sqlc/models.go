@@ -12,9 +12,14 @@ import (
 type Expense struct {
 	ID          int32     `json:"id"`
 	UserID      int32     `json:"user_id"`
-	Amount      string    `json:"amount"`
+	Amount      float64   `json:"amount"`
 	Description string    `json:"description"`
 	Category    string    `json:"category"`
+	TxDate      time.Time `json:"tx_date"`
+	Tag         string    `json:"tag"`
+	PaidTo      string    `json:"paid_to"`
+	PaidBy      string    `json:"paid_by"`
+	Flow        string    `json:"flow"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }

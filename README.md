@@ -9,6 +9,56 @@ This is the backend service for the Awesome Expense Tracker application. It's wr
   - `api`: Contains the implementation of the gRPC services.
   - `db`: Contains the database related code.
 
+# Learning Stepping Stones
+
+## How to generate code from proto?
+
+### What I used to do
+
+I used to generate go code using the protobuf `protoc`. The protoc command was so tedious and unreliable for me. Providing the correct directory paths for all proto files and then some hacky ways to get protovalidator or grpc-gateway plugin or any other plugin to work. I am aware of creating a prototool.yaml to manage the proto plugins but it proved to be equally tedious to get all the plugins to work. (Maybe some learning is required here as well? 🙂)
+
+### What I learnt
+
+Using buf generate from [buf.build](https://buf.build/) is way easier to maintain and generate Go code from proto files. All the plugins and settings are in one place and it is easier to add or remove plugins this way.
+
+## How to write SQL queries the better way?
+
+### What I used to do
+
+Even though I was used to just using GORM (which is not technically writing the SQL queries but rather an abstracted way of interacting with SQL Database). I had a goal of learning and practicing writing more SQL queries rather than depending on a library to do that for me.
+
+### What I learnt
+
+Even though my earlier approach looks good from learning perspective, this introduced other challenges of writing the corresponding go functions which parse the SQL queries and add the dynamic values (or as official website of SQLC describes it: _boilerplate SQL querying code_). I was not here to learn how to write more go functions but rather to only focus on SQL Queries. That was when I found out about SQLC. I did face challenges at first with the documentation being focused more for Postgresql rather than MySQL. Once I got the hang of it I was able to learn just enough for this project and write queries with SQLC generating boilerplate SQL querying Golang code for me.
+
+> **NOTE**: Just as an added bonus I also refreshed my knowledge on DB Migrations and how to use them.
+
+## Environment File
+
+### What I used to do
+
+This might be just a bad habit, but I used to write `export ENV_VAR=VALUE` in my makefile for local server startups. This was tedious and not very OS friendly way as windows uses `SET` to set env vars and linux uses `export`. (Yes I switch my dev environment sometimes so a consistent development experience is really important)
+
+### What I learnt
+
+Environment Files (.env). That's it. That's the solution and learning for me and it really helped me forget about exporting the variables again and again to really focus on the development without worrying about them.
+
+## OAuth 2.0
+
+### What I learnt
+
+A lot was learnt in regards to OAuth 2.0, I even dared to create my own OAuth2.0 server implementation but decided against it (for now 😉). I had some experience in working with GCP's OAuth so I decided to integrate that first. I also wanted to provide users an ability to login/register using just the old fashioned email id and password and then later create their usernames. This led to me supporting both GCP's OAuth and also the JWT based authentication and then a dance of handling the different authentication methods started and I still don't believe that this is _THE_ perfect way to implement two authentications while maintaining fewer lines of codes but I have learnt a lot of and come along way from what I used to do and I will continue to refactor or at least find ways to support multiple authentication methods.
+
+## Interceptors and GRPC Gateway
+
+### What I used to do
+
+Having started my knowledge journey with MERN stack I was familiar with middlewares, that said the current implementation of interceptors in GRPC Gateway environment that I used to follow specially for authentication interceptors was somewhat in my opinion wrong. I used to implement the auth interceptors at GRPC gateway layer and reject a request if it ever fails the authentication or authorization barriers. However in my past projects (professional ones) we were not really utilizing the full potential of GRPC and GRPC Gateway but rather it was a REST based server only where GRPC was introduced at the start but was never developed upon later.
+
+### What I learnt
+
+Above mentioned approach of auth interceptors at the GRPC Gateway level was understandable in that environment as GRPC Ports are never utilized by the end customer, however with this project I wanted to support both RESTFul and GRPC calls both with GRPC Gateway and GRPC. However I recently revisited the actual GRPC Gateway github page: [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway) and upon closer inspection I was able to deduce that this approach had a very big loophole for auth or any interceptors where the requests coming from the GRPC Gateway to my Server are only intercepted and processed whereas any request coming from GRPC directly will bypass any and all interceptors. This was really a big eye opener and I immediately moved all my interceptors to the GRPC level from GRPC Gateway. Now both the requests (RESTFul and GRPC) will have to pass through all the intended interceptors.
+
 ## Services
 
 The backend provides the following gRPC services:

@@ -4,32 +4,21 @@ package apipkg
 import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	AwesomeExpenseTrackerApi "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
+	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api/auth"
 	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
-	"golang.org/x/oauth2"
 )
 
 // Server is the gRPC server.
 type Server struct {
-	config *Config
+	authenticationManager *auth.AuthenticationManager
 	AwesomeExpenseTrackerApi.UnimplementedUserAuthenticationServer
 	AwesomeExpenseTrackerApi.UnimplementedUserProfileServer
+	AwesomeExpenseTrackerApi.UnimplementedExpenseManagementServer
 	router *runtime.ServeMux
 	store  db.Store
 }
 
-// Config is the server config.
-type Config struct {
-	JwtKey         []byte
-	GcpOAuthConfig *oauth2.Config
-}
-
 // NewServer creates a new server.
-func NewServer(store db.Store, config *Config) (server *Server, err error) {
-	server = &Server{store: store}
-
-	server.config = config
-	if err != nil {
-		return nil, err
-	}
-	return server, nil
+func NewServer(store db.Store, authenticationManager *auth.AuthenticationManager) *Server {
+	return &Server{store: store, authenticationManager: authenticationManager}
 }

@@ -9,8 +9,14 @@ const (
 	CustomAuthProvider = "custom"
 
 	// Error messages
-
 	INVALIDREQUEST      = "invalid_request"
 	INTERNALERROR       = "internal_error"
 	UNAUTHORIZEDREQUEST = "unauthorized_request"
+
+	// Headers
+	GRPC_METADATA_HEADER_PREFIX = "GRPC-METADATA-" // This is a prefix for all the grpc metadata headers
 )
+
+type key string
+
+const EmailKey key = "user-email"

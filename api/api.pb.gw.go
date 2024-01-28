@@ -50,7 +50,7 @@ func local_request_HealthCheck_Healthy_0(ctx context.Context, marshaler runtime.
 
 }
 
-func request_UserAuthentication_LoginUser_0(ctx context.Context, marshaler runtime.Marshaler, client UserAuthenticationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserAuthentication_LoginUserAPI_0(ctx context.Context, marshaler runtime.Marshaler, client UserAuthenticationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LoginUserRequest
 	var metadata runtime.ServerMetadata
 
@@ -62,12 +62,12 @@ func request_UserAuthentication_LoginUser_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.LoginUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.LoginUserAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_UserAuthentication_LoginUser_0(ctx context.Context, marshaler runtime.Marshaler, server UserAuthenticationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UserAuthentication_LoginUserAPI_0(ctx context.Context, marshaler runtime.Marshaler, server UserAuthenticationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LoginUserRequest
 	var metadata runtime.ServerMetadata
 
@@ -79,12 +79,12 @@ func local_request_UserAuthentication_LoginUser_0(ctx context.Context, marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.LoginUser(ctx, &protoReq)
+	msg, err := server.LoginUserAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_UserAuthentication_RegisterUser_0(ctx context.Context, marshaler runtime.Marshaler, client UserAuthenticationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserAuthentication_RegisterUserAPI_0(ctx context.Context, marshaler runtime.Marshaler, client UserAuthenticationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq RegisterUserRequest
 	var metadata runtime.ServerMetadata
 
@@ -96,12 +96,12 @@ func request_UserAuthentication_RegisterUser_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.RegisterUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.RegisterUserAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_UserAuthentication_RegisterUser_0(ctx context.Context, marshaler runtime.Marshaler, server UserAuthenticationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UserAuthentication_RegisterUserAPI_0(ctx context.Context, marshaler runtime.Marshaler, server UserAuthenticationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq RegisterUserRequest
 	var metadata runtime.ServerMetadata
 
@@ -113,12 +113,12 @@ func local_request_UserAuthentication_RegisterUser_0(ctx context.Context, marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.RegisterUser(ctx, &protoReq)
+	msg, err := server.RegisterUserAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_UserAuthentication_DeleteUser_0(ctx context.Context, marshaler runtime.Marshaler, client UserAuthenticationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserAuthentication_DeleteUserAPI_0(ctx context.Context, marshaler runtime.Marshaler, client UserAuthenticationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteUserRequest
 	var metadata runtime.ServerMetadata
 
@@ -139,12 +139,12 @@ func request_UserAuthentication_DeleteUser_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "username", err)
 	}
 
-	msg, err := client.DeleteUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.DeleteUserAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_UserAuthentication_DeleteUser_0(ctx context.Context, marshaler runtime.Marshaler, server UserAuthenticationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UserAuthentication_DeleteUserAPI_0(ctx context.Context, marshaler runtime.Marshaler, server UserAuthenticationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteUserRequest
 	var metadata runtime.ServerMetadata
 
@@ -165,12 +165,12 @@ func local_request_UserAuthentication_DeleteUser_0(ctx context.Context, marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "username", err)
 	}
 
-	msg, err := server.DeleteUser(ctx, &protoReq)
+	msg, err := server.DeleteUserAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_UserAuthentication_UpdateUser_0(ctx context.Context, marshaler runtime.Marshaler, client UserAuthenticationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserAuthentication_UpdateUserAPI_0(ctx context.Context, marshaler runtime.Marshaler, client UserAuthenticationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateUserRequest
 	var metadata runtime.ServerMetadata
 
@@ -182,12 +182,12 @@ func request_UserAuthentication_UpdateUser_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.UpdateUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.UpdateUserAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_UserAuthentication_UpdateUser_0(ctx context.Context, marshaler runtime.Marshaler, server UserAuthenticationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UserAuthentication_UpdateUserAPI_0(ctx context.Context, marshaler runtime.Marshaler, server UserAuthenticationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateUserRequest
 	var metadata runtime.ServerMetadata
 
@@ -199,7 +199,7 @@ func local_request_UserAuthentication_UpdateUser_0(ctx context.Context, marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.UpdateUser(ctx, &protoReq)
+	msg, err := server.UpdateUserAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -240,7 +240,7 @@ func local_request_UserAuthentication_AuthenticateWithGoogleCallback_0(ctx conte
 
 }
 
-func request_ExpenseManagement_CreateExpense_0(ctx context.Context, marshaler runtime.Marshaler, client ExpenseManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ExpenseManagement_CreateExpenseAPI_0(ctx context.Context, marshaler runtime.Marshaler, client ExpenseManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateExpenseRequest
 	var metadata runtime.ServerMetadata
 
@@ -252,12 +252,12 @@ func request_ExpenseManagement_CreateExpense_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.CreateExpense(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.CreateExpenseAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_ExpenseManagement_CreateExpense_0(ctx context.Context, marshaler runtime.Marshaler, server ExpenseManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ExpenseManagement_CreateExpenseAPI_0(ctx context.Context, marshaler runtime.Marshaler, server ExpenseManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateExpenseRequest
 	var metadata runtime.ServerMetadata
 
@@ -269,12 +269,12 @@ func local_request_ExpenseManagement_CreateExpense_0(ctx context.Context, marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.CreateExpense(ctx, &protoReq)
+	msg, err := server.CreateExpenseAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_ExpenseManagement_UpdateExpense_0(ctx context.Context, marshaler runtime.Marshaler, client ExpenseManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ExpenseManagement_UpdateExpenseAPI_0(ctx context.Context, marshaler runtime.Marshaler, client ExpenseManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateExpenseRequest
 	var metadata runtime.ServerMetadata
 
@@ -303,12 +303,12 @@ func request_ExpenseManagement_UpdateExpense_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := client.UpdateExpense(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.UpdateExpenseAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_ExpenseManagement_UpdateExpense_0(ctx context.Context, marshaler runtime.Marshaler, server ExpenseManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ExpenseManagement_UpdateExpenseAPI_0(ctx context.Context, marshaler runtime.Marshaler, server ExpenseManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateExpenseRequest
 	var metadata runtime.ServerMetadata
 
@@ -337,12 +337,12 @@ func local_request_ExpenseManagement_UpdateExpense_0(ctx context.Context, marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := server.UpdateExpense(ctx, &protoReq)
+	msg, err := server.UpdateExpenseAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_ExpenseManagement_DeleteExpense_0(ctx context.Context, marshaler runtime.Marshaler, client ExpenseManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ExpenseManagement_DeleteExpenseAPI_0(ctx context.Context, marshaler runtime.Marshaler, client ExpenseManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteExpenseRequest
 	var metadata runtime.ServerMetadata
 
@@ -363,12 +363,12 @@ func request_ExpenseManagement_DeleteExpense_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := client.DeleteExpense(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.DeleteExpenseAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_ExpenseManagement_DeleteExpense_0(ctx context.Context, marshaler runtime.Marshaler, server ExpenseManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ExpenseManagement_DeleteExpenseAPI_0(ctx context.Context, marshaler runtime.Marshaler, server ExpenseManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteExpenseRequest
 	var metadata runtime.ServerMetadata
 
@@ -389,48 +389,82 @@ func local_request_ExpenseManagement_DeleteExpense_0(ctx context.Context, marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := server.DeleteExpense(ctx, &protoReq)
+	msg, err := server.DeleteExpenseAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-var (
-	filter_ExpenseManagement_GetExpenses_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
-)
-
-func request_ExpenseManagement_GetExpenses_0(ctx context.Context, marshaler runtime.Marshaler, client ExpenseManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetExpensesRequest
+func request_ExpenseManagement_ListExpensesAPI_0(ctx context.Context, marshaler runtime.Marshaler, client ExpenseManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ListExpensesRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ExpenseManagement_GetExpenses_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := client.GetExpenses(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.ListExpensesAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_ExpenseManagement_GetExpenses_0(ctx context.Context, marshaler runtime.Marshaler, server ExpenseManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetExpensesRequest
+func local_request_ExpenseManagement_ListExpensesAPI_0(ctx context.Context, marshaler runtime.Marshaler, server ExpenseManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ListExpensesRequest
 	var metadata runtime.ServerMetadata
 
-	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ExpenseManagement_GetExpenses_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := server.GetExpenses(ctx, &protoReq)
+	msg, err := server.ListExpensesAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_Reports_GenerateReport_0(ctx context.Context, marshaler runtime.Marshaler, client ReportsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ExpenseManagement_GetExpenseAPI_0(ctx context.Context, marshaler runtime.Marshaler, client ExpenseManagementClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetExpenseRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+
+	protoReq.Id, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+
+	msg, err := client.GetExpenseAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ExpenseManagement_GetExpenseAPI_0(ctx context.Context, marshaler runtime.Marshaler, server ExpenseManagementServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetExpenseRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+
+	protoReq.Id, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+
+	msg, err := server.GetExpenseAPI(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_Reports_GenerateReportAPI_0(ctx context.Context, marshaler runtime.Marshaler, client ReportsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GenerateReportRequest
 	var metadata runtime.ServerMetadata
 
@@ -442,12 +476,12 @@ func request_Reports_GenerateReport_0(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.GenerateReport(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GenerateReportAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Reports_GenerateReport_0(ctx context.Context, marshaler runtime.Marshaler, server ReportsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Reports_GenerateReportAPI_0(ctx context.Context, marshaler runtime.Marshaler, server ReportsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GenerateReportRequest
 	var metadata runtime.ServerMetadata
 
@@ -459,12 +493,12 @@ func local_request_Reports_GenerateReport_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.GenerateReport(ctx, &protoReq)
+	msg, err := server.GenerateReportAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_UserProfile_GetUserProfile_0(ctx context.Context, marshaler runtime.Marshaler, client UserProfileClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserProfile_GetUserProfileAPI_0(ctx context.Context, marshaler runtime.Marshaler, client UserProfileClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetUserProfileRequest
 	var metadata runtime.ServerMetadata
 
@@ -476,12 +510,12 @@ func request_UserProfile_GetUserProfile_0(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.GetUserProfile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetUserProfileAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_UserProfile_GetUserProfile_0(ctx context.Context, marshaler runtime.Marshaler, server UserProfileServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UserProfile_GetUserProfileAPI_0(ctx context.Context, marshaler runtime.Marshaler, server UserProfileServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetUserProfileRequest
 	var metadata runtime.ServerMetadata
 
@@ -493,12 +527,12 @@ func local_request_UserProfile_GetUserProfile_0(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.GetUserProfile(ctx, &protoReq)
+	msg, err := server.GetUserProfileAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_UserProfile_UpdateUserProfile_0(ctx context.Context, marshaler runtime.Marshaler, client UserProfileClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserProfile_UpdateUserProfileAPI_0(ctx context.Context, marshaler runtime.Marshaler, client UserProfileClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateUserProfileRequest
 	var metadata runtime.ServerMetadata
 
@@ -510,12 +544,12 @@ func request_UserProfile_UpdateUserProfile_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.UpdateUserProfile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.UpdateUserProfileAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_UserProfile_UpdateUserProfile_0(ctx context.Context, marshaler runtime.Marshaler, server UserProfileServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UserProfile_UpdateUserProfileAPI_0(ctx context.Context, marshaler runtime.Marshaler, server UserProfileServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateUserProfileRequest
 	var metadata runtime.ServerMetadata
 
@@ -527,12 +561,12 @@ func local_request_UserProfile_UpdateUserProfile_0(ctx context.Context, marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.UpdateUserProfile(ctx, &protoReq)
+	msg, err := server.UpdateUserProfileAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_UserProfile_CreateUserProfile_0(ctx context.Context, marshaler runtime.Marshaler, client UserProfileClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UserProfile_CreateUserProfileAPI_0(ctx context.Context, marshaler runtime.Marshaler, client UserProfileClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateUserProfileRequest
 	var metadata runtime.ServerMetadata
 
@@ -544,12 +578,12 @@ func request_UserProfile_CreateUserProfile_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.CreateUserProfile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.CreateUserProfileAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_UserProfile_CreateUserProfile_0(ctx context.Context, marshaler runtime.Marshaler, server UserProfileServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UserProfile_CreateUserProfileAPI_0(ctx context.Context, marshaler runtime.Marshaler, server UserProfileServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateUserProfileRequest
 	var metadata runtime.ServerMetadata
 
@@ -561,48 +595,48 @@ func local_request_UserProfile_CreateUserProfile_0(ctx context.Context, marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.CreateUserProfile(ctx, &protoReq)
+	msg, err := server.CreateUserProfileAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
 var (
-	filter_Settings_GetSettings_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_Settings_GetSettingsAPI_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_Settings_GetSettings_0(ctx context.Context, marshaler runtime.Marshaler, client SettingsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Settings_GetSettingsAPI_0(ctx context.Context, marshaler runtime.Marshaler, client SettingsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetSettingsRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_Settings_GetSettings_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_Settings_GetSettingsAPI_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.GetSettings(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetSettingsAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Settings_GetSettings_0(ctx context.Context, marshaler runtime.Marshaler, server SettingsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Settings_GetSettingsAPI_0(ctx context.Context, marshaler runtime.Marshaler, server SettingsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetSettingsRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_Settings_GetSettings_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_Settings_GetSettingsAPI_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.GetSettings(ctx, &protoReq)
+	msg, err := server.GetSettingsAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_Settings_UpdateSettings_0(ctx context.Context, marshaler runtime.Marshaler, client SettingsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Settings_UpdateSettingsAPI_0(ctx context.Context, marshaler runtime.Marshaler, client SettingsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateSettingsRequest
 	var metadata runtime.ServerMetadata
 
@@ -614,12 +648,12 @@ func request_Settings_UpdateSettings_0(ctx context.Context, marshaler runtime.Ma
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.UpdateSettings(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.UpdateSettingsAPI(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Settings_UpdateSettings_0(ctx context.Context, marshaler runtime.Marshaler, server SettingsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Settings_UpdateSettingsAPI_0(ctx context.Context, marshaler runtime.Marshaler, server SettingsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateSettingsRequest
 	var metadata runtime.ServerMetadata
 
@@ -631,7 +665,7 @@ func local_request_Settings_UpdateSettings_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.UpdateSettings(ctx, &protoReq)
+	msg, err := server.UpdateSettingsAPI(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -674,18 +708,18 @@ func RegisterHealthCheckHandlerServer(ctx context.Context, mux *runtime.ServeMux
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterUserAuthenticationHandlerFromEndpoint instead.
 func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.ServeMux, server UserAuthenticationServer) error {
 
-	mux.Handle("POST", pattern_UserAuthentication_LoginUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UserAuthentication_LoginUserAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/LoginUser", runtime.WithHTTPPathPattern("/user/login"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/LoginUserAPI", runtime.WithHTTPPathPattern("/user/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserAuthentication_LoginUser_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UserAuthentication_LoginUserAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -693,22 +727,22 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 			return
 		}
 
-		forward_UserAuthentication_LoginUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserAuthentication_LoginUserAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_UserAuthentication_RegisterUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UserAuthentication_RegisterUserAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/RegisterUser", runtime.WithHTTPPathPattern("/user/register"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/RegisterUserAPI", runtime.WithHTTPPathPattern("/user/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserAuthentication_RegisterUser_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UserAuthentication_RegisterUserAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -716,22 +750,22 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 			return
 		}
 
-		forward_UserAuthentication_RegisterUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserAuthentication_RegisterUserAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_UserAuthentication_DeleteUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_UserAuthentication_DeleteUserAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/DeleteUser", runtime.WithHTTPPathPattern("/v1/user/delete/{username}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/DeleteUserAPI", runtime.WithHTTPPathPattern("/v1/user/delete/{username}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserAuthentication_DeleteUser_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UserAuthentication_DeleteUserAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -739,22 +773,22 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 			return
 		}
 
-		forward_UserAuthentication_DeleteUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserAuthentication_DeleteUserAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_UserAuthentication_UpdateUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_UserAuthentication_UpdateUserAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/UpdateUser", runtime.WithHTTPPathPattern("/v1/user/update"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserAuthentication/UpdateUserAPI", runtime.WithHTTPPathPattern("/v1/user/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserAuthentication_UpdateUser_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UserAuthentication_UpdateUserAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -762,7 +796,7 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 			return
 		}
 
-		forward_UserAuthentication_UpdateUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserAuthentication_UpdateUserAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -798,18 +832,18 @@ func RegisterUserAuthenticationHandlerServer(ctx context.Context, mux *runtime.S
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterExpenseManagementHandlerFromEndpoint instead.
 func RegisterExpenseManagementHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ExpenseManagementServer) error {
 
-	mux.Handle("POST", pattern_ExpenseManagement_CreateExpense_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ExpenseManagement_CreateExpenseAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/CreateExpense", runtime.WithHTTPPathPattern("/expenses"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/CreateExpenseAPI", runtime.WithHTTPPathPattern("/v1/expense"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ExpenseManagement_CreateExpense_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ExpenseManagement_CreateExpenseAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -817,22 +851,22 @@ func RegisterExpenseManagementHandlerServer(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		forward_ExpenseManagement_CreateExpense_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ExpenseManagement_CreateExpenseAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_ExpenseManagement_UpdateExpense_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_ExpenseManagement_UpdateExpenseAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/UpdateExpense", runtime.WithHTTPPathPattern("/expenses/{id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/UpdateExpenseAPI", runtime.WithHTTPPathPattern("/v1/expense/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ExpenseManagement_UpdateExpense_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ExpenseManagement_UpdateExpenseAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -840,22 +874,22 @@ func RegisterExpenseManagementHandlerServer(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		forward_ExpenseManagement_UpdateExpense_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ExpenseManagement_UpdateExpenseAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_ExpenseManagement_DeleteExpense_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_ExpenseManagement_DeleteExpenseAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/DeleteExpense", runtime.WithHTTPPathPattern("/expenses/{id}"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/DeleteExpenseAPI", runtime.WithHTTPPathPattern("/v1/expense/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ExpenseManagement_DeleteExpense_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ExpenseManagement_DeleteExpenseAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -863,22 +897,22 @@ func RegisterExpenseManagementHandlerServer(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		forward_ExpenseManagement_DeleteExpense_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ExpenseManagement_DeleteExpenseAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_ExpenseManagement_GetExpenses_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_ExpenseManagement_ListExpensesAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/GetExpenses", runtime.WithHTTPPathPattern("/expenses"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/ListExpensesAPI", runtime.WithHTTPPathPattern("/v1/expense"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ExpenseManagement_GetExpenses_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ExpenseManagement_ListExpensesAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -886,7 +920,30 @@ func RegisterExpenseManagementHandlerServer(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		forward_ExpenseManagement_GetExpenses_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ExpenseManagement_ListExpensesAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ExpenseManagement_GetExpenseAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/GetExpenseAPI", runtime.WithHTTPPathPattern("/v1/expense/{id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ExpenseManagement_GetExpenseAPI_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ExpenseManagement_GetExpenseAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -899,18 +956,18 @@ func RegisterExpenseManagementHandlerServer(ctx context.Context, mux *runtime.Se
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterReportsHandlerFromEndpoint instead.
 func RegisterReportsHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ReportsServer) error {
 
-	mux.Handle("POST", pattern_Reports_GenerateReport_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Reports_GenerateReportAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.Reports/GenerateReport", runtime.WithHTTPPathPattern("/reports"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.Reports/GenerateReportAPI", runtime.WithHTTPPathPattern("/reports"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Reports_GenerateReport_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Reports_GenerateReportAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -918,7 +975,7 @@ func RegisterReportsHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 			return
 		}
 
-		forward_Reports_GenerateReport_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Reports_GenerateReportAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -931,18 +988,18 @@ func RegisterReportsHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterUserProfileHandlerFromEndpoint instead.
 func RegisterUserProfileHandlerServer(ctx context.Context, mux *runtime.ServeMux, server UserProfileServer) error {
 
-	mux.Handle("POST", pattern_UserProfile_GetUserProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UserProfile_GetUserProfileAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/GetUserProfile", runtime.WithHTTPPathPattern("/v1/profile/get"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/GetUserProfileAPI", runtime.WithHTTPPathPattern("/v1/profile/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserProfile_GetUserProfile_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UserProfile_GetUserProfileAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -950,22 +1007,22 @@ func RegisterUserProfileHandlerServer(ctx context.Context, mux *runtime.ServeMux
 			return
 		}
 
-		forward_UserProfile_GetUserProfile_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserProfile_GetUserProfileAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_UserProfile_UpdateUserProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_UserProfile_UpdateUserProfileAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/UpdateUserProfile", runtime.WithHTTPPathPattern("/v1/profile/update"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/UpdateUserProfileAPI", runtime.WithHTTPPathPattern("/v1/profile/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserProfile_UpdateUserProfile_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UserProfile_UpdateUserProfileAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -973,22 +1030,22 @@ func RegisterUserProfileHandlerServer(ctx context.Context, mux *runtime.ServeMux
 			return
 		}
 
-		forward_UserProfile_UpdateUserProfile_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserProfile_UpdateUserProfileAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_UserProfile_CreateUserProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UserProfile_CreateUserProfileAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/CreateUserProfile", runtime.WithHTTPPathPattern("/v1/profile/create"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.UserProfile/CreateUserProfileAPI", runtime.WithHTTPPathPattern("/v1/profile/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UserProfile_CreateUserProfile_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UserProfile_CreateUserProfileAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -996,7 +1053,7 @@ func RegisterUserProfileHandlerServer(ctx context.Context, mux *runtime.ServeMux
 			return
 		}
 
-		forward_UserProfile_CreateUserProfile_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserProfile_CreateUserProfileAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1009,18 +1066,18 @@ func RegisterUserProfileHandlerServer(ctx context.Context, mux *runtime.ServeMux
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterSettingsHandlerFromEndpoint instead.
 func RegisterSettingsHandlerServer(ctx context.Context, mux *runtime.ServeMux, server SettingsServer) error {
 
-	mux.Handle("GET", pattern_Settings_GetSettings_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Settings_GetSettingsAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.Settings/GetSettings", runtime.WithHTTPPathPattern("/settings"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.Settings/GetSettingsAPI", runtime.WithHTTPPathPattern("/settings"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Settings_GetSettings_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Settings_GetSettingsAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1028,22 +1085,22 @@ func RegisterSettingsHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 			return
 		}
 
-		forward_Settings_GetSettings_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Settings_GetSettingsAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_Settings_UpdateSettings_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_Settings_UpdateSettingsAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.Settings/UpdateSettings", runtime.WithHTTPPathPattern("/settings"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/apidefinitions.Settings/UpdateSettingsAPI", runtime.WithHTTPPathPattern("/settings"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Settings_UpdateSettings_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Settings_UpdateSettingsAPI_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1051,7 +1108,7 @@ func RegisterSettingsHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 			return
 		}
 
-		forward_Settings_UpdateSettings_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Settings_UpdateSettingsAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1165,83 +1222,83 @@ func RegisterUserAuthenticationHandler(ctx context.Context, mux *runtime.ServeMu
 // "UserAuthenticationClient" to call the correct interceptors.
 func RegisterUserAuthenticationHandlerClient(ctx context.Context, mux *runtime.ServeMux, client UserAuthenticationClient) error {
 
-	mux.Handle("POST", pattern_UserAuthentication_LoginUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UserAuthentication_LoginUserAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/LoginUser", runtime.WithHTTPPathPattern("/user/login"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/LoginUserAPI", runtime.WithHTTPPathPattern("/user/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UserAuthentication_LoginUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UserAuthentication_LoginUserAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UserAuthentication_LoginUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserAuthentication_LoginUserAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_UserAuthentication_RegisterUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UserAuthentication_RegisterUserAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/RegisterUser", runtime.WithHTTPPathPattern("/user/register"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/RegisterUserAPI", runtime.WithHTTPPathPattern("/user/register"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UserAuthentication_RegisterUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UserAuthentication_RegisterUserAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UserAuthentication_RegisterUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserAuthentication_RegisterUserAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_UserAuthentication_DeleteUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_UserAuthentication_DeleteUserAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/DeleteUser", runtime.WithHTTPPathPattern("/v1/user/delete/{username}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/DeleteUserAPI", runtime.WithHTTPPathPattern("/v1/user/delete/{username}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UserAuthentication_DeleteUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UserAuthentication_DeleteUserAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UserAuthentication_DeleteUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserAuthentication_DeleteUserAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_UserAuthentication_UpdateUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_UserAuthentication_UpdateUserAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/UpdateUser", runtime.WithHTTPPathPattern("/v1/user/update"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserAuthentication/UpdateUserAPI", runtime.WithHTTPPathPattern("/v1/user/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UserAuthentication_UpdateUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UserAuthentication_UpdateUserAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UserAuthentication_UpdateUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserAuthentication_UpdateUserAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1269,25 +1326,25 @@ func RegisterUserAuthenticationHandlerClient(ctx context.Context, mux *runtime.S
 }
 
 var (
-	pattern_UserAuthentication_LoginUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"user", "login"}, ""))
+	pattern_UserAuthentication_LoginUserAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"user", "login"}, ""))
 
-	pattern_UserAuthentication_RegisterUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"user", "register"}, ""))
+	pattern_UserAuthentication_RegisterUserAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"user", "register"}, ""))
 
-	pattern_UserAuthentication_DeleteUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "user", "delete", "username"}, ""))
+	pattern_UserAuthentication_DeleteUserAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "user", "delete", "username"}, ""))
 
-	pattern_UserAuthentication_UpdateUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "user", "update"}, ""))
+	pattern_UserAuthentication_UpdateUserAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "user", "update"}, ""))
 
 	pattern_UserAuthentication_AuthenticateWithGoogleCallback_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"auth", "google", "callback"}, ""))
 )
 
 var (
-	forward_UserAuthentication_LoginUser_0 = runtime.ForwardResponseMessage
+	forward_UserAuthentication_LoginUserAPI_0 = runtime.ForwardResponseMessage
 
-	forward_UserAuthentication_RegisterUser_0 = runtime.ForwardResponseMessage
+	forward_UserAuthentication_RegisterUserAPI_0 = runtime.ForwardResponseMessage
 
-	forward_UserAuthentication_DeleteUser_0 = runtime.ForwardResponseMessage
+	forward_UserAuthentication_DeleteUserAPI_0 = runtime.ForwardResponseMessage
 
-	forward_UserAuthentication_UpdateUser_0 = runtime.ForwardResponseMessage
+	forward_UserAuthentication_UpdateUserAPI_0 = runtime.ForwardResponseMessage
 
 	forward_UserAuthentication_AuthenticateWithGoogleCallback_0 = runtime.ForwardResponseMessage
 )
@@ -1330,83 +1387,103 @@ func RegisterExpenseManagementHandler(ctx context.Context, mux *runtime.ServeMux
 // "ExpenseManagementClient" to call the correct interceptors.
 func RegisterExpenseManagementHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ExpenseManagementClient) error {
 
-	mux.Handle("POST", pattern_ExpenseManagement_CreateExpense_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ExpenseManagement_CreateExpenseAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/CreateExpense", runtime.WithHTTPPathPattern("/expenses"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/CreateExpenseAPI", runtime.WithHTTPPathPattern("/v1/expense"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ExpenseManagement_CreateExpense_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ExpenseManagement_CreateExpenseAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ExpenseManagement_CreateExpense_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ExpenseManagement_CreateExpenseAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_ExpenseManagement_UpdateExpense_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_ExpenseManagement_UpdateExpenseAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/UpdateExpense", runtime.WithHTTPPathPattern("/expenses/{id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/UpdateExpenseAPI", runtime.WithHTTPPathPattern("/v1/expense/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ExpenseManagement_UpdateExpense_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ExpenseManagement_UpdateExpenseAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ExpenseManagement_UpdateExpense_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ExpenseManagement_UpdateExpenseAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_ExpenseManagement_DeleteExpense_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_ExpenseManagement_DeleteExpenseAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/DeleteExpense", runtime.WithHTTPPathPattern("/expenses/{id}"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/DeleteExpenseAPI", runtime.WithHTTPPathPattern("/v1/expense/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ExpenseManagement_DeleteExpense_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ExpenseManagement_DeleteExpenseAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ExpenseManagement_DeleteExpense_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ExpenseManagement_DeleteExpenseAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_ExpenseManagement_GetExpenses_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_ExpenseManagement_ListExpensesAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/GetExpenses", runtime.WithHTTPPathPattern("/expenses"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/ListExpensesAPI", runtime.WithHTTPPathPattern("/v1/expense"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ExpenseManagement_GetExpenses_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ExpenseManagement_ListExpensesAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ExpenseManagement_GetExpenses_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ExpenseManagement_ListExpensesAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ExpenseManagement_GetExpenseAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.ExpenseManagement/GetExpenseAPI", runtime.WithHTTPPathPattern("/v1/expense/{id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ExpenseManagement_GetExpenseAPI_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ExpenseManagement_GetExpenseAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1414,23 +1491,27 @@ func RegisterExpenseManagementHandlerClient(ctx context.Context, mux *runtime.Se
 }
 
 var (
-	pattern_ExpenseManagement_CreateExpense_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"expenses"}, ""))
+	pattern_ExpenseManagement_CreateExpenseAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "expense"}, ""))
 
-	pattern_ExpenseManagement_UpdateExpense_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"expenses", "id"}, ""))
+	pattern_ExpenseManagement_UpdateExpenseAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "expense", "id"}, ""))
 
-	pattern_ExpenseManagement_DeleteExpense_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"expenses", "id"}, ""))
+	pattern_ExpenseManagement_DeleteExpenseAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "expense", "id"}, ""))
 
-	pattern_ExpenseManagement_GetExpenses_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"expenses"}, ""))
+	pattern_ExpenseManagement_ListExpensesAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "expense"}, ""))
+
+	pattern_ExpenseManagement_GetExpenseAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "expense", "id"}, ""))
 )
 
 var (
-	forward_ExpenseManagement_CreateExpense_0 = runtime.ForwardResponseMessage
+	forward_ExpenseManagement_CreateExpenseAPI_0 = runtime.ForwardResponseMessage
 
-	forward_ExpenseManagement_UpdateExpense_0 = runtime.ForwardResponseMessage
+	forward_ExpenseManagement_UpdateExpenseAPI_0 = runtime.ForwardResponseMessage
 
-	forward_ExpenseManagement_DeleteExpense_0 = runtime.ForwardResponseMessage
+	forward_ExpenseManagement_DeleteExpenseAPI_0 = runtime.ForwardResponseMessage
 
-	forward_ExpenseManagement_GetExpenses_0 = runtime.ForwardResponseMessage
+	forward_ExpenseManagement_ListExpensesAPI_0 = runtime.ForwardResponseMessage
+
+	forward_ExpenseManagement_GetExpenseAPI_0 = runtime.ForwardResponseMessage
 )
 
 // RegisterReportsHandlerFromEndpoint is same as RegisterReportsHandler but
@@ -1471,23 +1552,23 @@ func RegisterReportsHandler(ctx context.Context, mux *runtime.ServeMux, conn *gr
 // "ReportsClient" to call the correct interceptors.
 func RegisterReportsHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ReportsClient) error {
 
-	mux.Handle("POST", pattern_Reports_GenerateReport_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Reports_GenerateReportAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.Reports/GenerateReport", runtime.WithHTTPPathPattern("/reports"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.Reports/GenerateReportAPI", runtime.WithHTTPPathPattern("/reports"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Reports_GenerateReport_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Reports_GenerateReportAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Reports_GenerateReport_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Reports_GenerateReportAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1495,11 +1576,11 @@ func RegisterReportsHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 }
 
 var (
-	pattern_Reports_GenerateReport_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"reports"}, ""))
+	pattern_Reports_GenerateReportAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"reports"}, ""))
 )
 
 var (
-	forward_Reports_GenerateReport_0 = runtime.ForwardResponseMessage
+	forward_Reports_GenerateReportAPI_0 = runtime.ForwardResponseMessage
 )
 
 // RegisterUserProfileHandlerFromEndpoint is same as RegisterUserProfileHandler but
@@ -1540,63 +1621,63 @@ func RegisterUserProfileHandler(ctx context.Context, mux *runtime.ServeMux, conn
 // "UserProfileClient" to call the correct interceptors.
 func RegisterUserProfileHandlerClient(ctx context.Context, mux *runtime.ServeMux, client UserProfileClient) error {
 
-	mux.Handle("POST", pattern_UserProfile_GetUserProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UserProfile_GetUserProfileAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/GetUserProfile", runtime.WithHTTPPathPattern("/v1/profile/get"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/GetUserProfileAPI", runtime.WithHTTPPathPattern("/v1/profile/get"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UserProfile_GetUserProfile_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UserProfile_GetUserProfileAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UserProfile_GetUserProfile_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserProfile_GetUserProfileAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_UserProfile_UpdateUserProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_UserProfile_UpdateUserProfileAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/UpdateUserProfile", runtime.WithHTTPPathPattern("/v1/profile/update"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/UpdateUserProfileAPI", runtime.WithHTTPPathPattern("/v1/profile/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UserProfile_UpdateUserProfile_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UserProfile_UpdateUserProfileAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UserProfile_UpdateUserProfile_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserProfile_UpdateUserProfileAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_UserProfile_CreateUserProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UserProfile_CreateUserProfileAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/CreateUserProfile", runtime.WithHTTPPathPattern("/v1/profile/create"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.UserProfile/CreateUserProfileAPI", runtime.WithHTTPPathPattern("/v1/profile/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UserProfile_CreateUserProfile_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UserProfile_CreateUserProfileAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UserProfile_CreateUserProfile_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UserProfile_CreateUserProfileAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1604,19 +1685,19 @@ func RegisterUserProfileHandlerClient(ctx context.Context, mux *runtime.ServeMux
 }
 
 var (
-	pattern_UserProfile_GetUserProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "profile", "get"}, ""))
+	pattern_UserProfile_GetUserProfileAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "profile", "get"}, ""))
 
-	pattern_UserProfile_UpdateUserProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "profile", "update"}, ""))
+	pattern_UserProfile_UpdateUserProfileAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "profile", "update"}, ""))
 
-	pattern_UserProfile_CreateUserProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "profile", "create"}, ""))
+	pattern_UserProfile_CreateUserProfileAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "profile", "create"}, ""))
 )
 
 var (
-	forward_UserProfile_GetUserProfile_0 = runtime.ForwardResponseMessage
+	forward_UserProfile_GetUserProfileAPI_0 = runtime.ForwardResponseMessage
 
-	forward_UserProfile_UpdateUserProfile_0 = runtime.ForwardResponseMessage
+	forward_UserProfile_UpdateUserProfileAPI_0 = runtime.ForwardResponseMessage
 
-	forward_UserProfile_CreateUserProfile_0 = runtime.ForwardResponseMessage
+	forward_UserProfile_CreateUserProfileAPI_0 = runtime.ForwardResponseMessage
 )
 
 // RegisterSettingsHandlerFromEndpoint is same as RegisterSettingsHandler but
@@ -1657,43 +1738,43 @@ func RegisterSettingsHandler(ctx context.Context, mux *runtime.ServeMux, conn *g
 // "SettingsClient" to call the correct interceptors.
 func RegisterSettingsHandlerClient(ctx context.Context, mux *runtime.ServeMux, client SettingsClient) error {
 
-	mux.Handle("GET", pattern_Settings_GetSettings_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_Settings_GetSettingsAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.Settings/GetSettings", runtime.WithHTTPPathPattern("/settings"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.Settings/GetSettingsAPI", runtime.WithHTTPPathPattern("/settings"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Settings_GetSettings_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Settings_GetSettingsAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Settings_GetSettings_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Settings_GetSettingsAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_Settings_UpdateSettings_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_Settings_UpdateSettingsAPI_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.Settings/UpdateSettings", runtime.WithHTTPPathPattern("/settings"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/apidefinitions.Settings/UpdateSettingsAPI", runtime.WithHTTPPathPattern("/settings"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Settings_UpdateSettings_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Settings_UpdateSettingsAPI_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Settings_UpdateSettings_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Settings_UpdateSettingsAPI_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1701,13 +1782,13 @@ func RegisterSettingsHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 }
 
 var (
-	pattern_Settings_GetSettings_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"settings"}, ""))
+	pattern_Settings_GetSettingsAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"settings"}, ""))
 
-	pattern_Settings_UpdateSettings_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"settings"}, ""))
+	pattern_Settings_UpdateSettingsAPI_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"settings"}, ""))
 )
 
 var (
-	forward_Settings_GetSettings_0 = runtime.ForwardResponseMessage
+	forward_Settings_GetSettingsAPI_0 = runtime.ForwardResponseMessage
 
-	forward_Settings_UpdateSettings_0 = runtime.ForwardResponseMessage
+	forward_Settings_UpdateSettingsAPI_0 = runtime.ForwardResponseMessage
 )

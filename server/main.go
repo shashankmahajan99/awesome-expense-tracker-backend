@@ -8,17 +8,16 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/joho/godotenv"
 	pb "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
 	apipkg "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api"
+	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api/auth"
 	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api/middlewares"
 	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
-
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/joho/godotenv"
 	grpc "google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
@@ -39,10 +38,6 @@ func main() {
 	jwtKey := []byte(os.Getenv("JWT_SECRET"))
 	if len(jwtKey) == 0 {
 		log.Fatal("JWT_SECRET is not set")
-	}
-
-	config := &apipkg.Config{
-		JwtKey: jwtKey,
 	}
 
 	clientID := os.Getenv("GCP_OAUTH_ID")
@@ -69,19 +64,15 @@ func main() {
 		Endpoint:     google.Endpoint,
 	}
 
-	config.GcpOAuthConfig = oauthConfig
-
 	grpcPort := getEnvOrDefault("GRPC_PORT", "8080")
 	httpPort := getEnvOrDefault("PORT", "8081")
 
 	// create server
-	server, err := apipkg.NewServer(dbStore, config)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	authenticationManager := auth.NewAuthenticationManager(jwtKey, oauthConfig)
+	server := apipkg.NewServer(dbStore, authenticationManager)
 
 	go runGrpcGatewayServer(httpPort)
-	runGrpcServer(server, grpcPort)
+	runGrpcServer(server, authenticationManager, grpcPort)
 }
 
 func runGrpcGatewayServer(httpPort string) {
@@ -110,48 +101,56 @@ func runGrpcGatewayServer(httpPort string) {
 	// register
 	pb.RegisterUserAuthenticationHandlerFromEndpoint(ctx, runtimeMux, endpoint, grpcOpts)
 	pb.RegisterUserProfileHandlerFromEndpoint(ctx, runtimeMux, endpoint, grpcOpts)
-
-	// routes
-	httpMux := http.NewServeMux()
-
-	httpMux.HandleFunc("/healthy", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})
-
-	httpMux.Handle("/user/login", runtimeMux)
-	httpMux.Handle("/user/register", runtimeMux)
-	httpMux.Handle("/auth/google/callback", runtimeMux)
-	httpMux.Handle("/v1/", middlewares.AuthMiddleware(runtimeMux))
+	pb.RegisterExpenseManagementHandlerFromEndpoint(ctx, runtimeMux, endpoint, grpcOpts)
 
 	// http server
 	log.Printf("grpc-gateway server started on %s:%s", getEnvOrDefault("HOST", "localhost"), httpPort)
-	err := http.ListenAndServe(getEnvOrDefault("HOST", "localhost")+":"+httpPort, httpMux)
+	err := http.ListenAndServe(getEnvOrDefault("HOST", "localhost")+":"+httpPort, runtimeMux)
 	if err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func runGrpcServer(server *apipkg.Server, grpcPort string) {
+func accessibleRoles() map[string][]string {
+	// Register each microservice with the roles that can access it.
+	// The key is the microservice name and the value is the list of roles that can access it.
+	// If the microservice is not registered, then it is accessible by anyone.
+	const (
+		userProfile       = "/apidefinitions.UserProfile/"
+		expenseManagement = "/apidefinitions.ExpenseManagement/"
+	)
+	return map[string][]string{
+		userProfile + "CreateUserProfileAPI":   {"admin", "user"},
+		userProfile + "UpdateUserProfileAPI":   {"admin", "user"},
+		userProfile + "GetUserProfileAPI":      {"admin", "user"},
+		expenseManagement + "CreateExpenseAPI": {"admin", "user"},
+		expenseManagement + "GetExpenseAPI":    {"admin", "user"},
+		expenseManagement + "ListExpensesAPI":  {"admin", "user"},
+		expenseManagement + "DeleteExpenseAPI": {"admin", "user"},
+		expenseManagement + "UpdateExpenseAPI": {"admin", "user"},
+	}
+}
+
+func runGrpcServer(server *apipkg.Server, authenticationManager *auth.AuthenticationManager, grpcPort string) {
 	listener, err := net.Listen("tcp", getEnvOrDefault("HOST", "localhost")+":"+grpcPort)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
+	// create auth interceptor
+	authInterceptor := middlewares.NewAuthInterceptor(authenticationManager, accessibleRoles())
+
 	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-			resp, err := handler(ctx, req)
-			if err != nil {
-				if customErr, ok := status.FromError(err); ok {
-					return nil, customErr.Err()
-				}
-				return nil, status.Error(codes.Internal, err.Error())
-			}
-			return resp, nil
-		}),
+		grpc.ChainUnaryInterceptor(
+			middlewares.GrpcRequestValidator,
+			authInterceptor.GrpcAuthInterceptor(),
+		),
 	)
 
+	//register to GRPC server
 	pb.RegisterUserAuthenticationServer(grpcServer, server)
 	pb.RegisterUserProfileServer(grpcServer, server)
+	pb.RegisterExpenseManagementServer(grpcServer, server)
 	reflection.Register(grpcServer)
 
 	log.Printf("grpc server started on %s:%s", getEnvOrDefault("HOST", "localhost"), grpcPort)

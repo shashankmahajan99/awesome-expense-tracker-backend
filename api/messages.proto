@@ -3,6 +3,7 @@ syntax = "proto3";
 package apidefinitions;
 
 import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "./api;AwesomeExpenseTrackerApi";
 
@@ -57,24 +58,20 @@ message UpdateUserResponse {
 }
 
 message CreateExpenseRequest {
-  string description = 1;
-  double amount = 2;
-  string category = 3;
+  ExpenseObject expense = 1;
 }
 
 message CreateExpenseResponse {
-  string message = 1;
+  string id = 1;
 }
 
 message UpdateExpenseRequest {
   string id = 1;
-  string description = 2;
-  double amount = 3;
-  string category = 4;
+  ExpenseObject expense = 2;
 }
 
 message UpdateExpenseResponse {
-  string message = 1;
+  string id = 1;
 }
 
 message DeleteExpenseRequest {
@@ -82,22 +79,46 @@ message DeleteExpenseRequest {
 }
 
 message DeleteExpenseResponse {
-  string message = 1;
-}
-
-message GetExpensesRequest {
   string id = 1;
 }
 
-message GetExpensesResponse {
-  repeated Expense expenses = 1;
+message GetExpenseRequest {
+  string id = 1;
 }
 
-message Expense {
-  string id = 1;
-  string description = 2;
-  double amount = 3;
-  string category = 4;
+message GetExpenseResponse {
+  ExpenseObject expense = 1;
+}
+
+message ListExpensesRequest {}
+
+message ListExpensesResponse {
+  repeated ExpenseObject expenses = 1;
+}
+
+message ExpenseObject {
+  string description = 1 [
+    (buf.validate.field).string.min_len = 1,
+    (buf.validate.field).string.max_len = 100
+  ];
+  double amount = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).double.gt = 0.0,
+    (buf.validate.field).double.lt = 100000000.0
+  ];
+  string category = 3;
+  google.protobuf.Timestamp date = 4;
+  string tag = 5;
+  string paid_by = 6;
+  string paid_to = 7;
+  string flow = 8 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "flow",
+      message: "flow must be either 'incoming' or 'outgoing'",
+      expression: "this == 'incoming' || this == 'outgoing'",
+    }
+  ];
 }
 
 message GenerateReportRequest {
@@ -171,7 +192,7 @@ message UpdateSettingsRequest {
 }
 
 message UpdateSettingsResponse {
-  string message = 1;
+  string id = 1;
 }
 
 message AuthenticateWithGoogleCallbackRequest {

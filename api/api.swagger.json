@@ -67,144 +67,6 @@
         ]
       }
     },
-    "/expenses": {
-      "get": {
-        "operationId": "ExpenseManagement_GetExpenses",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsGetExpensesResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ExpenseManagement"
-        ]
-      },
-      "post": {
-        "operationId": "ExpenseManagement_CreateExpense",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsCreateExpenseResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsCreateExpenseRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ExpenseManagement"
-        ]
-      }
-    },
-    "/expenses/{id}": {
-      "delete": {
-        "operationId": "ExpenseManagement_DeleteExpense",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsDeleteExpenseResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ExpenseManagement"
-        ]
-      },
-      "put": {
-        "operationId": "ExpenseManagement_UpdateExpense",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/apidefinitionsUpdateExpenseResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "description": {
-                  "type": "string"
-                },
-                "amount": {
-                  "type": "number",
-                  "format": "double"
-                },
-                "category": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "tags": [
-          "ExpenseManagement"
-        ]
-      }
-    },
     "/healthy": {
       "get": {
         "operationId": "HealthCheck_Healthy",
@@ -230,7 +92,7 @@
     },
     "/reports": {
       "post": {
-        "operationId": "Reports_GenerateReport",
+        "operationId": "Reports_GenerateReportAPI",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -262,7 +124,7 @@
     },
     "/settings": {
       "get": {
-        "operationId": "Settings_GetSettings",
+        "operationId": "Settings_GetSettingsAPI",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -290,7 +152,7 @@
         ]
       },
       "put": {
-        "operationId": "Settings_UpdateSettings",
+        "operationId": "Settings_UpdateSettingsAPI",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -322,7 +184,7 @@
     },
     "/user/login": {
       "post": {
-        "operationId": "UserAuthentication_LoginUser",
+        "operationId": "UserAuthentication_LoginUserAPI",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -354,7 +216,7 @@
     },
     "/user/register": {
       "post": {
-        "operationId": "UserAuthentication_RegisterUser",
+        "operationId": "UserAuthentication_RegisterUserAPI",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -384,9 +246,160 @@
         ]
       }
     },
+    "/v1/expense": {
+      "get": {
+        "operationId": "ExpenseManagement_ListExpensesAPI",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsListExpensesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ExpenseManagement"
+        ]
+      },
+      "post": {
+        "operationId": "ExpenseManagement_CreateExpenseAPI",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsCreateExpenseResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsCreateExpenseRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ExpenseManagement"
+        ]
+      }
+    },
+    "/v1/expense/{id}": {
+      "get": {
+        "operationId": "ExpenseManagement_GetExpenseAPI",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsGetExpenseResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ExpenseManagement"
+        ]
+      },
+      "delete": {
+        "operationId": "ExpenseManagement_DeleteExpenseAPI",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsDeleteExpenseResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ExpenseManagement"
+        ]
+      },
+      "put": {
+        "operationId": "ExpenseManagement_UpdateExpenseAPI",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/apidefinitionsUpdateExpenseResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "expense": {
+                  "$ref": "#/definitions/apidefinitionsExpenseObject"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "ExpenseManagement"
+        ]
+      }
+    },
     "/v1/profile/create": {
       "post": {
-        "operationId": "UserProfile_CreateUserProfile",
+        "operationId": "UserProfile_CreateUserProfileAPI",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -418,7 +431,7 @@
     },
     "/v1/profile/get": {
       "post": {
-        "operationId": "UserProfile_GetUserProfile",
+        "operationId": "UserProfile_GetUserProfileAPI",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -450,7 +463,7 @@
     },
     "/v1/profile/update": {
       "put": {
-        "operationId": "UserProfile_UpdateUserProfile",
+        "operationId": "UserProfile_UpdateUserProfileAPI",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -482,7 +495,7 @@
     },
     "/v1/user/delete/{username}": {
       "delete": {
-        "operationId": "UserAuthentication_DeleteUser",
+        "operationId": "UserAuthentication_DeleteUserAPI",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -512,7 +525,7 @@
     },
     "/v1/user/update": {
       "put": {
-        "operationId": "UserAuthentication_UpdateUser",
+        "operationId": "UserAuthentication_UpdateUserAPI",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -547,22 +560,15 @@
     "apidefinitionsCreateExpenseRequest": {
       "type": "object",
       "properties": {
-        "description": {
-          "type": "string"
-        },
-        "amount": {
-          "type": "number",
-          "format": "double"
-        },
-        "category": {
-          "type": "string"
+        "expense": {
+          "$ref": "#/definitions/apidefinitionsExpenseObject"
         }
       }
     },
     "apidefinitionsCreateExpenseResponse": {
       "type": "object",
       "properties": {
-        "message": {
+        "id": {
           "type": "string"
         }
       }
@@ -601,7 +607,7 @@
     "apidefinitionsDeleteExpenseResponse": {
       "type": "object",
       "properties": {
-        "message": {
+        "id": {
           "type": "string"
         }
       }
@@ -614,12 +620,9 @@
         }
       }
     },
-    "apidefinitionsExpense": {
+    "apidefinitionsExpenseObject": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
-        },
         "description": {
           "type": "string"
         },
@@ -628,6 +631,22 @@
           "format": "double"
         },
         "category": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "paidBy": {
+          "type": "string"
+        },
+        "paidTo": {
+          "type": "string"
+        },
+        "flow": {
           "type": "string"
         }
       }
@@ -654,15 +673,11 @@
         }
       }
     },
-    "apidefinitionsGetExpensesResponse": {
+    "apidefinitionsGetExpenseResponse": {
       "type": "object",
       "properties": {
-        "expenses": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/apidefinitionsExpense"
-          }
+        "expense": {
+          "$ref": "#/definitions/apidefinitionsExpenseObject"
         }
       }
     },
@@ -696,6 +711,18 @@
         },
         "bio": {
           "type": "string"
+        }
+      }
+    },
+    "apidefinitionsListExpensesResponse": {
+      "type": "object",
+      "properties": {
+        "expenses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/apidefinitionsExpenseObject"
+          }
         }
       }
     },
@@ -756,7 +783,7 @@
     "apidefinitionsUpdateExpenseResponse": {
       "type": "object",
       "properties": {
-        "message": {
+        "id": {
           "type": "string"
         }
       }
@@ -778,7 +805,7 @@
     "apidefinitionsUpdateSettingsResponse": {
       "type": "object",
       "properties": {
-        "message": {
+        "id": {
           "type": "string"
         }
       }

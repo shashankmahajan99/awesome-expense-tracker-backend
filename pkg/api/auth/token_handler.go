@@ -1,3 +1,4 @@
+// Package auth is a package that contains authentication and authorization related code.
 package auth
 
 import (
@@ -7,26 +8,12 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	apipkg "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api"
 	"google.golang.org/api/idtoken"
 )
 
-// TokenHandler is a handler for token requests.
-type TokenHandler struct {
-}
-
-// NewTokenHandler creates a new token handler.
-func NewTokenHandler() *TokenHandler {
-	return &TokenHandler{}
-}
-
-type TokenClaims struct {
-	Email string `json:"email"`
-}
-
 // ValidateToken validates a token.
-func (h *TokenHandler) ValidateToken(ctx context.Context, config *apipkg.Config, encodedToken string) (verifiedClaims *TokenClaims, err error) {
-	verifiedClaims = &TokenClaims{}
+func (authenticationManager *AuthenticationManager) ValidateToken(ctx context.Context, encodedToken string) (verifiedClaims *UserClaims, err error) {
+	verifiedClaims = &UserClaims{}
 	unverifiedClaims, err := jwt.Parse(encodedToken, nil)
 	// ignore if token signature is invalid or token is unverifiable
 	if err != nil && !(strings.Contains(err.Error(), jwt.ErrSignatureInvalid.Error()) || strings.Contains(err.Error(), jwt.ErrTokenUnverifiable.Error())) {
@@ -42,9 +29,12 @@ func (h *TokenHandler) ValidateToken(ctx context.Context, config *apipkg.Config,
 	}
 
 	issuer, err := unverifiedClaims.Claims.GetIssuer()
+	if err != nil {
+		return nil, err
+	}
 	if issuer == "awesome-expense-tracker" {
 		verifyToken, err := jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
-			return config.JwtKey, nil
+			return authenticationManager.jwtKey, nil
 		})
 		if err != nil {
 			return nil, err
@@ -53,6 +43,8 @@ func (h *TokenHandler) ValidateToken(ctx context.Context, config *apipkg.Config,
 			return nil, errors.New("token is invalid")
 		}
 		verifiedClaims.Email = unverifiedClaims.Claims.(jwt.MapClaims)["email"].(string)
+		verifiedClaims.Role = unverifiedClaims.Claims.(jwt.MapClaims)["role"].(string)
+		verifiedClaims.Issuer = issuer
 	} else {
 		audience, err := unverifiedClaims.Claims.GetAudience()
 		if err != nil {
@@ -64,6 +56,8 @@ func (h *TokenHandler) ValidateToken(ctx context.Context, config *apipkg.Config,
 			return nil, err
 		}
 		verifiedClaims.Email = validPaylod.Claims["email"].(string)
+		verifiedClaims.Role = "admin"
+		verifiedClaims.Issuer = issuer
 	}
 
 	return verifiedClaims, nil
