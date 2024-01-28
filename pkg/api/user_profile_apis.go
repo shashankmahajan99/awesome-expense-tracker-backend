@@ -12,13 +12,13 @@ import (
 
 // UserProfileServer is the interface that provides user profile methods.
 type UserProfileServer interface {
-	GetUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.GetUserProfileRequest) (*AwesomeExpenseTrackerApi.GetUserProfileResponse, error)
-	CreateUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.CreateUserProfileRequest) (*AwesomeExpenseTrackerApi.CreateUserProfileResponse, error)
-	UpdateUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserProfileRequest) (*AwesomeExpenseTrackerApi.UpdateUserProfileResponse, error)
+	GetUserProfile(ctx context.Context, req *AwesomeExpenseTrackerApi.GetUserProfileRequest) (*AwesomeExpenseTrackerApi.GetUserProfileResponse, error)
+	CreateUserProfile(ctx context.Context, req *AwesomeExpenseTrackerApi.CreateUserProfileRequest) (*AwesomeExpenseTrackerApi.CreateUserProfileResponse, error)
+	UpdateUserProfile(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserProfileRequest) (*AwesomeExpenseTrackerApi.UpdateUserProfileResponse, error)
 }
 
-// GetUserProfileAPI gets a user profile.
-func (s *Server) GetUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.GetUserProfileRequest) (res *AwesomeExpenseTrackerApi.GetUserProfileResponse, err error) {
+// GetUserProfile gets a user profile.
+func (s *Server) GetUserProfile(ctx context.Context, req *AwesomeExpenseTrackerApi.GetUserProfileRequest) (res *AwesomeExpenseTrackerApi.GetUserProfileResponse, err error) {
 	res = &AwesomeExpenseTrackerApi.GetUserProfileResponse{}
 
 	userProfileResult, err := s.store.ListProfileByEmail(ctx, req.Email)
@@ -32,8 +32,8 @@ func (s *Server) GetUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrack
 	return res, nil
 }
 
-// CreateUserProfileAPI creates a new user profile.
-func (s *Server) CreateUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.CreateUserProfileRequest) (res *AwesomeExpenseTrackerApi.CreateUserProfileResponse, err error) {
+// CreateUserProfile creates a new user profile.
+func (s *Server) CreateUserProfile(ctx context.Context, req *AwesomeExpenseTrackerApi.CreateUserProfileRequest) (res *AwesomeExpenseTrackerApi.CreateUserProfileResponse, err error) {
 	res = &AwesomeExpenseTrackerApi.CreateUserProfileResponse{}
 
 	// Check if user profile already exists
@@ -62,8 +62,8 @@ func (s *Server) CreateUserProfileAPI(ctx context.Context, req *AwesomeExpenseTr
 	return res, nil
 }
 
-// UpdateUserProfileAPI updates a user profile.
-func (s *Server) UpdateUserProfileAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserProfileRequest) (res *AwesomeExpenseTrackerApi.UpdateUserProfileResponse, err error) {
+// UpdateUserProfile updates a user profile.
+func (s *Server) UpdateUserProfile(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserProfileRequest) (res *AwesomeExpenseTrackerApi.UpdateUserProfileResponse, err error) {
 	res = &AwesomeExpenseTrackerApi.UpdateUserProfileResponse{}
 
 	// Check if user profile doesn't exists

@@ -2,26 +2,28 @@ package apipkg
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
 	"net/http"
-	"strconv"
 
 	AwesomeExpenseTrackerApi "github.com/shashankmahajan99/awesome-expense-tracker-backend/api"
 	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
 	failuremanagement "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/failure_management"
 	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/utils"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // ExpenseMgmtServer is the interface that provides expense management methods.
 type ExpenseMgmtServer interface {
-	CreateExpenseAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.CreateExpenseRequest) (*AwesomeExpenseTrackerApi.CreateExpenseResponse, error)
-	GetExpenseAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.GetExpenseRequest) (*AwesomeExpenseTrackerApi.GetExpenseResponse, error)
-	ListExpensesAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.ListExpensesRequest) (*AwesomeExpenseTrackerApi.ListExpensesResponse, error)
-	DeleteExpenseAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteExpenseRequest) (*AwesomeExpenseTrackerApi.DeleteExpenseResponse, error)
-	UpdateExpenseAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateExpenseRequest) (*AwesomeExpenseTrackerApi.UpdateExpenseResponse, error)
+	CreateExpense(ctx context.Context, req *AwesomeExpenseTrackerApi.CreateExpenseRequest) (*AwesomeExpenseTrackerApi.CreateExpenseResponse, error)
+	GetExpense(ctx context.Context, req *AwesomeExpenseTrackerApi.GetExpenseRequest) (*AwesomeExpenseTrackerApi.GetExpenseResponse, error)
+	ListExpenses(ctx context.Context, req *AwesomeExpenseTrackerApi.ListExpensesRequest) (*AwesomeExpenseTrackerApi.ListExpensesResponse, error)
+	DeleteExpense(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteExpenseRequest) (*AwesomeExpenseTrackerApi.DeleteExpenseResponse, error)
+	UpdateExpense(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateExpenseRequest) (*AwesomeExpenseTrackerApi.UpdateExpenseResponse, error)
 }
 
-// CreateExpenseAPI creates a new expense.
-func (s *Server) CreateExpenseAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.CreateExpenseRequest) (res *AwesomeExpenseTrackerApi.CreateExpenseResponse, err error) {
+// CreateExpense creates a new expense.
+func (s *Server) CreateExpense(ctx context.Context, req *AwesomeExpenseTrackerApi.CreateExpenseRequest) (res *AwesomeExpenseTrackerApi.CreateExpenseResponse, err error) {
 	res = &AwesomeExpenseTrackerApi.CreateExpenseResponse{}
 	userEmail, ok := ctx.Value(utils.EmailKey).(string)
 	if !ok {
@@ -39,37 +41,140 @@ func (s *Server) CreateExpenseAPI(ctx context.Context, req *AwesomeExpenseTracke
 		PaidBy:      req.Expense.PaidBy,
 		Flow:        req.Expense.Flow,
 	}
-	expenseResult, err := s.store.CreateExpense(ctx, createExpenseParams)
+	expenseResult, err := s.store.AddExpense(ctx, createExpenseParams)
 	if err != nil {
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to create expense: "+err.Error(), http.StatusInternalServerError)
 	}
 
-	expenseID, err := expenseResult.LastInsertId()
-	if err != nil {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to get expense id: "+err.Error(), http.StatusInternalServerError)
-	}
-
-	res.Id = strconv.FormatInt(expenseID, 10)
+	res.Id = expenseResult.ID
 
 	return res, nil
 }
 
-func (s *Server) GetExpenseAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.GetExpenseRequest) (res *AwesomeExpenseTrackerApi.GetExpenseResponse, err error) {
+// GetExpense gets an expense.
+func (s *Server) GetExpense(ctx context.Context, req *AwesomeExpenseTrackerApi.GetExpenseRequest) (res *AwesomeExpenseTrackerApi.GetExpenseResponse, err error) {
+	res = &AwesomeExpenseTrackerApi.GetExpenseResponse{}
+	userEmail, ok := ctx.Value(utils.EmailKey).(string)
+	if !ok {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to get user email: "+err.Error(), http.StatusInternalServerError)
+	}
+
+	// get expense
+	getExpenseByIDParams := db.GetExpenseByIdParams{
+		Email: userEmail,
+		ID:    int32(req.Id),
+	}
+	expenseResult, err := s.store.ListExpenseByID(ctx, getExpenseByIDParams)
+	if err != nil {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to get expense: "+err.Error(), http.StatusInternalServerError)
+	}
+
+	res.Expense = &AwesomeExpenseTrackerApi.ExpenseObject{
+		Amount:      expenseResult.Amount,
+		Description: expenseResult.Description,
+		Date:        timestamppb.New(expenseResult.TxDate),
+		Tag:         expenseResult.Tag,
+		Category:    expenseResult.Category,
+		PaidTo:      expenseResult.PaidTo,
+		PaidBy:      expenseResult.PaidBy,
+		Flow:        expenseResult.Flow,
+	}
 
 	return nil, nil
 }
 
-func (s *Server) ListExpensesAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.ListExpensesRequest) (res *AwesomeExpenseTrackerApi.ListExpensesResponse, err error) {
+// ListExpenses gets all expenses.
+func (s *Server) ListExpenses(ctx context.Context, _ *AwesomeExpenseTrackerApi.ListExpensesRequest) (res *AwesomeExpenseTrackerApi.ListExpensesResponse, err error) {
+	res = &AwesomeExpenseTrackerApi.ListExpensesResponse{}
+	userEmail, ok := ctx.Value(utils.EmailKey).(string)
+	if !ok {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to get user email: "+err.Error(), http.StatusInternalServerError)
+	}
 
-	return nil, nil
+	// get expense
+	expenseResult, err := s.store.ListExpenseByEmail(ctx, userEmail)
+	if err != nil {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to get expense: "+err.Error(), http.StatusInternalServerError)
+	}
+
+	expenseList := make([]*AwesomeExpenseTrackerApi.ExpenseObject, 0, len(expenseResult))
+	for _, expense := range expenseResult {
+		expenseList = append(expenseList, &AwesomeExpenseTrackerApi.ExpenseObject{
+			Amount:      expense.Amount,
+			Description: expense.Description,
+			Date:        timestamppb.New(expense.TxDate),
+			Tag:         expense.Tag,
+			Category:    expense.Category,
+			PaidTo:      expense.PaidTo,
+			PaidBy:      expense.PaidBy,
+			Flow:        expense.Flow,
+		})
+	}
+
+	res.Expenses = expenseList
+
+	return res, nil
 }
 
-func (s *Server) DeleteExpenseAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteExpenseRequest) (res *AwesomeExpenseTrackerApi.DeleteExpenseResponse, err error) {
+// DeleteExpense deletes an expense.
+func (s *Server) DeleteExpense(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteExpenseRequest) (res *AwesomeExpenseTrackerApi.DeleteExpenseResponse, err error) {
+	res = &AwesomeExpenseTrackerApi.DeleteExpenseResponse{}
+	userEmail, ok := ctx.Value(utils.EmailKey).(string)
+	if !ok {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to get user email: "+err.Error(), http.StatusInternalServerError)
+	}
 
-	return nil, nil
+	// delete expense
+	numberOfRows, err := s.store.RemoveExpense(ctx, db.DeleteExpenseParams{
+		Email: userEmail,
+		ID:    int32(req.Id),
+	})
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "expense doesn't exists", http.StatusBadRequest)
+		}
+
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to delete expense: "+err.Error(), http.StatusInternalServerError)
+	}
+
+	if numberOfRows == 0 {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, fmt.Sprintf("expense with id %d doesn't exists", req.Id), http.StatusBadRequest)
+	}
+	res.Id = int32(req.Id)
+	return res, nil
 }
 
-func (s *Server) UpdateExpenseAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateExpenseRequest) (res *AwesomeExpenseTrackerApi.UpdateExpenseResponse, err error) {
+// UpdateExpense updates an expense.
+func (s *Server) UpdateExpense(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateExpenseRequest) (res *AwesomeExpenseTrackerApi.UpdateExpenseResponse, err error) {
+	res = &AwesomeExpenseTrackerApi.UpdateExpenseResponse{}
+	userEmail, ok := ctx.Value(utils.EmailKey).(string)
+	if !ok {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to get user email: "+err.Error(), http.StatusInternalServerError)
+	}
 
-	return nil, nil
+	// update expense
+	updateExpenseParams := db.UpdateExpenseParams{
+		Amount:      req.Expense.Amount,
+		Description: req.Expense.Description,
+		TxDate:      req.Expense.Date.AsTime(),
+		Tag:         req.Expense.Tag,
+		Email:       userEmail,
+		Category:    req.Expense.Category,
+		PaidTo:      req.Expense.PaidTo,
+		PaidBy:      req.Expense.PaidBy,
+		Flow:        req.Expense.Flow,
+		ID:          int32(req.Id),
+	}
+	expenseResult, err := s.store.ModifyExpense(ctx, updateExpenseParams)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "expense doesn't exists", http.StatusBadRequest)
+		}
+
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to update expense: "+err.Error(), http.StatusInternalServerError)
+	}
+
+	res.Id = expenseResult.ID
+
+	return res, nil
 }

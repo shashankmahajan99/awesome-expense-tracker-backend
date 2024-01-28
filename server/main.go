@@ -120,14 +120,14 @@ func accessibleRoles() map[string][]string {
 		expenseManagement = "/apidefinitions.ExpenseManagement/"
 	)
 	return map[string][]string{
-		userProfile + "CreateUserProfileAPI":   {"admin", "user"},
-		userProfile + "UpdateUserProfileAPI":   {"admin", "user"},
-		userProfile + "GetUserProfileAPI":      {"admin", "user"},
-		expenseManagement + "CreateExpenseAPI": {"admin", "user"},
-		expenseManagement + "GetExpenseAPI":    {"admin", "user"},
-		expenseManagement + "ListExpensesAPI":  {"admin", "user"},
-		expenseManagement + "DeleteExpenseAPI": {"admin", "user"},
-		expenseManagement + "UpdateExpenseAPI": {"admin", "user"},
+		userProfile + "CreateUserProfile":   {"admin", "user"},
+		userProfile + "UpdateUserProfile":   {"admin", "user"},
+		userProfile + "GetUserProfile":      {"admin", "user"},
+		expenseManagement + "CreateExpense": {"admin", "user"},
+		expenseManagement + "GetExpense":    {"admin", "user"},
+		expenseManagement + "ListExpenses":  {"admin", "user"},
+		expenseManagement + "DeleteExpense": {"admin", "user"},
+		expenseManagement + "UpdateExpense": {"admin", "user"},
 	}
 }
 

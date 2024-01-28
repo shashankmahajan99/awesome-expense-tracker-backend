@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Users (
 CREATE TABLE IF NOT EXISTS Expenses (
     id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     user_id INT NOT NULL,
-    amount FLOAT(10, 2) NOT NULL,
+    amount FLOAT(2) NOT NULL,
     description VARCHAR(100) NOT NULL,
     category VARCHAR(255) NOT NULL,
     tx_date DATE NOT NULL,

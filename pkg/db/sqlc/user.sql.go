@@ -41,14 +41,17 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (sql.Res
 	return q.db.ExecContext(ctx, createUser, arg.Username, arg.Password, arg.Email)
 }
 
-const deleteUser = `-- name: DeleteUser :exec
+const deleteUser = `-- name: DeleteUser :execrows
 DELETE FROM Users
 WHERE username = ?
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, username string) error {
-	_, err := q.db.ExecContext(ctx, deleteUser, username)
-	return err
+func (q *Queries) DeleteUser(ctx context.Context, username string) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteUser, username)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
@@ -150,7 +153,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 	return items, nil
 }
 
-const updateUserPassword = `-- name: UpdateUserPassword :exec
+const updateUserPassword = `-- name: UpdateUserPassword :execresult
 UPDATE Users
 SET
   password = ?
@@ -162,12 +165,11 @@ type UpdateUserPasswordParams struct {
 	Email    string `json:"email"`
 }
 
-func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error {
-	_, err := q.db.ExecContext(ctx, updateUserPassword, arg.Password, arg.Email)
-	return err
+func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, updateUserPassword, arg.Password, arg.Email)
 }
 
-const updateUserUsername = `-- name: UpdateUserUsername :exec
+const updateUserUsername = `-- name: UpdateUserUsername :execresult
 UPDATE Users
 SET
   username = ?
@@ -179,7 +181,6 @@ type UpdateUserUsernameParams struct {
 	Email    string `json:"email"`
 }
 
-func (q *Queries) UpdateUserUsername(ctx context.Context, arg UpdateUserUsernameParams) error {
-	_, err := q.db.ExecContext(ctx, updateUserUsername, arg.Username, arg.Email)
-	return err
+func (q *Queries) UpdateUserUsername(ctx context.Context, arg UpdateUserUsernameParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, updateUserUsername, arg.Username, arg.Email)
 }

@@ -2,6 +2,7 @@ package apipkg
 
 import (
 	"context"
+	"database/sql"
 	"log"
 	"net/http"
 
@@ -22,15 +23,15 @@ type authenticateWithGoogleResponse struct {
 
 // UserAuthServer is the server API for UserAuthentication service.
 type UserAuthServer interface {
-	LoginUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.LoginUserRequest) (*AwesomeExpenseTrackerApi.OAuth2Token, error)
-	RegisterUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.RegisterUserRequest) (*AwesomeExpenseTrackerApi.OAuth2Token, error)
-	DeleteUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteUserRequest) (*AwesomeExpenseTrackerApi.DeleteUserResponse, error)
-	UpdateUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserRequest) (*AwesomeExpenseTrackerApi.UpdateUserResponse, error)
+	LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.LoginUserRequest) (*AwesomeExpenseTrackerApi.OAuth2Token, error)
+	RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi.RegisterUserRequest) (*AwesomeExpenseTrackerApi.OAuth2Token, error)
+	DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteUserRequest) (*AwesomeExpenseTrackerApi.DeleteUserResponse, error)
+	UpdateUser(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserRequest) (*AwesomeExpenseTrackerApi.UpdateUserResponse, error)
 	AuthenticateWithGoogleCallback(ctx context.Context, req *AwesomeExpenseTrackerApi.AuthenticateWithGoogleCallbackRequest) (*AwesomeExpenseTrackerApi.OAuth2Token, error)
 }
 
-// LoginUserAPI logs in a user.
-func (s *Server) LoginUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.LoginUserRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
+// LoginUser logs in a user.
+func (s *Server) LoginUser(ctx context.Context, req *AwesomeExpenseTrackerApi.LoginUserRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
 
 	if req.AuthProvider == utils.GoogleAuthProvider {
 		gcpOauthRes, _ := s.authenticateWithGoogle(ctx)
@@ -77,8 +78,8 @@ func (s *Server) LoginUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi
 	return res, nil
 }
 
-// RegisterUserAPI registers a user.
-func (s *Server) RegisterUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.RegisterUserRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
+// RegisterUser registers a user.
+func (s *Server) RegisterUser(ctx context.Context, req *AwesomeExpenseTrackerApi.RegisterUserRequest) (res *AwesomeExpenseTrackerApi.OAuth2Token, err error) {
 	res = &AwesomeExpenseTrackerApi.OAuth2Token{}
 
 	// validate custom registration details
@@ -144,8 +145,8 @@ func (s *Server) RegisterUserAPI(ctx context.Context, req *AwesomeExpenseTracker
 	return res, nil
 }
 
-// DeleteUserAPI deletes a user.
-func (s *Server) DeleteUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteUserRequest) (res *AwesomeExpenseTrackerApi.DeleteUserResponse, err error) {
+// DeleteUser deletes a user.
+func (s *Server) DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.DeleteUserRequest) (res *AwesomeExpenseTrackerApi.DeleteUserResponse, err error) {
 	// Add user deletion logic here
 	user, err := s.store.ListUserByUsername(ctx, req.Username)
 	if err != nil {
@@ -156,9 +157,17 @@ func (s *Server) DeleteUserAPI(ctx context.Context, req *AwesomeExpenseTrackerAp
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "username doesn't exist", http.StatusBadRequest)
 	}
 
-	err = s.store.DeleteUser(ctx, req.Username)
+	numberOfRows, err := s.store.DeleteUser(ctx, req.Username)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "user doesn't exist", http.StatusBadRequest)
+		}
+
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
+	}
+
+	if numberOfRows == 0 {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "user doesn't exist", http.StatusBadRequest)
 	}
 
 	res = &AwesomeExpenseTrackerApi.DeleteUserResponse{}
@@ -167,8 +176,8 @@ func (s *Server) DeleteUserAPI(ctx context.Context, req *AwesomeExpenseTrackerAp
 	return res, nil
 }
 
-// UpdateUserAPI updates a user.
-func (s *Server) UpdateUserAPI(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserRequest) (res *AwesomeExpenseTrackerApi.UpdateUserResponse, err error) {
+// UpdateUser updates a user.
+func (s *Server) UpdateUser(ctx context.Context, req *AwesomeExpenseTrackerApi.UpdateUserRequest) (res *AwesomeExpenseTrackerApi.UpdateUserResponse, err error) {
 	res = &AwesomeExpenseTrackerApi.UpdateUserResponse{}
 
 	if req.NewPassword == "" && req.NewUsername == "" {
@@ -219,6 +228,10 @@ func (s *Server) UpdateUserAPI(ctx context.Context, req *AwesomeExpenseTrackerAp
 		updateUserParams.Password = string(hashedPassword)
 		err = s.store.ModifyUserPassword(ctx, updateUserParams)
 		if err != nil {
+			if err == sql.ErrNoRows {
+				return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "user doesn't exist", http.StatusBadRequest)
+			}
+
 			return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
 		}
 	}

@@ -19,24 +19,24 @@ service HealthCheck {
 
 // User Authentication API
 service UserAuthentication {
-  rpc LoginUserAPI(LoginUserRequest) returns (OAuth2Token) {
+  rpc LoginUser(LoginUserRequest) returns (OAuth2Token) {
     option (google.api.http) = {
       post: "/user/login"
       body: "*"
     };
   }
-  rpc RegisterUserAPI(RegisterUserRequest) returns (OAuth2Token) {
+  rpc RegisterUser(RegisterUserRequest) returns (OAuth2Token) {
     option (google.api.http) = {
       post: "/user/register"
       body: "*"
     };
   }
-  rpc DeleteUserAPI(DeleteUserRequest) returns (DeleteUserResponse) {
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
     option (google.api.http) = {
       delete: "/v1/user/delete/{username}"
     };
   }
-  rpc UpdateUserAPI(UpdateUserRequest) returns (UpdateUserResponse) {
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
     option (google.api.http) = {
       put: "/v1/user/update"
       body: "*"
@@ -52,29 +52,29 @@ service UserAuthentication {
 
 // Expense Management API
 service ExpenseManagement {
-  rpc CreateExpenseAPI(CreateExpenseRequest) returns (CreateExpenseResponse) {
+  rpc CreateExpense(CreateExpenseRequest) returns (CreateExpenseResponse) {
     option (google.api.http) = {
       post: "/v1/expense"
       body: "*"
     };
   }
-  rpc UpdateExpenseAPI(UpdateExpenseRequest) returns (UpdateExpenseResponse) {
+  rpc UpdateExpense(UpdateExpenseRequest) returns (UpdateExpenseResponse) {
     option (google.api.http) = {
       put: "/v1/expense/{id}"
       body: "*"
     };
   }
-  rpc DeleteExpenseAPI(DeleteExpenseRequest) returns (DeleteExpenseResponse) {
+  rpc DeleteExpense(DeleteExpenseRequest) returns (DeleteExpenseResponse) {
     option (google.api.http) = {
       delete: "/v1/expense/{id}"
     };
   }
-  rpc ListExpensesAPI(ListExpensesRequest) returns (ListExpensesResponse) {
+  rpc ListExpenses(ListExpensesRequest) returns (ListExpensesResponse) {
     option (google.api.http) = {
       get: "/v1/expense"
     };
   }
-  rpc GetExpenseAPI(GetExpenseRequest) returns (GetExpenseResponse) {
+  rpc GetExpense(GetExpenseRequest) returns (GetExpenseResponse) {
     option (google.api.http) = {
       get: "/v1/expense/{id}"
     };
@@ -83,8 +83,7 @@ service ExpenseManagement {
 
 // Reports API
 service Reports {
-  rpc GenerateReportAPI(GenerateReportRequest)
-      returns (GenerateReportResponse) {
+  rpc GenerateReport(GenerateReportRequest) returns (GenerateReportResponse) {
     option (google.api.http) = {
       post: "/reports"
       body: "*"
@@ -94,21 +93,20 @@ service Reports {
 
 // User Profile API
 service UserProfile {
-  rpc GetUserProfileAPI(GetUserProfileRequest)
-      returns (GetUserProfileResponse) {
+  rpc GetUserProfile(GetUserProfileRequest) returns (GetUserProfileResponse) {
     option (google.api.http) = {
       post: "/v1/profile/get"
       body: "*"
     };
   }
-  rpc UpdateUserProfileAPI(UpdateUserProfileRequest)
+  rpc UpdateUserProfile(UpdateUserProfileRequest)
       returns (UpdateUserProfileResponse) {
     option (google.api.http) = {
       put: "/v1/profile/update"
       body: "*"
     };
   }
-  rpc CreateUserProfileAPI(CreateUserProfileRequest)
+  rpc CreateUserProfile(CreateUserProfileRequest)
       returns (CreateUserProfileResponse) {
     option (google.api.http) = {
       post: "/v1/profile/create"
@@ -119,13 +117,12 @@ service UserProfile {
 
 // Settings API
 service Settings {
-  rpc GetSettingsAPI(GetSettingsRequest) returns (GetSettingsResponse) {
+  rpc GetSettings(GetSettingsRequest) returns (GetSettingsResponse) {
     option (google.api.http) = {
       get: "/settings"
     };
   }
-  rpc UpdateSettingsAPI(UpdateSettingsRequest)
-      returns (UpdateSettingsResponse) {
+  rpc UpdateSettings(UpdateSettingsRequest) returns (UpdateSettingsResponse) {
     option (google.api.http) = {
       put: "/settings"
       body: "*"

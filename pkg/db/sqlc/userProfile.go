@@ -17,12 +17,7 @@ func (store *MySQLStore) ListProfileByEmail(ctx context.Context, email string) (
 		}
 		return result, err
 	}
-	result.Bio = res.Bio
-	result.ProfileName = res.ProfileName
-	result.ProfilePicture = res.ProfilePicture
-	result.UserID = res.UserID
-	result.CreatedAt = res.CreatedAt
-	result.UpdatedAt = res.UpdatedAt
+	result = res.Profile
 
 	return result, nil
 }
@@ -78,12 +73,7 @@ func (store *MySQLStore) ModifyProfileBio(ctx context.Context, arg UpdateProfile
 	if err != nil {
 		return result, err
 	}
-	result.Bio = res.Bio
-	result.ProfileName = res.ProfileName
-	result.ProfilePicture = res.ProfilePicture
-	result.UserID = res.UserID
-	result.CreatedAt = res.CreatedAt
-	result.UpdatedAt = res.UpdatedAt
+	result = res.Profile
 
 	return result, nil
 }
@@ -112,12 +102,7 @@ func (store *MySQLStore) ModifyProfilePicture(ctx context.Context, arg UpdatePro
 	if err != nil {
 		return result, err
 	}
-	result.Bio = res.Bio
-	result.ProfileName = res.ProfileName
-	result.ProfilePicture = res.ProfilePicture
-	result.UserID = res.UserID
-	result.CreatedAt = res.CreatedAt
-	result.UpdatedAt = res.UpdatedAt
+	result = res.Profile
 
 	return result, nil
 }
@@ -146,12 +131,7 @@ func (store *MySQLStore) ModifyProfileName(ctx context.Context, arg UpdateProfil
 	if err != nil {
 		return result, err
 	}
-	result.Bio = res.Bio
-	result.ProfileName = res.ProfileName
-	result.ProfilePicture = res.ProfilePicture
-	result.UserID = res.UserID
-	result.CreatedAt = res.CreatedAt
-	result.UpdatedAt = res.UpdatedAt
+	result = res.Profile
 
 	return result, nil
 }

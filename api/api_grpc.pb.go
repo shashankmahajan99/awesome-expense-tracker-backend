@@ -105,10 +105,10 @@ var HealthCheck_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserAuthenticationClient interface {
-	LoginUserAPI(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*OAuth2Token, error)
-	RegisterUserAPI(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*OAuth2Token, error)
-	DeleteUserAPI(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
-	UpdateUserAPI(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
+	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*OAuth2Token, error)
+	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*OAuth2Token, error)
+	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	AuthenticateWithGoogleCallback(ctx context.Context, in *AuthenticateWithGoogleCallbackRequest, opts ...grpc.CallOption) (*OAuth2Token, error)
 }
 
@@ -120,36 +120,36 @@ func NewUserAuthenticationClient(cc grpc.ClientConnInterface) UserAuthentication
 	return &userAuthenticationClient{cc}
 }
 
-func (c *userAuthenticationClient) LoginUserAPI(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*OAuth2Token, error) {
+func (c *userAuthenticationClient) LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*OAuth2Token, error) {
 	out := new(OAuth2Token)
-	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/LoginUserAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/LoginUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userAuthenticationClient) RegisterUserAPI(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*OAuth2Token, error) {
+func (c *userAuthenticationClient) RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*OAuth2Token, error) {
 	out := new(OAuth2Token)
-	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/RegisterUserAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/RegisterUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userAuthenticationClient) DeleteUserAPI(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error) {
+func (c *userAuthenticationClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error) {
 	out := new(DeleteUserResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/DeleteUserAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/DeleteUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userAuthenticationClient) UpdateUserAPI(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error) {
+func (c *userAuthenticationClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error) {
 	out := new(UpdateUserResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/UpdateUserAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.UserAuthentication/UpdateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -169,10 +169,10 @@ func (c *userAuthenticationClient) AuthenticateWithGoogleCallback(ctx context.Co
 // All implementations must embed UnimplementedUserAuthenticationServer
 // for forward compatibility
 type UserAuthenticationServer interface {
-	LoginUserAPI(context.Context, *LoginUserRequest) (*OAuth2Token, error)
-	RegisterUserAPI(context.Context, *RegisterUserRequest) (*OAuth2Token, error)
-	DeleteUserAPI(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
-	UpdateUserAPI(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
+	LoginUser(context.Context, *LoginUserRequest) (*OAuth2Token, error)
+	RegisterUser(context.Context, *RegisterUserRequest) (*OAuth2Token, error)
+	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	AuthenticateWithGoogleCallback(context.Context, *AuthenticateWithGoogleCallbackRequest) (*OAuth2Token, error)
 	mustEmbedUnimplementedUserAuthenticationServer()
 }
@@ -181,17 +181,17 @@ type UserAuthenticationServer interface {
 type UnimplementedUserAuthenticationServer struct {
 }
 
-func (UnimplementedUserAuthenticationServer) LoginUserAPI(context.Context, *LoginUserRequest) (*OAuth2Token, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LoginUserAPI not implemented")
+func (UnimplementedUserAuthenticationServer) LoginUser(context.Context, *LoginUserRequest) (*OAuth2Token, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginUser not implemented")
 }
-func (UnimplementedUserAuthenticationServer) RegisterUserAPI(context.Context, *RegisterUserRequest) (*OAuth2Token, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterUserAPI not implemented")
+func (UnimplementedUserAuthenticationServer) RegisterUser(context.Context, *RegisterUserRequest) (*OAuth2Token, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterUser not implemented")
 }
-func (UnimplementedUserAuthenticationServer) DeleteUserAPI(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserAPI not implemented")
+func (UnimplementedUserAuthenticationServer) DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
-func (UnimplementedUserAuthenticationServer) UpdateUserAPI(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserAPI not implemented")
+func (UnimplementedUserAuthenticationServer) UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
 func (UnimplementedUserAuthenticationServer) AuthenticateWithGoogleCallback(context.Context, *AuthenticateWithGoogleCallbackRequest) (*OAuth2Token, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateWithGoogleCallback not implemented")
@@ -209,74 +209,74 @@ func RegisterUserAuthenticationServer(s grpc.ServiceRegistrar, srv UserAuthentic
 	s.RegisterService(&UserAuthentication_ServiceDesc, srv)
 }
 
-func _UserAuthentication_LoginUserAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserAuthentication_LoginUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LoginUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAuthenticationServer).LoginUserAPI(ctx, in)
+		return srv.(UserAuthenticationServer).LoginUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.UserAuthentication/LoginUserAPI",
+		FullMethod: "/apidefinitions.UserAuthentication/LoginUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAuthenticationServer).LoginUserAPI(ctx, req.(*LoginUserRequest))
+		return srv.(UserAuthenticationServer).LoginUser(ctx, req.(*LoginUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserAuthentication_RegisterUserAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserAuthentication_RegisterUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RegisterUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAuthenticationServer).RegisterUserAPI(ctx, in)
+		return srv.(UserAuthenticationServer).RegisterUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.UserAuthentication/RegisterUserAPI",
+		FullMethod: "/apidefinitions.UserAuthentication/RegisterUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAuthenticationServer).RegisterUserAPI(ctx, req.(*RegisterUserRequest))
+		return srv.(UserAuthenticationServer).RegisterUser(ctx, req.(*RegisterUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserAuthentication_DeleteUserAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserAuthentication_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAuthenticationServer).DeleteUserAPI(ctx, in)
+		return srv.(UserAuthenticationServer).DeleteUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.UserAuthentication/DeleteUserAPI",
+		FullMethod: "/apidefinitions.UserAuthentication/DeleteUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAuthenticationServer).DeleteUserAPI(ctx, req.(*DeleteUserRequest))
+		return srv.(UserAuthenticationServer).DeleteUser(ctx, req.(*DeleteUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserAuthentication_UpdateUserAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserAuthentication_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAuthenticationServer).UpdateUserAPI(ctx, in)
+		return srv.(UserAuthenticationServer).UpdateUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.UserAuthentication/UpdateUserAPI",
+		FullMethod: "/apidefinitions.UserAuthentication/UpdateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAuthenticationServer).UpdateUserAPI(ctx, req.(*UpdateUserRequest))
+		return srv.(UserAuthenticationServer).UpdateUser(ctx, req.(*UpdateUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -307,20 +307,20 @@ var UserAuthentication_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserAuthenticationServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "LoginUserAPI",
-			Handler:    _UserAuthentication_LoginUserAPI_Handler,
+			MethodName: "LoginUser",
+			Handler:    _UserAuthentication_LoginUser_Handler,
 		},
 		{
-			MethodName: "RegisterUserAPI",
-			Handler:    _UserAuthentication_RegisterUserAPI_Handler,
+			MethodName: "RegisterUser",
+			Handler:    _UserAuthentication_RegisterUser_Handler,
 		},
 		{
-			MethodName: "DeleteUserAPI",
-			Handler:    _UserAuthentication_DeleteUserAPI_Handler,
+			MethodName: "DeleteUser",
+			Handler:    _UserAuthentication_DeleteUser_Handler,
 		},
 		{
-			MethodName: "UpdateUserAPI",
-			Handler:    _UserAuthentication_UpdateUserAPI_Handler,
+			MethodName: "UpdateUser",
+			Handler:    _UserAuthentication_UpdateUser_Handler,
 		},
 		{
 			MethodName: "AuthenticateWithGoogleCallback",
@@ -335,11 +335,11 @@ var UserAuthentication_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ExpenseManagementClient interface {
-	CreateExpenseAPI(ctx context.Context, in *CreateExpenseRequest, opts ...grpc.CallOption) (*CreateExpenseResponse, error)
-	UpdateExpenseAPI(ctx context.Context, in *UpdateExpenseRequest, opts ...grpc.CallOption) (*UpdateExpenseResponse, error)
-	DeleteExpenseAPI(ctx context.Context, in *DeleteExpenseRequest, opts ...grpc.CallOption) (*DeleteExpenseResponse, error)
-	ListExpensesAPI(ctx context.Context, in *ListExpensesRequest, opts ...grpc.CallOption) (*ListExpensesResponse, error)
-	GetExpenseAPI(ctx context.Context, in *GetExpenseRequest, opts ...grpc.CallOption) (*GetExpenseResponse, error)
+	CreateExpense(ctx context.Context, in *CreateExpenseRequest, opts ...grpc.CallOption) (*CreateExpenseResponse, error)
+	UpdateExpense(ctx context.Context, in *UpdateExpenseRequest, opts ...grpc.CallOption) (*UpdateExpenseResponse, error)
+	DeleteExpense(ctx context.Context, in *DeleteExpenseRequest, opts ...grpc.CallOption) (*DeleteExpenseResponse, error)
+	ListExpenses(ctx context.Context, in *ListExpensesRequest, opts ...grpc.CallOption) (*ListExpensesResponse, error)
+	GetExpense(ctx context.Context, in *GetExpenseRequest, opts ...grpc.CallOption) (*GetExpenseResponse, error)
 }
 
 type expenseManagementClient struct {
@@ -350,45 +350,45 @@ func NewExpenseManagementClient(cc grpc.ClientConnInterface) ExpenseManagementCl
 	return &expenseManagementClient{cc}
 }
 
-func (c *expenseManagementClient) CreateExpenseAPI(ctx context.Context, in *CreateExpenseRequest, opts ...grpc.CallOption) (*CreateExpenseResponse, error) {
+func (c *expenseManagementClient) CreateExpense(ctx context.Context, in *CreateExpenseRequest, opts ...grpc.CallOption) (*CreateExpenseResponse, error) {
 	out := new(CreateExpenseResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.ExpenseManagement/CreateExpenseAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.ExpenseManagement/CreateExpense", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *expenseManagementClient) UpdateExpenseAPI(ctx context.Context, in *UpdateExpenseRequest, opts ...grpc.CallOption) (*UpdateExpenseResponse, error) {
+func (c *expenseManagementClient) UpdateExpense(ctx context.Context, in *UpdateExpenseRequest, opts ...grpc.CallOption) (*UpdateExpenseResponse, error) {
 	out := new(UpdateExpenseResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.ExpenseManagement/UpdateExpenseAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.ExpenseManagement/UpdateExpense", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *expenseManagementClient) DeleteExpenseAPI(ctx context.Context, in *DeleteExpenseRequest, opts ...grpc.CallOption) (*DeleteExpenseResponse, error) {
+func (c *expenseManagementClient) DeleteExpense(ctx context.Context, in *DeleteExpenseRequest, opts ...grpc.CallOption) (*DeleteExpenseResponse, error) {
 	out := new(DeleteExpenseResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.ExpenseManagement/DeleteExpenseAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.ExpenseManagement/DeleteExpense", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *expenseManagementClient) ListExpensesAPI(ctx context.Context, in *ListExpensesRequest, opts ...grpc.CallOption) (*ListExpensesResponse, error) {
+func (c *expenseManagementClient) ListExpenses(ctx context.Context, in *ListExpensesRequest, opts ...grpc.CallOption) (*ListExpensesResponse, error) {
 	out := new(ListExpensesResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.ExpenseManagement/ListExpensesAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.ExpenseManagement/ListExpenses", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *expenseManagementClient) GetExpenseAPI(ctx context.Context, in *GetExpenseRequest, opts ...grpc.CallOption) (*GetExpenseResponse, error) {
+func (c *expenseManagementClient) GetExpense(ctx context.Context, in *GetExpenseRequest, opts ...grpc.CallOption) (*GetExpenseResponse, error) {
 	out := new(GetExpenseResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.ExpenseManagement/GetExpenseAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.ExpenseManagement/GetExpense", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -399,11 +399,11 @@ func (c *expenseManagementClient) GetExpenseAPI(ctx context.Context, in *GetExpe
 // All implementations must embed UnimplementedExpenseManagementServer
 // for forward compatibility
 type ExpenseManagementServer interface {
-	CreateExpenseAPI(context.Context, *CreateExpenseRequest) (*CreateExpenseResponse, error)
-	UpdateExpenseAPI(context.Context, *UpdateExpenseRequest) (*UpdateExpenseResponse, error)
-	DeleteExpenseAPI(context.Context, *DeleteExpenseRequest) (*DeleteExpenseResponse, error)
-	ListExpensesAPI(context.Context, *ListExpensesRequest) (*ListExpensesResponse, error)
-	GetExpenseAPI(context.Context, *GetExpenseRequest) (*GetExpenseResponse, error)
+	CreateExpense(context.Context, *CreateExpenseRequest) (*CreateExpenseResponse, error)
+	UpdateExpense(context.Context, *UpdateExpenseRequest) (*UpdateExpenseResponse, error)
+	DeleteExpense(context.Context, *DeleteExpenseRequest) (*DeleteExpenseResponse, error)
+	ListExpenses(context.Context, *ListExpensesRequest) (*ListExpensesResponse, error)
+	GetExpense(context.Context, *GetExpenseRequest) (*GetExpenseResponse, error)
 	mustEmbedUnimplementedExpenseManagementServer()
 }
 
@@ -411,20 +411,20 @@ type ExpenseManagementServer interface {
 type UnimplementedExpenseManagementServer struct {
 }
 
-func (UnimplementedExpenseManagementServer) CreateExpenseAPI(context.Context, *CreateExpenseRequest) (*CreateExpenseResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateExpenseAPI not implemented")
+func (UnimplementedExpenseManagementServer) CreateExpense(context.Context, *CreateExpenseRequest) (*CreateExpenseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateExpense not implemented")
 }
-func (UnimplementedExpenseManagementServer) UpdateExpenseAPI(context.Context, *UpdateExpenseRequest) (*UpdateExpenseResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateExpenseAPI not implemented")
+func (UnimplementedExpenseManagementServer) UpdateExpense(context.Context, *UpdateExpenseRequest) (*UpdateExpenseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateExpense not implemented")
 }
-func (UnimplementedExpenseManagementServer) DeleteExpenseAPI(context.Context, *DeleteExpenseRequest) (*DeleteExpenseResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteExpenseAPI not implemented")
+func (UnimplementedExpenseManagementServer) DeleteExpense(context.Context, *DeleteExpenseRequest) (*DeleteExpenseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteExpense not implemented")
 }
-func (UnimplementedExpenseManagementServer) ListExpensesAPI(context.Context, *ListExpensesRequest) (*ListExpensesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListExpensesAPI not implemented")
+func (UnimplementedExpenseManagementServer) ListExpenses(context.Context, *ListExpensesRequest) (*ListExpensesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListExpenses not implemented")
 }
-func (UnimplementedExpenseManagementServer) GetExpenseAPI(context.Context, *GetExpenseRequest) (*GetExpenseResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetExpenseAPI not implemented")
+func (UnimplementedExpenseManagementServer) GetExpense(context.Context, *GetExpenseRequest) (*GetExpenseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetExpense not implemented")
 }
 func (UnimplementedExpenseManagementServer) mustEmbedUnimplementedExpenseManagementServer() {}
 
@@ -439,92 +439,92 @@ func RegisterExpenseManagementServer(s grpc.ServiceRegistrar, srv ExpenseManagem
 	s.RegisterService(&ExpenseManagement_ServiceDesc, srv)
 }
 
-func _ExpenseManagement_CreateExpenseAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ExpenseManagement_CreateExpense_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateExpenseRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ExpenseManagementServer).CreateExpenseAPI(ctx, in)
+		return srv.(ExpenseManagementServer).CreateExpense(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.ExpenseManagement/CreateExpenseAPI",
+		FullMethod: "/apidefinitions.ExpenseManagement/CreateExpense",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExpenseManagementServer).CreateExpenseAPI(ctx, req.(*CreateExpenseRequest))
+		return srv.(ExpenseManagementServer).CreateExpense(ctx, req.(*CreateExpenseRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ExpenseManagement_UpdateExpenseAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ExpenseManagement_UpdateExpense_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateExpenseRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ExpenseManagementServer).UpdateExpenseAPI(ctx, in)
+		return srv.(ExpenseManagementServer).UpdateExpense(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.ExpenseManagement/UpdateExpenseAPI",
+		FullMethod: "/apidefinitions.ExpenseManagement/UpdateExpense",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExpenseManagementServer).UpdateExpenseAPI(ctx, req.(*UpdateExpenseRequest))
+		return srv.(ExpenseManagementServer).UpdateExpense(ctx, req.(*UpdateExpenseRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ExpenseManagement_DeleteExpenseAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ExpenseManagement_DeleteExpense_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteExpenseRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ExpenseManagementServer).DeleteExpenseAPI(ctx, in)
+		return srv.(ExpenseManagementServer).DeleteExpense(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.ExpenseManagement/DeleteExpenseAPI",
+		FullMethod: "/apidefinitions.ExpenseManagement/DeleteExpense",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExpenseManagementServer).DeleteExpenseAPI(ctx, req.(*DeleteExpenseRequest))
+		return srv.(ExpenseManagementServer).DeleteExpense(ctx, req.(*DeleteExpenseRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ExpenseManagement_ListExpensesAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ExpenseManagement_ListExpenses_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListExpensesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ExpenseManagementServer).ListExpensesAPI(ctx, in)
+		return srv.(ExpenseManagementServer).ListExpenses(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.ExpenseManagement/ListExpensesAPI",
+		FullMethod: "/apidefinitions.ExpenseManagement/ListExpenses",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExpenseManagementServer).ListExpensesAPI(ctx, req.(*ListExpensesRequest))
+		return srv.(ExpenseManagementServer).ListExpenses(ctx, req.(*ListExpensesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ExpenseManagement_GetExpenseAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ExpenseManagement_GetExpense_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetExpenseRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ExpenseManagementServer).GetExpenseAPI(ctx, in)
+		return srv.(ExpenseManagementServer).GetExpense(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.ExpenseManagement/GetExpenseAPI",
+		FullMethod: "/apidefinitions.ExpenseManagement/GetExpense",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ExpenseManagementServer).GetExpenseAPI(ctx, req.(*GetExpenseRequest))
+		return srv.(ExpenseManagementServer).GetExpense(ctx, req.(*GetExpenseRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -537,24 +537,24 @@ var ExpenseManagement_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ExpenseManagementServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateExpenseAPI",
-			Handler:    _ExpenseManagement_CreateExpenseAPI_Handler,
+			MethodName: "CreateExpense",
+			Handler:    _ExpenseManagement_CreateExpense_Handler,
 		},
 		{
-			MethodName: "UpdateExpenseAPI",
-			Handler:    _ExpenseManagement_UpdateExpenseAPI_Handler,
+			MethodName: "UpdateExpense",
+			Handler:    _ExpenseManagement_UpdateExpense_Handler,
 		},
 		{
-			MethodName: "DeleteExpenseAPI",
-			Handler:    _ExpenseManagement_DeleteExpenseAPI_Handler,
+			MethodName: "DeleteExpense",
+			Handler:    _ExpenseManagement_DeleteExpense_Handler,
 		},
 		{
-			MethodName: "ListExpensesAPI",
-			Handler:    _ExpenseManagement_ListExpensesAPI_Handler,
+			MethodName: "ListExpenses",
+			Handler:    _ExpenseManagement_ListExpenses_Handler,
 		},
 		{
-			MethodName: "GetExpenseAPI",
-			Handler:    _ExpenseManagement_GetExpenseAPI_Handler,
+			MethodName: "GetExpense",
+			Handler:    _ExpenseManagement_GetExpense_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -565,7 +565,7 @@ var ExpenseManagement_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ReportsClient interface {
-	GenerateReportAPI(ctx context.Context, in *GenerateReportRequest, opts ...grpc.CallOption) (*GenerateReportResponse, error)
+	GenerateReport(ctx context.Context, in *GenerateReportRequest, opts ...grpc.CallOption) (*GenerateReportResponse, error)
 }
 
 type reportsClient struct {
@@ -576,9 +576,9 @@ func NewReportsClient(cc grpc.ClientConnInterface) ReportsClient {
 	return &reportsClient{cc}
 }
 
-func (c *reportsClient) GenerateReportAPI(ctx context.Context, in *GenerateReportRequest, opts ...grpc.CallOption) (*GenerateReportResponse, error) {
+func (c *reportsClient) GenerateReport(ctx context.Context, in *GenerateReportRequest, opts ...grpc.CallOption) (*GenerateReportResponse, error) {
 	out := new(GenerateReportResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.Reports/GenerateReportAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.Reports/GenerateReport", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -589,7 +589,7 @@ func (c *reportsClient) GenerateReportAPI(ctx context.Context, in *GenerateRepor
 // All implementations must embed UnimplementedReportsServer
 // for forward compatibility
 type ReportsServer interface {
-	GenerateReportAPI(context.Context, *GenerateReportRequest) (*GenerateReportResponse, error)
+	GenerateReport(context.Context, *GenerateReportRequest) (*GenerateReportResponse, error)
 	mustEmbedUnimplementedReportsServer()
 }
 
@@ -597,8 +597,8 @@ type ReportsServer interface {
 type UnimplementedReportsServer struct {
 }
 
-func (UnimplementedReportsServer) GenerateReportAPI(context.Context, *GenerateReportRequest) (*GenerateReportResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GenerateReportAPI not implemented")
+func (UnimplementedReportsServer) GenerateReport(context.Context, *GenerateReportRequest) (*GenerateReportResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerateReport not implemented")
 }
 func (UnimplementedReportsServer) mustEmbedUnimplementedReportsServer() {}
 
@@ -613,20 +613,20 @@ func RegisterReportsServer(s grpc.ServiceRegistrar, srv ReportsServer) {
 	s.RegisterService(&Reports_ServiceDesc, srv)
 }
 
-func _Reports_GenerateReportAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Reports_GenerateReport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GenerateReportRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReportsServer).GenerateReportAPI(ctx, in)
+		return srv.(ReportsServer).GenerateReport(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.Reports/GenerateReportAPI",
+		FullMethod: "/apidefinitions.Reports/GenerateReport",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReportsServer).GenerateReportAPI(ctx, req.(*GenerateReportRequest))
+		return srv.(ReportsServer).GenerateReport(ctx, req.(*GenerateReportRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -639,8 +639,8 @@ var Reports_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ReportsServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GenerateReportAPI",
-			Handler:    _Reports_GenerateReportAPI_Handler,
+			MethodName: "GenerateReport",
+			Handler:    _Reports_GenerateReport_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -651,9 +651,9 @@ var Reports_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserProfileClient interface {
-	GetUserProfileAPI(ctx context.Context, in *GetUserProfileRequest, opts ...grpc.CallOption) (*GetUserProfileResponse, error)
-	UpdateUserProfileAPI(ctx context.Context, in *UpdateUserProfileRequest, opts ...grpc.CallOption) (*UpdateUserProfileResponse, error)
-	CreateUserProfileAPI(ctx context.Context, in *CreateUserProfileRequest, opts ...grpc.CallOption) (*CreateUserProfileResponse, error)
+	GetUserProfile(ctx context.Context, in *GetUserProfileRequest, opts ...grpc.CallOption) (*GetUserProfileResponse, error)
+	UpdateUserProfile(ctx context.Context, in *UpdateUserProfileRequest, opts ...grpc.CallOption) (*UpdateUserProfileResponse, error)
+	CreateUserProfile(ctx context.Context, in *CreateUserProfileRequest, opts ...grpc.CallOption) (*CreateUserProfileResponse, error)
 }
 
 type userProfileClient struct {
@@ -664,27 +664,27 @@ func NewUserProfileClient(cc grpc.ClientConnInterface) UserProfileClient {
 	return &userProfileClient{cc}
 }
 
-func (c *userProfileClient) GetUserProfileAPI(ctx context.Context, in *GetUserProfileRequest, opts ...grpc.CallOption) (*GetUserProfileResponse, error) {
+func (c *userProfileClient) GetUserProfile(ctx context.Context, in *GetUserProfileRequest, opts ...grpc.CallOption) (*GetUserProfileResponse, error) {
 	out := new(GetUserProfileResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.UserProfile/GetUserProfileAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.UserProfile/GetUserProfile", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userProfileClient) UpdateUserProfileAPI(ctx context.Context, in *UpdateUserProfileRequest, opts ...grpc.CallOption) (*UpdateUserProfileResponse, error) {
+func (c *userProfileClient) UpdateUserProfile(ctx context.Context, in *UpdateUserProfileRequest, opts ...grpc.CallOption) (*UpdateUserProfileResponse, error) {
 	out := new(UpdateUserProfileResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.UserProfile/UpdateUserProfileAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.UserProfile/UpdateUserProfile", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userProfileClient) CreateUserProfileAPI(ctx context.Context, in *CreateUserProfileRequest, opts ...grpc.CallOption) (*CreateUserProfileResponse, error) {
+func (c *userProfileClient) CreateUserProfile(ctx context.Context, in *CreateUserProfileRequest, opts ...grpc.CallOption) (*CreateUserProfileResponse, error) {
 	out := new(CreateUserProfileResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.UserProfile/CreateUserProfileAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.UserProfile/CreateUserProfile", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -695,9 +695,9 @@ func (c *userProfileClient) CreateUserProfileAPI(ctx context.Context, in *Create
 // All implementations must embed UnimplementedUserProfileServer
 // for forward compatibility
 type UserProfileServer interface {
-	GetUserProfileAPI(context.Context, *GetUserProfileRequest) (*GetUserProfileResponse, error)
-	UpdateUserProfileAPI(context.Context, *UpdateUserProfileRequest) (*UpdateUserProfileResponse, error)
-	CreateUserProfileAPI(context.Context, *CreateUserProfileRequest) (*CreateUserProfileResponse, error)
+	GetUserProfile(context.Context, *GetUserProfileRequest) (*GetUserProfileResponse, error)
+	UpdateUserProfile(context.Context, *UpdateUserProfileRequest) (*UpdateUserProfileResponse, error)
+	CreateUserProfile(context.Context, *CreateUserProfileRequest) (*CreateUserProfileResponse, error)
 	mustEmbedUnimplementedUserProfileServer()
 }
 
@@ -705,14 +705,14 @@ type UserProfileServer interface {
 type UnimplementedUserProfileServer struct {
 }
 
-func (UnimplementedUserProfileServer) GetUserProfileAPI(context.Context, *GetUserProfileRequest) (*GetUserProfileResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserProfileAPI not implemented")
+func (UnimplementedUserProfileServer) GetUserProfile(context.Context, *GetUserProfileRequest) (*GetUserProfileResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserProfile not implemented")
 }
-func (UnimplementedUserProfileServer) UpdateUserProfileAPI(context.Context, *UpdateUserProfileRequest) (*UpdateUserProfileResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserProfileAPI not implemented")
+func (UnimplementedUserProfileServer) UpdateUserProfile(context.Context, *UpdateUserProfileRequest) (*UpdateUserProfileResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserProfile not implemented")
 }
-func (UnimplementedUserProfileServer) CreateUserProfileAPI(context.Context, *CreateUserProfileRequest) (*CreateUserProfileResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateUserProfileAPI not implemented")
+func (UnimplementedUserProfileServer) CreateUserProfile(context.Context, *CreateUserProfileRequest) (*CreateUserProfileResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUserProfile not implemented")
 }
 func (UnimplementedUserProfileServer) mustEmbedUnimplementedUserProfileServer() {}
 
@@ -727,56 +727,56 @@ func RegisterUserProfileServer(s grpc.ServiceRegistrar, srv UserProfileServer) {
 	s.RegisterService(&UserProfile_ServiceDesc, srv)
 }
 
-func _UserProfile_GetUserProfileAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserProfile_GetUserProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserProfileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserProfileServer).GetUserProfileAPI(ctx, in)
+		return srv.(UserProfileServer).GetUserProfile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.UserProfile/GetUserProfileAPI",
+		FullMethod: "/apidefinitions.UserProfile/GetUserProfile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserProfileServer).GetUserProfileAPI(ctx, req.(*GetUserProfileRequest))
+		return srv.(UserProfileServer).GetUserProfile(ctx, req.(*GetUserProfileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserProfile_UpdateUserProfileAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserProfile_UpdateUserProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateUserProfileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserProfileServer).UpdateUserProfileAPI(ctx, in)
+		return srv.(UserProfileServer).UpdateUserProfile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.UserProfile/UpdateUserProfileAPI",
+		FullMethod: "/apidefinitions.UserProfile/UpdateUserProfile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserProfileServer).UpdateUserProfileAPI(ctx, req.(*UpdateUserProfileRequest))
+		return srv.(UserProfileServer).UpdateUserProfile(ctx, req.(*UpdateUserProfileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserProfile_CreateUserProfileAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserProfile_CreateUserProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateUserProfileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserProfileServer).CreateUserProfileAPI(ctx, in)
+		return srv.(UserProfileServer).CreateUserProfile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.UserProfile/CreateUserProfileAPI",
+		FullMethod: "/apidefinitions.UserProfile/CreateUserProfile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserProfileServer).CreateUserProfileAPI(ctx, req.(*CreateUserProfileRequest))
+		return srv.(UserProfileServer).CreateUserProfile(ctx, req.(*CreateUserProfileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -789,16 +789,16 @@ var UserProfile_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserProfileServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetUserProfileAPI",
-			Handler:    _UserProfile_GetUserProfileAPI_Handler,
+			MethodName: "GetUserProfile",
+			Handler:    _UserProfile_GetUserProfile_Handler,
 		},
 		{
-			MethodName: "UpdateUserProfileAPI",
-			Handler:    _UserProfile_UpdateUserProfileAPI_Handler,
+			MethodName: "UpdateUserProfile",
+			Handler:    _UserProfile_UpdateUserProfile_Handler,
 		},
 		{
-			MethodName: "CreateUserProfileAPI",
-			Handler:    _UserProfile_CreateUserProfileAPI_Handler,
+			MethodName: "CreateUserProfile",
+			Handler:    _UserProfile_CreateUserProfile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -809,8 +809,8 @@ var UserProfile_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SettingsClient interface {
-	GetSettingsAPI(ctx context.Context, in *GetSettingsRequest, opts ...grpc.CallOption) (*GetSettingsResponse, error)
-	UpdateSettingsAPI(ctx context.Context, in *UpdateSettingsRequest, opts ...grpc.CallOption) (*UpdateSettingsResponse, error)
+	GetSettings(ctx context.Context, in *GetSettingsRequest, opts ...grpc.CallOption) (*GetSettingsResponse, error)
+	UpdateSettings(ctx context.Context, in *UpdateSettingsRequest, opts ...grpc.CallOption) (*UpdateSettingsResponse, error)
 }
 
 type settingsClient struct {
@@ -821,18 +821,18 @@ func NewSettingsClient(cc grpc.ClientConnInterface) SettingsClient {
 	return &settingsClient{cc}
 }
 
-func (c *settingsClient) GetSettingsAPI(ctx context.Context, in *GetSettingsRequest, opts ...grpc.CallOption) (*GetSettingsResponse, error) {
+func (c *settingsClient) GetSettings(ctx context.Context, in *GetSettingsRequest, opts ...grpc.CallOption) (*GetSettingsResponse, error) {
 	out := new(GetSettingsResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.Settings/GetSettingsAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.Settings/GetSettings", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *settingsClient) UpdateSettingsAPI(ctx context.Context, in *UpdateSettingsRequest, opts ...grpc.CallOption) (*UpdateSettingsResponse, error) {
+func (c *settingsClient) UpdateSettings(ctx context.Context, in *UpdateSettingsRequest, opts ...grpc.CallOption) (*UpdateSettingsResponse, error) {
 	out := new(UpdateSettingsResponse)
-	err := c.cc.Invoke(ctx, "/apidefinitions.Settings/UpdateSettingsAPI", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/apidefinitions.Settings/UpdateSettings", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -843,8 +843,8 @@ func (c *settingsClient) UpdateSettingsAPI(ctx context.Context, in *UpdateSettin
 // All implementations must embed UnimplementedSettingsServer
 // for forward compatibility
 type SettingsServer interface {
-	GetSettingsAPI(context.Context, *GetSettingsRequest) (*GetSettingsResponse, error)
-	UpdateSettingsAPI(context.Context, *UpdateSettingsRequest) (*UpdateSettingsResponse, error)
+	GetSettings(context.Context, *GetSettingsRequest) (*GetSettingsResponse, error)
+	UpdateSettings(context.Context, *UpdateSettingsRequest) (*UpdateSettingsResponse, error)
 	mustEmbedUnimplementedSettingsServer()
 }
 
@@ -852,11 +852,11 @@ type SettingsServer interface {
 type UnimplementedSettingsServer struct {
 }
 
-func (UnimplementedSettingsServer) GetSettingsAPI(context.Context, *GetSettingsRequest) (*GetSettingsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSettingsAPI not implemented")
+func (UnimplementedSettingsServer) GetSettings(context.Context, *GetSettingsRequest) (*GetSettingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSettings not implemented")
 }
-func (UnimplementedSettingsServer) UpdateSettingsAPI(context.Context, *UpdateSettingsRequest) (*UpdateSettingsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateSettingsAPI not implemented")
+func (UnimplementedSettingsServer) UpdateSettings(context.Context, *UpdateSettingsRequest) (*UpdateSettingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSettings not implemented")
 }
 func (UnimplementedSettingsServer) mustEmbedUnimplementedSettingsServer() {}
 
@@ -871,38 +871,38 @@ func RegisterSettingsServer(s grpc.ServiceRegistrar, srv SettingsServer) {
 	s.RegisterService(&Settings_ServiceDesc, srv)
 }
 
-func _Settings_GetSettingsAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Settings_GetSettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetSettingsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SettingsServer).GetSettingsAPI(ctx, in)
+		return srv.(SettingsServer).GetSettings(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.Settings/GetSettingsAPI",
+		FullMethod: "/apidefinitions.Settings/GetSettings",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SettingsServer).GetSettingsAPI(ctx, req.(*GetSettingsRequest))
+		return srv.(SettingsServer).GetSettings(ctx, req.(*GetSettingsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Settings_UpdateSettingsAPI_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Settings_UpdateSettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateSettingsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SettingsServer).UpdateSettingsAPI(ctx, in)
+		return srv.(SettingsServer).UpdateSettings(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/apidefinitions.Settings/UpdateSettingsAPI",
+		FullMethod: "/apidefinitions.Settings/UpdateSettings",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SettingsServer).UpdateSettingsAPI(ctx, req.(*UpdateSettingsRequest))
+		return srv.(SettingsServer).UpdateSettings(ctx, req.(*UpdateSettingsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -915,12 +915,12 @@ var Settings_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*SettingsServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetSettingsAPI",
-			Handler:    _Settings_GetSettingsAPI_Handler,
+			MethodName: "GetSettings",
+			Handler:    _Settings_GetSettings_Handler,
 		},
 		{
-			MethodName: "UpdateSettingsAPI",
-			Handler:    _Settings_UpdateSettingsAPI_Handler,
+			MethodName: "UpdateSettings",
+			Handler:    _Settings_UpdateSettings_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -14,29 +14,21 @@ INSERT INTO Expenses (
 );
 
 -- name: GetExpenseById :one
+SELECT sqlc.embed(Expenses) FROM Expenses
+JOIN Users ON Expenses.user_id = Users.id
+WHERE Users.email = ? and Expenses.id = ?;
+
+-- name: GetExpenseByIdPvt :one
 SELECT * FROM Expenses
 WHERE id = ?;
 
 -- name: GetExpensesByUserId :many
-SELECT (
-  Expenses.id,
-  user_id,
-  amount,
-  description,
-  category,
-  tx_date,
-  tag,
-  paid_to,
-  paid_by,
-  flow,
-  Expesnes.created_at,
-  Expenses.updated_at
-  )
+SELECT sqlc.embed(Expenses)
   FROM Expenses
 JOIN Users ON Expenses.user_id = Users.id
 WHERE Users.email = ?;
 
--- name: UpdateExpense :exec
+-- name: UpdateExpense :execresult
 UPDATE Expenses
 SET
   amount = ?,
@@ -47,11 +39,16 @@ SET
   paid_to = ?,
   paid_by = ?,
   flow = ?
-WHERE id = ?;
+WHERE user_id IN (
+  SELECT id FROM Users WHERE email = ?
+) AND Expenses.id = ?;
 
--- name: DeleteExpense :exec
+-- name: DeleteExpense :execrows
 DELETE FROM Expenses
-WHERE id = ?;
+WHERE user_id IN (
+  SELECT id FROM Users WHERE email = ?
+) AND Expenses.id = ?;
+
 
 -- name: ListExpenses :many
 SELECT * FROM Expenses

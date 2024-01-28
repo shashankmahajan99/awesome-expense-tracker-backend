@@ -49,10 +49,17 @@ func (store *MySQLStore) RegisterUser(ctx context.Context, arg CreateUserParams)
 }
 
 // DeleteUser deletes a user from the database.
-func (store *MySQLStore) DeleteUser(ctx context.Context, username string) error {
-	return store.execTx(ctx, func(q *Queries) error {
-		return q.DeleteUser(ctx, username)
+func (store *MySQLStore) DeleteUser(ctx context.Context, username string) (int64, error) {
+	numberOfRows := int64(0)
+	err := store.execTx(ctx, func(q *Queries) error {
+		numRows, err := q.DeleteUser(ctx, username)
+		if err != nil {
+			return err
+		}
+		numberOfRows = numRows
+		return nil
 	})
+	return numberOfRows, err
 }
 
 // ListUserByUsername gets a user from the database by username.
@@ -80,7 +87,7 @@ func (store *MySQLStore) ListUserByEmail(ctx context.Context, email string) (Use
 // ModifyUserUsername updates a user's username in the database.
 func (store *MySQLStore) ModifyUserUsername(ctx context.Context, arg UpdateUserUsernameParams) error {
 	err := store.execTx(ctx, func(q *Queries) error {
-		err := q.UpdateUserUsername(ctx, arg)
+		_, err := q.UpdateUserUsername(ctx, arg)
 		if err != nil {
 			return err
 		}
@@ -96,7 +103,7 @@ func (store *MySQLStore) ModifyUserUsername(ctx context.Context, arg UpdateUserU
 // ModifyUserPassword updates a user's password in the database.
 func (store *MySQLStore) ModifyUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error {
 	err := store.execTx(ctx, func(q *Queries) error {
-		err := q.UpdateUserPassword(ctx, arg)
+		_, err := q.UpdateUserPassword(ctx, arg)
 		if err != nil {
 			return err
 		}

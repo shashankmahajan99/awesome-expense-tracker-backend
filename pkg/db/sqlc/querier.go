@@ -20,13 +20,14 @@ type Querier interface {
 	CreateReport(ctx context.Context, arg CreateReportParams) (sql.Result, error)
 	CreateSetting(ctx context.Context, arg CreateSettingParams) (sql.Result, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (sql.Result, error)
-	DeleteExpense(ctx context.Context, id int32) error
+	DeleteExpense(ctx context.Context, arg DeleteExpenseParams) (int64, error)
 	DeleteProfile(ctx context.Context, email string) error
 	DeleteReport(ctx context.Context, id int32) error
 	DeleteSetting(ctx context.Context, id int32) error
-	DeleteUser(ctx context.Context, username string) error
-	GetExpenseById(ctx context.Context, id int32) (Expense, error)
-	GetExpensesByUserId(ctx context.Context, email string) ([]interface{}, error)
+	DeleteUser(ctx context.Context, username string) (int64, error)
+	GetExpenseById(ctx context.Context, arg GetExpenseByIdParams) (GetExpenseByIdRow, error)
+	GetExpenseByIdPvt(ctx context.Context, id int32) (Expense, error)
+	GetExpensesByUserId(ctx context.Context, email string) ([]GetExpensesByUserIdRow, error)
 	GetProfileByEmail(ctx context.Context, email string) (GetProfileByEmailRow, error)
 	GetProfileByID(ctx context.Context, id int32) (Profile, error)
 	GetReport(ctx context.Context, id int32) (Report, error)
@@ -39,14 +40,14 @@ type Querier interface {
 	ListReports(ctx context.Context, arg ListReportsParams) ([]Report, error)
 	ListSettings(ctx context.Context, arg ListSettingsParams) ([]Setting, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
-	UpdateExpense(ctx context.Context, arg UpdateExpenseParams) error
+	UpdateExpense(ctx context.Context, arg UpdateExpenseParams) (sql.Result, error)
 	UpdateProfileBio(ctx context.Context, arg UpdateProfileBioParams) (sql.Result, error)
 	UpdateProfileName(ctx context.Context, arg UpdateProfileNameParams) (sql.Result, error)
 	UpdateProfileProfilePicture(ctx context.Context, arg UpdateProfileProfilePictureParams) (sql.Result, error)
 	UpdateReport(ctx context.Context, arg UpdateReportParams) error
 	UpdateSetting(ctx context.Context, arg UpdateSettingParams) error
-	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
-	UpdateUserUsername(ctx context.Context, arg UpdateUserUsernameParams) error
+	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) (sql.Result, error)
+	UpdateUserUsername(ctx context.Context, arg UpdateUserUsernameParams) (sql.Result, error)
 }
 
 var _ Querier = (*Queries)(nil)

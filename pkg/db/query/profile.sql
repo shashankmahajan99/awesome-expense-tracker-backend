@@ -10,7 +10,7 @@ INSERT INTO Profiles (
 );
 
 -- name: GetProfileByEmail :one
-SELECT user_id, bio, profile_name, profile_picture, Profiles.created_at, Profiles.updated_at
+SELECT sqlc.embed(Profiles)
 FROM Profiles
 JOIN Users ON Profiles.user_id = Users.id
 WHERE Users.email = ?;

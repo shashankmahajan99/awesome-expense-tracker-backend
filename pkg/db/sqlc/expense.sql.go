@@ -64,23 +64,68 @@ func (q *Queries) CreateExpense(ctx context.Context, arg CreateExpenseParams) (s
 	)
 }
 
-const deleteExpense = `-- name: DeleteExpense :exec
+const deleteExpense = `-- name: DeleteExpense :execrows
 DELETE FROM Expenses
-WHERE id = ?
+WHERE user_id IN (
+  SELECT id FROM Users WHERE email = ?
+) AND Expenses.id = ?
 `
 
-func (q *Queries) DeleteExpense(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteExpense, id)
-	return err
+type DeleteExpenseParams struct {
+	Email string `json:"email"`
+	ID    int32  `json:"id"`
+}
+
+func (q *Queries) DeleteExpense(ctx context.Context, arg DeleteExpenseParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteExpense, arg.Email, arg.ID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }
 
 const getExpenseById = `-- name: GetExpenseById :one
+SELECT expenses.id, expenses.user_id, expenses.amount, expenses.description, expenses.category, expenses.tx_date, expenses.tag, expenses.paid_to, expenses.paid_by, expenses.flow, expenses.created_at, expenses.updated_at FROM Expenses
+JOIN Users ON Expenses.user_id = Users.id
+WHERE Users.email = ? and Expenses.id = ?
+`
+
+type GetExpenseByIdParams struct {
+	Email string `json:"email"`
+	ID    int32  `json:"id"`
+}
+
+type GetExpenseByIdRow struct {
+	Expense Expense `json:"expense"`
+}
+
+func (q *Queries) GetExpenseById(ctx context.Context, arg GetExpenseByIdParams) (GetExpenseByIdRow, error) {
+	row := q.db.QueryRowContext(ctx, getExpenseById, arg.Email, arg.ID)
+	var i GetExpenseByIdRow
+	err := row.Scan(
+		&i.Expense.ID,
+		&i.Expense.UserID,
+		&i.Expense.Amount,
+		&i.Expense.Description,
+		&i.Expense.Category,
+		&i.Expense.TxDate,
+		&i.Expense.Tag,
+		&i.Expense.PaidTo,
+		&i.Expense.PaidBy,
+		&i.Expense.Flow,
+		&i.Expense.CreatedAt,
+		&i.Expense.UpdatedAt,
+	)
+	return i, err
+}
+
+const getExpenseByIdPvt = `-- name: GetExpenseByIdPvt :one
 SELECT id, user_id, amount, description, category, tx_date, tag, paid_to, paid_by, flow, created_at, updated_at FROM Expenses
 WHERE id = ?
 `
 
-func (q *Queries) GetExpenseById(ctx context.Context, id int32) (Expense, error) {
-	row := q.db.QueryRowContext(ctx, getExpenseById, id)
+func (q *Queries) GetExpenseByIdPvt(ctx context.Context, id int32) (Expense, error) {
+	row := q.db.QueryRowContext(ctx, getExpenseByIdPvt, id)
 	var i Expense
 	err := row.Scan(
 		&i.ID,
@@ -100,38 +145,42 @@ func (q *Queries) GetExpenseById(ctx context.Context, id int32) (Expense, error)
 }
 
 const getExpensesByUserId = `-- name: GetExpensesByUserId :many
-SELECT (
-  Expenses.id,
-  user_id,
-  amount,
-  description,
-  category,
-  tx_date,
-  tag,
-  paid_to,
-  paid_by,
-  flow,
-  Expesnes.created_at,
-  Expenses.updated_at
-  )
+SELECT expenses.id, expenses.user_id, expenses.amount, expenses.description, expenses.category, expenses.tx_date, expenses.tag, expenses.paid_to, expenses.paid_by, expenses.flow, expenses.created_at, expenses.updated_at
   FROM Expenses
 JOIN Users ON Expenses.user_id = Users.id
 WHERE Users.email = ?
 `
 
-func (q *Queries) GetExpensesByUserId(ctx context.Context, email string) ([]interface{}, error) {
+type GetExpensesByUserIdRow struct {
+	Expense Expense `json:"expense"`
+}
+
+func (q *Queries) GetExpensesByUserId(ctx context.Context, email string) ([]GetExpensesByUserIdRow, error) {
 	rows, err := q.db.QueryContext(ctx, getExpensesByUserId, email)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []interface{}{}
+	items := []GetExpensesByUserIdRow{}
 	for rows.Next() {
-		var column_1 interface{}
-		if err := rows.Scan(&column_1); err != nil {
+		var i GetExpensesByUserIdRow
+		if err := rows.Scan(
+			&i.Expense.ID,
+			&i.Expense.UserID,
+			&i.Expense.Amount,
+			&i.Expense.Description,
+			&i.Expense.Category,
+			&i.Expense.TxDate,
+			&i.Expense.Tag,
+			&i.Expense.PaidTo,
+			&i.Expense.PaidBy,
+			&i.Expense.Flow,
+			&i.Expense.CreatedAt,
+			&i.Expense.UpdatedAt,
+		); err != nil {
 			return nil, err
 		}
-		items = append(items, column_1)
+		items = append(items, i)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err
@@ -190,7 +239,7 @@ func (q *Queries) ListExpenses(ctx context.Context, arg ListExpensesParams) ([]E
 	return items, nil
 }
 
-const updateExpense = `-- name: UpdateExpense :exec
+const updateExpense = `-- name: UpdateExpense :execresult
 UPDATE Expenses
 SET
   amount = ?,
@@ -201,7 +250,9 @@ SET
   paid_to = ?,
   paid_by = ?,
   flow = ?
-WHERE id = ?
+WHERE user_id IN (
+  SELECT id FROM Users WHERE email = ?
+) AND Expenses.id = ?
 `
 
 type UpdateExpenseParams struct {
@@ -213,11 +264,12 @@ type UpdateExpenseParams struct {
 	PaidTo      string    `json:"paid_to"`
 	PaidBy      string    `json:"paid_by"`
 	Flow        string    `json:"flow"`
+	Email       string    `json:"email"`
 	ID          int32     `json:"id"`
 }
 
-func (q *Queries) UpdateExpense(ctx context.Context, arg UpdateExpenseParams) error {
-	_, err := q.db.ExecContext(ctx, updateExpense,
+func (q *Queries) UpdateExpense(ctx context.Context, arg UpdateExpenseParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, updateExpense,
 		arg.Amount,
 		arg.Description,
 		arg.Category,
@@ -226,7 +278,7 @@ func (q *Queries) UpdateExpense(ctx context.Context, arg UpdateExpenseParams) er
 		arg.PaidTo,
 		arg.PaidBy,
 		arg.Flow,
+		arg.Email,
 		arg.ID,
 	)
-	return err
 }

@@ -35,7 +35,7 @@ Even though I was used to just using GORM (which is not technically writing the 
 
 Even though my earlier approach looks good from learning perspective, this introduced other challenges of writing the corresponding go functions which parse the SQL queries and add the dynamic values (or as official website of SQLC describes it: _boilerplate SQL querying code_). I was not here to learn how to write more go functions but rather to only focus on SQL Queries. That was when I found out about SQLC. I did face challenges at first with the documentation being focused more for Postgresql rather than MySQL. Once I got the hang of it I was able to learn just enough for this project and write queries with SQLC generating boilerplate SQL querying Golang code for me.
 
-> **NOTE**: Just as an added bonus I also refreshed my knowledge on DB Migrations and how to use them.
+> **NOTE**: Just as an added bonus I also refreshed my knowledge on database migrations and how to use them.
 
 ## Environment File
 
@@ -45,13 +45,13 @@ This might be just a bad habit, but I used to write `export ENV_VAR=VALUE` in my
 
 ### What I learnt
 
-Environment Files (.env). That's it. That's the solution and learning for me and it really helped me forget about exporting the variables again and again to really focus on the development without worrying about them.
+Environment Files (.env). That's it. That's the solution and learning for me. It really helped me forget about exporting the variables again and again to really focus on the development without worrying about them.
 
 ## OAuth 2.0
 
 ### What I learnt
 
-A lot was learnt in regards to OAuth 2.0, I even dared to create my own OAuth2.0 server implementation but decided against it (for now 😉). I had some experience in working with GCP's OAuth so I decided to integrate that first. I also wanted to provide users an ability to login/register using just the old fashioned email id and password and then later create their usernames. This led to me supporting both GCP's OAuth and also the JWT based authentication and then a dance of handling the different authentication methods started and I still don't believe that this is _THE_ perfect way to implement two authentications while maintaining fewer lines of codes but I have learnt a lot of and come along way from what I used to do and I will continue to refactor or at least find ways to support multiple authentication methods.
+A lot was learnt in regards to OAuth 2.0, I even dared to create my own OAuth2.0 server implementation but decided against it (for now 😉). I had some experience in working with GCP's OAuth so I decided to integrate that first. I also wanted to provide users an ability to login/register using just the old fashioned email id and password and then later create their usernames. This led to me supporting both GCP's OAuth and also the JWT based authentication and then a dance of handling the different authentication methods started and I still don't believe that this is _THE_ perfect way to implement two authentications while maintaining fewer lines of codes but I have learnt a lot and came along way from what I used to do and I will continue to refactor or at least find ways to support multiple authentication methods.
 
 ## Interceptors and GRPC Gateway
 

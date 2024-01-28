@@ -92,7 +92,7 @@
     },
     "/reports": {
       "post": {
-        "operationId": "Reports_GenerateReportAPI",
+        "operationId": "Reports_GenerateReport",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -124,7 +124,7 @@
     },
     "/settings": {
       "get": {
-        "operationId": "Settings_GetSettingsAPI",
+        "operationId": "Settings_GetSettings",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -152,7 +152,7 @@
         ]
       },
       "put": {
-        "operationId": "Settings_UpdateSettingsAPI",
+        "operationId": "Settings_UpdateSettings",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -184,7 +184,7 @@
     },
     "/user/login": {
       "post": {
-        "operationId": "UserAuthentication_LoginUserAPI",
+        "operationId": "UserAuthentication_LoginUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -216,7 +216,7 @@
     },
     "/user/register": {
       "post": {
-        "operationId": "UserAuthentication_RegisterUserAPI",
+        "operationId": "UserAuthentication_RegisterUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -248,7 +248,7 @@
     },
     "/v1/expense": {
       "get": {
-        "operationId": "ExpenseManagement_ListExpensesAPI",
+        "operationId": "ExpenseManagement_ListExpenses",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -268,7 +268,7 @@
         ]
       },
       "post": {
-        "operationId": "ExpenseManagement_CreateExpenseAPI",
+        "operationId": "ExpenseManagement_CreateExpense",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -300,7 +300,7 @@
     },
     "/v1/expense/{id}": {
       "get": {
-        "operationId": "ExpenseManagement_GetExpenseAPI",
+        "operationId": "ExpenseManagement_GetExpense",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -320,7 +320,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [
@@ -328,7 +329,7 @@
         ]
       },
       "delete": {
-        "operationId": "ExpenseManagement_DeleteExpenseAPI",
+        "operationId": "ExpenseManagement_DeleteExpense",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -348,7 +349,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [
@@ -356,7 +358,7 @@
         ]
       },
       "put": {
-        "operationId": "ExpenseManagement_UpdateExpenseAPI",
+        "operationId": "ExpenseManagement_UpdateExpense",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -376,7 +378,8 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "body",
@@ -399,7 +402,7 @@
     },
     "/v1/profile/create": {
       "post": {
-        "operationId": "UserProfile_CreateUserProfileAPI",
+        "operationId": "UserProfile_CreateUserProfile",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -431,7 +434,7 @@
     },
     "/v1/profile/get": {
       "post": {
-        "operationId": "UserProfile_GetUserProfileAPI",
+        "operationId": "UserProfile_GetUserProfile",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -463,7 +466,7 @@
     },
     "/v1/profile/update": {
       "put": {
-        "operationId": "UserProfile_UpdateUserProfileAPI",
+        "operationId": "UserProfile_UpdateUserProfile",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -495,7 +498,7 @@
     },
     "/v1/user/delete/{username}": {
       "delete": {
-        "operationId": "UserAuthentication_DeleteUserAPI",
+        "operationId": "UserAuthentication_DeleteUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -525,7 +528,7 @@
     },
     "/v1/user/update": {
       "put": {
-        "operationId": "UserAuthentication_UpdateUserAPI",
+        "operationId": "UserAuthentication_UpdateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -569,7 +572,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -608,7 +612,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -784,7 +789,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

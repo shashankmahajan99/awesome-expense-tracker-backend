@@ -8,7 +8,6 @@ package db
 import (
 	"context"
 	"database/sql"
-	"time"
 )
 
 const countProfiles = `-- name: CountProfiles :one
@@ -61,31 +60,27 @@ func (q *Queries) DeleteProfile(ctx context.Context, email string) error {
 }
 
 const getProfileByEmail = `-- name: GetProfileByEmail :one
-SELECT user_id, bio, profile_name, profile_picture, Profiles.created_at, Profiles.updated_at
+SELECT profiles.id, profiles.user_id, profiles.bio, profiles.profile_name, profiles.profile_picture, profiles.created_at, profiles.updated_at
 FROM Profiles
 JOIN Users ON Profiles.user_id = Users.id
 WHERE Users.email = ?
 `
 
 type GetProfileByEmailRow struct {
-	UserID         int32     `json:"user_id"`
-	Bio            string    `json:"bio"`
-	ProfileName    string    `json:"profile_name"`
-	ProfilePicture string    `json:"profile_picture"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
+	Profile Profile `json:"profile"`
 }
 
 func (q *Queries) GetProfileByEmail(ctx context.Context, email string) (GetProfileByEmailRow, error) {
 	row := q.db.QueryRowContext(ctx, getProfileByEmail, email)
 	var i GetProfileByEmailRow
 	err := row.Scan(
-		&i.UserID,
-		&i.Bio,
-		&i.ProfileName,
-		&i.ProfilePicture,
-		&i.CreatedAt,
-		&i.UpdatedAt,
+		&i.Profile.ID,
+		&i.Profile.UserID,
+		&i.Profile.Bio,
+		&i.Profile.ProfileName,
+		&i.Profile.ProfilePicture,
+		&i.Profile.CreatedAt,
+		&i.Profile.UpdatedAt,
 	)
 	return i, err
 }

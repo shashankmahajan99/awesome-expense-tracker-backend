@@ -19,7 +19,7 @@ WHERE email = ?;
 SELECT * FROM Users
 WHERE id = ?;
 
--- name: DeleteUser :exec
+-- name: DeleteUser :execrows
 DELETE FROM Users
 WHERE username = ?;
 
@@ -32,13 +32,13 @@ OFFSET ?;
 -- name: CountUsers :one
 SELECT count(*) FROM Users;
 
--- name: UpdateUserPassword :exec
+-- name: UpdateUserPassword :execresult
 UPDATE Users
 SET
   password = ?
 WHERE email = ?;
 
--- name: UpdateUserUsername :exec
+-- name: UpdateUserUsername :execresult
 UPDATE Users
 SET
   username = ?
