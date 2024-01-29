@@ -29,7 +29,7 @@ INSERT INTO profiles (
   profile_name,
   profile_picture
 ) VALUES (
-  (SELECT id FROM Users WHERE email = ?), ?, ?, ?
+  (SELECT id FROM users WHERE email = ?), ?, ?, ?
 )
 `
 
@@ -51,7 +51,7 @@ func (q *Queries) CreateProfile(ctx context.Context, arg CreateProfileParams) (s
 
 const deleteProfile = `-- name: DeleteProfile :exec
 DELETE FROM profiles
-WHERE user_id = (SELECT id FROM Users WHERE email = ?)
+WHERE user_id = (SELECT id FROM users WHERE email = ?)
 `
 
 func (q *Queries) DeleteProfile(ctx context.Context, email string) error {
@@ -62,8 +62,8 @@ func (q *Queries) DeleteProfile(ctx context.Context, email string) error {
 const getProfileByEmail = `-- name: GetProfileByEmail :one
 SELECT profiles.id, profiles.user_id, profiles.bio, profiles.profile_name, profiles.profile_picture, profiles.created_at, profiles.updated_at
 FROM profiles
-JOIN Users ON profiles.user_id = Users.id
-WHERE Users.email = ?
+JOIN users ON profiles.user_id = users.id
+WHERE users.email = ?
 `
 
 type GetProfileByEmailRow struct {
@@ -152,9 +152,9 @@ func (q *Queries) Listprofiles(ctx context.Context, arg ListprofilesParams) ([]P
 
 const updateProfileBio = `-- name: UpdateProfileBio :execresult
 UPDATE profiles
-JOIN Users ON profiles.user_id = Users.id
+JOIN users ON profiles.user_id = users.id
 SET profiles.bio = ?
-WHERE Users.email = ?
+WHERE users.email = ?
 `
 
 type UpdateProfileBioParams struct {
@@ -168,9 +168,9 @@ func (q *Queries) UpdateProfileBio(ctx context.Context, arg UpdateProfileBioPara
 
 const updateProfileName = `-- name: UpdateProfileName :execresult
 UPDATE profiles
-JOIN Users ON profiles.user_id = Users.id
+JOIN users ON profiles.user_id = users.id
 SET profiles.profile_name = ?
-WHERE Users.email = ?
+WHERE users.email = ?
 `
 
 type UpdateProfileNameParams struct {
@@ -184,9 +184,9 @@ func (q *Queries) UpdateProfileName(ctx context.Context, arg UpdateProfileNamePa
 
 const updateProfileProfilePicture = `-- name: UpdateProfileProfilePicture :execresult
 UPDATE profiles
-JOIN Users ON profiles.user_id = Users.id
+JOIN users ON profiles.user_id = users.id
 SET profiles.profile_picture = ?
-WHERE Users.email = ?
+WHERE users.email = ?
 `
 
 type UpdateProfileProfilePictureParams struct {

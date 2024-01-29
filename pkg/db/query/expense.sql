@@ -10,13 +10,13 @@ INSERT INTO expenses (
   paid_by,
   flow
 ) VALUES (
-  (SELECT id from Users where email = ?), ?, ?, ?, ?, ?, ?, ?, ?
+  (SELECT id from users where email = ?), ?, ?, ?, ?, ?, ?, ?, ?
 );
 
 -- name: GetExpenseById :one
 SELECT sqlc.embed(expenses) FROM expenses
-JOIN Users ON expenses.user_id = Users.id
-WHERE Users.email = ? and expenses.id = ?;
+JOIN users ON expenses.user_id = users.id
+WHERE users.email = ? and expenses.id = ?;
 
 -- name: GetExpenseByIdPvt :one
 SELECT * FROM expenses
@@ -25,8 +25,8 @@ WHERE id = ?;
 -- name: GetExpensesByUserId :many
 SELECT sqlc.embed(expenses)
   FROM expenses
-JOIN Users ON expenses.user_id = Users.id
-WHERE Users.email = ?;
+JOIN users ON expenses.user_id = users.id
+WHERE users.email = ?;
 
 -- name: UpdateExpense :execresult
 UPDATE expenses
@@ -40,13 +40,13 @@ SET
   paid_by = ?,
   flow = ?
 WHERE user_id IN (
-  SELECT id FROM Users WHERE email = ?
+  SELECT id FROM users WHERE email = ?
 ) AND expenses.id = ?;
 
 -- name: DeleteExpense :execrows
 DELETE FROM expenses
 WHERE user_id IN (
-  SELECT id FROM Users WHERE email = ?
+  SELECT id FROM users WHERE email = ?
 ) AND expenses.id = ?;
 
 

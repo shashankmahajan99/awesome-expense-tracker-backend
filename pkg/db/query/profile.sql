@@ -6,14 +6,14 @@ INSERT INTO profiles (
   profile_name,
   profile_picture
 ) VALUES (
-  (SELECT id FROM Users WHERE email = ?), ?, ?, ?
+  (SELECT id FROM users WHERE email = ?), ?, ?, ?
 );
 
 -- name: GetProfileByEmail :one
 SELECT sqlc.embed(profiles)
 FROM profiles
-JOIN Users ON profiles.user_id = Users.id
-WHERE Users.email = ?;
+JOIN users ON profiles.user_id = users.id
+WHERE users.email = ?;
 
 -- name: GetProfileByID :one
 SELECT *
@@ -22,25 +22,25 @@ WHERE id = ?;
 
 -- name: UpdateProfileBio :execresult
 UPDATE profiles
-JOIN Users ON profiles.user_id = Users.id
+JOIN users ON profiles.user_id = users.id
 SET profiles.bio = ?
-WHERE Users.email = ?;
+WHERE users.email = ?;
 
 -- name: UpdateProfileProfilePicture :execresult
 UPDATE profiles
-JOIN Users ON profiles.user_id = Users.id
+JOIN users ON profiles.user_id = users.id
 SET profiles.profile_picture = ?
-WHERE Users.email = ?;
+WHERE users.email = ?;
 
 -- name: UpdateProfileName :execresult
 UPDATE profiles
-JOIN Users ON profiles.user_id = Users.id
+JOIN users ON profiles.user_id = users.id
 SET profiles.profile_name = ?
-WHERE Users.email = ?;
+WHERE users.email = ?;
 
 -- name: DeleteProfile :exec
 DELETE FROM profiles
-WHERE user_id = (SELECT id FROM Users WHERE email = ?);
+WHERE user_id = (SELECT id FROM users WHERE email = ?);
 
 -- name: Listprofiles :many
 SELECT * 

@@ -34,7 +34,7 @@ INSERT INTO expenses (
   paid_by,
   flow
 ) VALUES (
-  (SELECT id from Users where email = ?), ?, ?, ?, ?, ?, ?, ?, ?
+  (SELECT id from users where email = ?), ?, ?, ?, ?, ?, ?, ?, ?
 )
 `
 
@@ -67,7 +67,7 @@ func (q *Queries) CreateExpense(ctx context.Context, arg CreateExpenseParams) (s
 const deleteExpense = `-- name: DeleteExpense :execrows
 DELETE FROM expenses
 WHERE user_id IN (
-  SELECT id FROM Users WHERE email = ?
+  SELECT id FROM users WHERE email = ?
 ) AND expenses.id = ?
 `
 
@@ -86,8 +86,8 @@ func (q *Queries) DeleteExpense(ctx context.Context, arg DeleteExpenseParams) (i
 
 const getExpenseById = `-- name: GetExpenseById :one
 SELECT expenses.id, expenses.user_id, expenses.amount, expenses.description, expenses.category, expenses.tx_date, expenses.tag, expenses.paid_to, expenses.paid_by, expenses.flow, expenses.created_at, expenses.updated_at FROM expenses
-JOIN Users ON expenses.user_id = Users.id
-WHERE Users.email = ? and expenses.id = ?
+JOIN users ON expenses.user_id = users.id
+WHERE users.email = ? and expenses.id = ?
 `
 
 type GetExpenseByIdParams struct {
@@ -147,8 +147,8 @@ func (q *Queries) GetExpenseByIdPvt(ctx context.Context, id int32) (Expense, err
 const getExpensesByUserId = `-- name: GetExpensesByUserId :many
 SELECT expenses.id, expenses.user_id, expenses.amount, expenses.description, expenses.category, expenses.tx_date, expenses.tag, expenses.paid_to, expenses.paid_by, expenses.flow, expenses.created_at, expenses.updated_at
   FROM expenses
-JOIN Users ON expenses.user_id = Users.id
-WHERE Users.email = ?
+JOIN users ON expenses.user_id = users.id
+WHERE users.email = ?
 `
 
 type GetExpensesByUserIdRow struct {
@@ -251,7 +251,7 @@ SET
   paid_by = ?,
   flow = ?
 WHERE user_id IN (
-  SELECT id FROM Users WHERE email = ?
+  SELECT id FROM users WHERE email = ?
 ) AND expenses.id = ?
 `
 
