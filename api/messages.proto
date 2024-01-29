@@ -119,6 +119,7 @@ message ExpenseObject {
       expression: "this == 'incoming' || this == 'outgoing'",
     }
   ];
+  int64 id = 9;
 }
 
 message GenerateReportRequest {

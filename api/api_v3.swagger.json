@@ -800,6 +800,10 @@
                     },
                     "flow": {
                         "type": "string"
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "int64"
                     }
                 }
             },

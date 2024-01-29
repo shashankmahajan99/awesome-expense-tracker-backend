@@ -15,12 +15,12 @@ import (
 	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api/auth"
 	"github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/api/middlewares"
 	db "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/db/sqlc"
+	failuremanagement "github.com/shashankmahajan99/awesome-expense-tracker-backend/pkg/failure_management"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/grpc/status"
 )
 
 func main() {
@@ -82,13 +82,7 @@ func runGrpcGatewayServer(httpPort string) {
 
 	// runtimeMux
 	runtimeMux := runtime.NewServeMux(
-		runtime.WithErrorHandler(func(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, r *http.Request, err error) {
-			if customErr, ok := status.FromError(err); ok {
-				http.Error(w, customErr.Message(), runtime.HTTPStatusFromCode(customErr.Code()))
-				return
-			}
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}),
+		runtime.WithErrorHandler(failuremanagement.CustomHTTPErrorWrapper),
 	)
 
 	grpcOpts := []grpc.DialOption{

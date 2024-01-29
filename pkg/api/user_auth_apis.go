@@ -157,7 +157,7 @@ func (s *Server) DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.D
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "username doesn't exist", http.StatusBadRequest)
 	}
 
-	numberOfRows, err := s.store.DeleteUser(ctx, req.Username)
+	numberOfRowsAffected, err := s.store.DeleteUser(ctx, req.Username)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "user doesn't exist", http.StatusBadRequest)
@@ -166,7 +166,7 @@ func (s *Server) DeleteUser(ctx context.Context, req *AwesomeExpenseTrackerApi.D
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "unknown error: "+err.Error(), http.StatusInternalServerError)
 	}
 
-	if numberOfRows == 0 {
+	if numberOfRowsAffected == 0 {
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "user doesn't exist", http.StatusBadRequest)
 	}
 

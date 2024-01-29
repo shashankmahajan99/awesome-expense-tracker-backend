@@ -66,10 +66,14 @@ func (s *Server) GetExpense(ctx context.Context, req *AwesomeExpenseTrackerApi.G
 	}
 	expenseResult, err := s.store.ListExpenseByID(ctx, getExpenseByIDParams)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "expense doesn't exist", http.StatusBadRequest)
+		}
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to get expense: "+err.Error(), http.StatusInternalServerError)
 	}
 
 	res.Expense = &AwesomeExpenseTrackerApi.ExpenseObject{
+		Id:          int64(expenseResult.ID),
 		Amount:      expenseResult.Amount,
 		Description: expenseResult.Description,
 		Date:        timestamppb.New(expenseResult.TxDate),
@@ -80,7 +84,7 @@ func (s *Server) GetExpense(ctx context.Context, req *AwesomeExpenseTrackerApi.G
 		Flow:        expenseResult.Flow,
 	}
 
-	return nil, nil
+	return res, nil
 }
 
 // ListExpenses gets all expenses.
@@ -100,6 +104,7 @@ func (s *Server) ListExpenses(ctx context.Context, _ *AwesomeExpenseTrackerApi.L
 	expenseList := make([]*AwesomeExpenseTrackerApi.ExpenseObject, 0, len(expenseResult))
 	for _, expense := range expenseResult {
 		expenseList = append(expenseList, &AwesomeExpenseTrackerApi.ExpenseObject{
+			Id:          int64(expense.ID),
 			Amount:      expense.Amount,
 			Description: expense.Description,
 			Date:        timestamppb.New(expense.TxDate),
@@ -125,20 +130,16 @@ func (s *Server) DeleteExpense(ctx context.Context, req *AwesomeExpenseTrackerAp
 	}
 
 	// delete expense
-	numberOfRows, err := s.store.RemoveExpense(ctx, db.DeleteExpenseParams{
+	numOfRowsAffected, err := s.store.RemoveExpense(ctx, db.DeleteExpenseParams{
 		Email: userEmail,
 		ID:    int32(req.Id),
 	})
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "expense doesn't exists", http.StatusBadRequest)
-		}
-
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to delete expense: "+err.Error(), http.StatusInternalServerError)
 	}
 
-	if numberOfRows == 0 {
-		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, fmt.Sprintf("expense with id %d doesn't exists", req.Id), http.StatusBadRequest)
+	if numOfRowsAffected == 0 {
+		return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, fmt.Sprintf("expense with id %d doesn't exist", req.Id), http.StatusBadRequest)
 	}
 	res.Id = int32(req.Id)
 	return res, nil
@@ -168,7 +169,7 @@ func (s *Server) UpdateExpense(ctx context.Context, req *AwesomeExpenseTrackerAp
 	expenseResult, err := s.store.ModifyExpense(ctx, updateExpenseParams)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "expense doesn't exists", http.StatusBadRequest)
+			return nil, failuremanagement.NewCustomErrorResponse(utils.INVALIDREQUEST, "expense doesn't exist", http.StatusBadRequest)
 		}
 
 		return nil, failuremanagement.NewCustomErrorResponse(utils.INTERNALERROR, "failed to update expense: "+err.Error(), http.StatusInternalServerError)
