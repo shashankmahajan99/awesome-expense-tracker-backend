@@ -10,20 +10,20 @@ import (
 	"database/sql"
 )
 
-const countProfiles = `-- name: CountProfiles :one
+const countprofiles = `-- name: Countprofiles :one
 SELECT count(*) 
-FROM Profiles
+FROM profiles
 `
 
-func (q *Queries) CountProfiles(ctx context.Context) (int64, error) {
-	row := q.db.QueryRowContext(ctx, countProfiles)
+func (q *Queries) Countprofiles(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countprofiles)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
 }
 
 const createProfile = `-- name: CreateProfile :execresult
-INSERT INTO Profiles (
+INSERT INTO profiles (
   user_id,
   bio,
   profile_name,
@@ -50,7 +50,7 @@ func (q *Queries) CreateProfile(ctx context.Context, arg CreateProfileParams) (s
 }
 
 const deleteProfile = `-- name: DeleteProfile :exec
-DELETE FROM Profiles
+DELETE FROM profiles
 WHERE user_id = (SELECT id FROM Users WHERE email = ?)
 `
 
@@ -61,8 +61,8 @@ func (q *Queries) DeleteProfile(ctx context.Context, email string) error {
 
 const getProfileByEmail = `-- name: GetProfileByEmail :one
 SELECT profiles.id, profiles.user_id, profiles.bio, profiles.profile_name, profiles.profile_picture, profiles.created_at, profiles.updated_at
-FROM Profiles
-JOIN Users ON Profiles.user_id = Users.id
+FROM profiles
+JOIN Users ON profiles.user_id = Users.id
 WHERE Users.email = ?
 `
 
@@ -87,7 +87,7 @@ func (q *Queries) GetProfileByEmail(ctx context.Context, email string) (GetProfi
 
 const getProfileByID = `-- name: GetProfileByID :one
 SELECT id, user_id, bio, profile_name, profile_picture, created_at, updated_at
-FROM Profiles
+FROM profiles
 WHERE id = ?
 `
 
@@ -106,21 +106,21 @@ func (q *Queries) GetProfileByID(ctx context.Context, id int32) (Profile, error)
 	return i, err
 }
 
-const listProfiles = `-- name: ListProfiles :many
+const listprofiles = `-- name: Listprofiles :many
 SELECT id, user_id, bio, profile_name, profile_picture, created_at, updated_at 
-FROM Profiles
+FROM profiles
 ORDER BY id
 LIMIT ?
 OFFSET ?
 `
 
-type ListProfilesParams struct {
+type ListprofilesParams struct {
 	Limit  int32 `json:"limit"`
 	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) ListProfiles(ctx context.Context, arg ListProfilesParams) ([]Profile, error) {
-	rows, err := q.db.QueryContext(ctx, listProfiles, arg.Limit, arg.Offset)
+func (q *Queries) Listprofiles(ctx context.Context, arg ListprofilesParams) ([]Profile, error) {
+	rows, err := q.db.QueryContext(ctx, listprofiles, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -151,9 +151,9 @@ func (q *Queries) ListProfiles(ctx context.Context, arg ListProfilesParams) ([]P
 }
 
 const updateProfileBio = `-- name: UpdateProfileBio :execresult
-UPDATE Profiles
-JOIN Users ON Profiles.user_id = Users.id
-SET Profiles.bio = ?
+UPDATE profiles
+JOIN Users ON profiles.user_id = Users.id
+SET profiles.bio = ?
 WHERE Users.email = ?
 `
 
@@ -167,9 +167,9 @@ func (q *Queries) UpdateProfileBio(ctx context.Context, arg UpdateProfileBioPara
 }
 
 const updateProfileName = `-- name: UpdateProfileName :execresult
-UPDATE Profiles
-JOIN Users ON Profiles.user_id = Users.id
-SET Profiles.profile_name = ?
+UPDATE profiles
+JOIN Users ON profiles.user_id = Users.id
+SET profiles.profile_name = ?
 WHERE Users.email = ?
 `
 
@@ -183,9 +183,9 @@ func (q *Queries) UpdateProfileName(ctx context.Context, arg UpdateProfileNamePa
 }
 
 const updateProfileProfilePicture = `-- name: UpdateProfileProfilePicture :execresult
-UPDATE Profiles
-JOIN Users ON Profiles.user_id = Users.id
-SET Profiles.profile_picture = ?
+UPDATE profiles
+JOIN Users ON profiles.user_id = Users.id
+SET profiles.profile_picture = ?
 WHERE Users.email = ?
 `
 

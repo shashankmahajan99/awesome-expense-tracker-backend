@@ -10,19 +10,19 @@ import (
 	"database/sql"
 )
 
-const countReports = `-- name: CountReports :one
-SELECT count(*) FROM Reports
+const countreports = `-- name: Countreports :one
+SELECT count(*) FROM reports
 `
 
-func (q *Queries) CountReports(ctx context.Context) (int64, error) {
-	row := q.db.QueryRowContext(ctx, countReports)
+func (q *Queries) Countreports(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countreports)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
 }
 
 const createReport = `-- name: CreateReport :execresult
-INSERT INTO Reports (
+INSERT INTO reports (
   user_id,
   title
 ) VALUES (
@@ -40,7 +40,7 @@ func (q *Queries) CreateReport(ctx context.Context, arg CreateReportParams) (sql
 }
 
 const deleteReport = `-- name: DeleteReport :exec
-DELETE FROM Reports
+DELETE FROM reports
 WHERE id = ?
 `
 
@@ -50,7 +50,7 @@ func (q *Queries) DeleteReport(ctx context.Context, id int32) error {
 }
 
 const getReport = `-- name: GetReport :one
-SELECT id, user_id, title, created_at, updated_at FROM Reports
+SELECT id, user_id, title, created_at, updated_at FROM reports
 WHERE id = ?
 `
 
@@ -67,20 +67,20 @@ func (q *Queries) GetReport(ctx context.Context, id int32) (Report, error) {
 	return i, err
 }
 
-const listReports = `-- name: ListReports :many
-SELECT id, user_id, title, created_at, updated_at FROM Reports
+const listreports = `-- name: Listreports :many
+SELECT id, user_id, title, created_at, updated_at FROM reports
 ORDER BY id
 LIMIT ?
 OFFSET ?
 `
 
-type ListReportsParams struct {
+type ListreportsParams struct {
 	Limit  int32 `json:"limit"`
 	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) ListReports(ctx context.Context, arg ListReportsParams) ([]Report, error) {
-	rows, err := q.db.QueryContext(ctx, listReports, arg.Limit, arg.Offset)
+func (q *Queries) Listreports(ctx context.Context, arg ListreportsParams) ([]Report, error) {
+	rows, err := q.db.QueryContext(ctx, listreports, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func (q *Queries) ListReports(ctx context.Context, arg ListReportsParams) ([]Rep
 }
 
 const updateReport = `-- name: UpdateReport :exec
-UPDATE Reports
+UPDATE reports
 SET
   user_id = ?,
   title = ?

@@ -11,7 +11,7 @@ import (
 )
 
 const countSettings = `-- name: CountSettings :one
-SELECT count(*) FROM Settings
+SELECT count(*) FROM settings
 `
 
 func (q *Queries) CountSettings(ctx context.Context) (int64, error) {
@@ -22,7 +22,7 @@ func (q *Queries) CountSettings(ctx context.Context) (int64, error) {
 }
 
 const createSetting = `-- name: CreateSetting :execresult
-INSERT INTO Settings (
+INSERT INTO settings (
   user_id,
   theme,
   currency
@@ -42,7 +42,7 @@ func (q *Queries) CreateSetting(ctx context.Context, arg CreateSettingParams) (s
 }
 
 const deleteSetting = `-- name: DeleteSetting :exec
-DELETE FROM Settings
+DELETE FROM settings
 WHERE id = ?
 `
 
@@ -52,7 +52,7 @@ func (q *Queries) DeleteSetting(ctx context.Context, id int32) error {
 }
 
 const getSetting = `-- name: GetSetting :one
-SELECT id, user_id, theme, currency, created_at, updated_at FROM Settings
+SELECT id, user_id, theme, currency, created_at, updated_at FROM settings
 WHERE id = ?
 `
 
@@ -71,7 +71,7 @@ func (q *Queries) GetSetting(ctx context.Context, id int32) (Setting, error) {
 }
 
 const listSettings = `-- name: ListSettings :many
-SELECT id, user_id, theme, currency, created_at, updated_at FROM Settings
+SELECT id, user_id, theme, currency, created_at, updated_at FROM settings
 ORDER BY id
 LIMIT ?
 OFFSET ?
@@ -113,7 +113,7 @@ func (q *Queries) ListSettings(ctx context.Context, arg ListSettingsParams) ([]S
 }
 
 const updateSetting = `-- name: UpdateSetting :exec
-UPDATE Settings 
+UPDATE settings 
 SET
   user_id = ?,
   theme = ?,

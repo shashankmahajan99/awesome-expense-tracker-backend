@@ -11,7 +11,7 @@ import (
 )
 
 const countUsers = `-- name: CountUsers :one
-SELECT count(*) FROM Users
+SELECT count(*) FROM users
 `
 
 func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
@@ -22,7 +22,7 @@ func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
 }
 
 const createUser = `-- name: CreateUser :execresult
-INSERT INTO Users (
+INSERT INTO users (
   username,
   password,
   email
@@ -42,7 +42,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (sql.Res
 }
 
 const deleteUser = `-- name: DeleteUser :execrows
-DELETE FROM Users
+DELETE FROM users
 WHERE username = ?
 `
 
@@ -55,7 +55,7 @@ func (q *Queries) DeleteUser(ctx context.Context, username string) (int64, error
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, username, password, email, created_at, updated_at FROM Users
+SELECT id, username, password, email, created_at, updated_at FROM users
 WHERE email = ?
 `
 
@@ -74,7 +74,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, username, password, email, created_at, updated_at FROM Users
+SELECT id, username, password, email, created_at, updated_at FROM users
 WHERE id = ?
 `
 
@@ -93,7 +93,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id int32) (User, error) {
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, password, email, created_at, updated_at FROM Users
+SELECT id, username, password, email, created_at, updated_at FROM users
 WHERE username = ?
 `
 
@@ -112,7 +112,7 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, username, password, email, created_at, updated_at FROM Users
+SELECT id, username, password, email, created_at, updated_at FROM users
 ORDER BY id
 LIMIT ?
 OFFSET ?
@@ -154,7 +154,7 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 }
 
 const updateUserPassword = `-- name: UpdateUserPassword :execresult
-UPDATE Users
+UPDATE users
 SET
   password = ?
 WHERE email = ?
@@ -170,7 +170,7 @@ func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPassword
 }
 
 const updateUserUsername = `-- name: UpdateUserUsername :execresult
-UPDATE Users
+UPDATE users
 SET
   username = ?
 WHERE email = ?

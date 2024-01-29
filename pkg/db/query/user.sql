@@ -1,5 +1,5 @@
 -- name: CreateUser :execresult
-INSERT INTO Users (
+INSERT INTO users (
   username,
   password,
   email
@@ -8,38 +8,38 @@ INSERT INTO Users (
 );
 
 -- name: GetUserByUsername :one
-SELECT * FROM Users
+SELECT * FROM users
 WHERE username = ?;
 
 -- name: GetUserByEmail :one
-SELECT * FROM Users
+SELECT * FROM users
 WHERE email = ?;
 
 -- name: GetUserByID :one
-SELECT * FROM Users
+SELECT * FROM users
 WHERE id = ?;
 
 -- name: DeleteUser :execrows
-DELETE FROM Users
+DELETE FROM users
 WHERE username = ?;
 
 -- name: ListUsers :many
-SELECT * FROM Users
+SELECT * FROM users
 ORDER BY id
 LIMIT ?
 OFFSET ?;
 
 -- name: CountUsers :one
-SELECT count(*) FROM Users;
+SELECT count(*) FROM users;
 
 -- name: UpdateUserPassword :execresult
-UPDATE Users
+UPDATE users
 SET
   password = ?
 WHERE email = ?;
 
 -- name: UpdateUserUsername :execresult
-UPDATE Users
+UPDATE users
 SET
   username = ?
 WHERE email = ?;

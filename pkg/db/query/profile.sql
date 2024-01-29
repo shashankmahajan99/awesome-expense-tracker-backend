@@ -1,6 +1,6 @@
 
 -- name: CreateProfile :execresult
-INSERT INTO Profiles (
+INSERT INTO profiles (
   user_id,
   bio,
   profile_name,
@@ -10,45 +10,45 @@ INSERT INTO Profiles (
 );
 
 -- name: GetProfileByEmail :one
-SELECT sqlc.embed(Profiles)
-FROM Profiles
-JOIN Users ON Profiles.user_id = Users.id
+SELECT sqlc.embed(profiles)
+FROM profiles
+JOIN Users ON profiles.user_id = Users.id
 WHERE Users.email = ?;
 
 -- name: GetProfileByID :one
 SELECT *
-FROM Profiles
+FROM profiles
 WHERE id = ?;
 
 -- name: UpdateProfileBio :execresult
-UPDATE Profiles
-JOIN Users ON Profiles.user_id = Users.id
-SET Profiles.bio = ?
+UPDATE profiles
+JOIN Users ON profiles.user_id = Users.id
+SET profiles.bio = ?
 WHERE Users.email = ?;
 
 -- name: UpdateProfileProfilePicture :execresult
-UPDATE Profiles
-JOIN Users ON Profiles.user_id = Users.id
-SET Profiles.profile_picture = ?
+UPDATE profiles
+JOIN Users ON profiles.user_id = Users.id
+SET profiles.profile_picture = ?
 WHERE Users.email = ?;
 
 -- name: UpdateProfileName :execresult
-UPDATE Profiles
-JOIN Users ON Profiles.user_id = Users.id
-SET Profiles.profile_name = ?
+UPDATE profiles
+JOIN Users ON profiles.user_id = Users.id
+SET profiles.profile_name = ?
 WHERE Users.email = ?;
 
 -- name: DeleteProfile :exec
-DELETE FROM Profiles
+DELETE FROM profiles
 WHERE user_id = (SELECT id FROM Users WHERE email = ?);
 
--- name: ListProfiles :many
+-- name: Listprofiles :many
 SELECT * 
-FROM Profiles
+FROM profiles
 ORDER BY id
 LIMIT ?
 OFFSET ?;
 
--- name: CountProfiles :one
+-- name: Countprofiles :one
 SELECT count(*) 
-FROM Profiles;
+FROM profiles;

@@ -1,6 +1,6 @@
 
 -- name: CreateReport :execresult
-INSERT INTO Reports (
+INSERT INTO reports (
   user_id,
   title
 ) VALUES (
@@ -8,25 +8,25 @@ INSERT INTO Reports (
 );
 
 -- name: GetReport :one
-SELECT * FROM Reports
+SELECT * FROM reports
 WHERE id = ?;
 
 -- name: UpdateReport :exec
-UPDATE Reports
+UPDATE reports
 SET
   user_id = ?,
   title = ?
 WHERE id = ?;
 
 -- name: DeleteReport :exec
-DELETE FROM Reports
+DELETE FROM reports
 WHERE id = ?;
 
--- name: ListReports :many
-SELECT * FROM Reports
+-- name: Listreports :many
+SELECT * FROM reports
 ORDER BY id
 LIMIT ?
 OFFSET ?;
 
--- name: CountReports :one
-SELECT count(*) FROM Reports;
+-- name: Countreports :one
+SELECT count(*) FROM reports;

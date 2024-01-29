@@ -1,6 +1,6 @@
 
 -- name: CreateSetting :execresult
-INSERT INTO Settings (
+INSERT INTO settings (
   user_id,
   theme,
   currency
@@ -9,11 +9,11 @@ INSERT INTO Settings (
 );
 
 -- name: GetSetting :one
-SELECT * FROM Settings
+SELECT * FROM settings
 WHERE id = ?;
 
 -- name: UpdateSetting :exec
-UPDATE Settings 
+UPDATE settings 
 SET
   user_id = ?,
   theme = ?,
@@ -21,14 +21,14 @@ SET
 WHERE id = ?;
 
 -- name: DeleteSetting :exec
-DELETE FROM Settings
+DELETE FROM settings
 WHERE id = ?;
 
 -- name: ListSettings :many
-SELECT * FROM Settings
+SELECT * FROM settings
 ORDER BY id
 LIMIT ?
 OFFSET ?;
 
 -- name: CountSettings :one
-SELECT count(*) FROM Settings;
+SELECT count(*) FROM settings;
